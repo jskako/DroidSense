@@ -10,10 +10,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.runBlocking
+import utils.EMPTY_STRING
 import java.io.BufferedReader
 import java.io.InputStreamReader
-
-
 @Composable
 @Preview
 fun App() {
@@ -63,14 +62,14 @@ fun monitorAdbDevices(): Flow<AdbDevice> = flow {
             // Detect disconnected devices
             for (serialNumber in previousDevices) {
                 if (serialNumber !in currentDevices) {
-                    emit(AdbDevice(serialNumber, "", "Disconnected"))
+                    emit(AdbDevice(serialNumber, EMPTY_STRING, "Disconnected"))
                 }
             }
 
             previousDevices = currentDevices
         } catch (e: Exception) {
             // Handle exceptions (e.g., ADB not found)
-            emit(AdbDevice("", "", "Error: ${e.message}"))
+            emit(AdbDevice(EMPTY_STRING, EMPTY_STRING, "Error: ${e.message}"))
         }
 
         delay(1000) // Adjust the delay as needed
@@ -84,5 +83,5 @@ private fun getDeviceProperty(serialNumber: String, property: String): String {
     val reader = BufferedReader(InputStreamReader(process.inputStream))
     var line: String? = reader.readLine()
     process.waitFor()
-    return line ?: ""
+    return line ?: EMPTY_STRING
 }
