@@ -3,12 +3,13 @@ package logs
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import logs.interfaces.LogManagerInterface
+import utils.getStringResource
 import utils.getTimeStamp
 
 object LogManager : LogManagerInterface {
 
     private val _logs = mutableStateOf(
-        listOf(LogDetails(getTimeStamp(), "Application started."))
+        listOf(LogDetails(getTimeStamp(), getStringResource("info.log.general")))
     )
 
     val logs: State<List<LogDetails>>
@@ -22,7 +23,7 @@ object LogManager : LogManagerInterface {
     }
 
     override fun clearLogs() {
-        _logs.value = listOf(LogDetails(getTimeStamp(), "Logs cleared"))
+        _logs.value = listOf(LogDetails(getTimeStamp(), getStringResource("info.log.clear")))
     }
 
 }

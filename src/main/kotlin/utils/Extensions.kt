@@ -56,7 +56,7 @@ fun String.exportToFile(exportPath: String? = null) {
     }
 
     result.onFailure { e ->
-        logManager.addLog("${getStringResource("error.export.general")} ${e.message}")
+        logManager.addLog("${getStringResource("error.export.general")}: ${e.message}")
     }
 
     result.onSuccess {

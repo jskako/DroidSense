@@ -2,25 +2,25 @@ package utils
 
 enum class OS {
     WINDOWS {
-        override fun name() = "windows"
+        override fun osName() = "windows"
         override fun path() = "APPDATA"
     },
 
     MAC {
-        override fun name() = "mac"
+        override fun osName() = "mac"
         override fun path() = "Library/Application Support"
     },
 
     LINUX {
-        override fun name() = "linux"
+        override fun osName() = "linux"
         override fun path() = "~/."
     },
 
     UNSUPPORTED {
-        override fun name() = "unsupported"
+        override fun osName() = "unsupported"
         override fun path() = EMPTY_STRING
     };
 
-    abstract fun name(): String
+    abstract fun osName(): String
     abstract fun path(): String
 }

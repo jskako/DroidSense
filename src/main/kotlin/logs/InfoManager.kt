@@ -2,29 +2,33 @@ package logs
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import di.AppModule.provideCoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import logs.interfaces.InfoManagerInterface
-import utils.EMPTY_STRING
 
 object InfoManager : InfoManagerInterface {
 
-    private var _message = mutableStateOf(EMPTY_STRING)
+    private var _extendedInfo = mutableStateOf(ExtendedInfo())
     private var scope = provideCoroutineScope()
     private var job: Job? = null
 
-    val message: State<String>
-        get() = _message
+    val extendedInfo: State<ExtendedInfo>
+        get() = _extendedInfo
 
-    override fun showInfoMessage(message: String, duration: Long) {
-        _message.value = message
+    override fun showInfoMessage(
+        message: String,
+        backgroundColor: Color,
+        duration: Long
+    ) {
+        _extendedInfo.value = ExtendedInfo(message, backgroundColor)
         job?.cancel()
         job = scope.launch(Default) {
             delay(duration)
-            _message.value = EMPTY_STRING
+            _extendedInfo.value = ExtendedInfo()
         }
     }
 }
