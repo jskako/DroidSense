@@ -1,14 +1,13 @@
-package logs
+package notifications
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import di.AppModule.provideCoroutineScope
-import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import logs.interfaces.InfoManagerInterface
+import notifications.interfaces.InfoManagerInterface
 
 object InfoManager : InfoManagerInterface {
 
@@ -26,7 +25,7 @@ object InfoManager : InfoManagerInterface {
     ) {
         _extendedInfo.value = ExtendedInfo(message, backgroundColor)
         job?.cancel()
-        job = scope.launch(Default) {
+        job = scope.launch {
             delay(duration)
             _extendedInfo.value = ExtendedInfo()
         }

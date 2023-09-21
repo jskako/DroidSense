@@ -1,4 +1,4 @@
-package logs
+package notifications
 
 import utils.EMPTY_STRING
 

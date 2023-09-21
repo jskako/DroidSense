@@ -11,14 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
-import di.AppModule.provideInfoManager
-
-private val infoManager = provideInfoManager()
+import notifications.InfoManager.extendedInfo
 
 @Composable
 fun InfoSection(
-    backgroundColor: Color = infoManager.extendedInfo.value.color,
-    text: String = infoManager.extendedInfo.value.message
+    backgroundColor: Color = extendedInfo.value.color,
+    text: String = extendedInfo.value.message
 ) {
     if (text.isNotEmpty()) {
         Column(

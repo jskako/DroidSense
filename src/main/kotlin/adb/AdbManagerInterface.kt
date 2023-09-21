@@ -1,6 +1,8 @@
 package adb
 
+import kotlinx.coroutines.CoroutineScope
+
 interface AdbManagerInterface {
-    fun startListening()
-    fun stopListening()
+    fun startListening(coroutineScope: CoroutineScope)
+    fun stopListening(coroutineScope: CoroutineScope)
 }

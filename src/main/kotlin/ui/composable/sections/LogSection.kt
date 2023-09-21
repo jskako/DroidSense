@@ -10,15 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import di.AppModule.provideLogManager
+import notifications.LogManager.clearLogs
+import notifications.LogManager.logs
 import ui.composable.elements.ScopedButton
-import ui.composable.elements.logs.LogsView
+import ui.composable.elements.log.LogsView
 import utils.copyToClipboard
 import utils.exportToFile
 import utils.getStringResource
 import utils.prepareLogs
-
-private val logManager = provideLogManager()
 
 @Composable
 fun LogSection() {
@@ -35,7 +34,7 @@ fun LogSection() {
                 endPadding = 0.dp,
                 title = getStringResource("info.log.section.copy"),
                 function = {
-                    logManager.logs.value.prepareLogs().copyToClipboard()
+                    logs.prepareLogs().copyToClipboard()
                 }
             )
 
@@ -44,7 +43,7 @@ fun LogSection() {
                 endPadding = 0.dp,
                 title = getStringResource("info.log.section.export"),
                 function = {
-                    logManager.logs.value.reversed().prepareLogs().exportToFile()
+                    logs.reversed().prepareLogs().exportToFile()
                 }
             )
 
@@ -53,7 +52,7 @@ fun LogSection() {
                 endPadding = 20.dp,
                 title = getStringResource("info.log.section.clear"),
                 function = {
-                    logManager.clearLogs()
+                    clearLogs()
                 }
             )
         }

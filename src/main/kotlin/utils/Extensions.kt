@@ -1,27 +1,24 @@
 package utils
 
-import di.AppModule.provideInfoManager
-import di.AppModule.provideLogManager
-import logs.LogDetails
+import notifications.InfoManager.showInfoMessage
+import notifications.LogDetails
+import notifications.LogManager.addLog
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
 import java.io.File
 import java.io.FileWriter
 
-private val infoManager = provideInfoManager()
-private val logManager = provideLogManager()
-
 fun String.copyToClipboard() {
     if (this.trim().isEmpty()) {
-        infoManager.showInfoMessage(getStringResource("error.clipboard.message.empty.data"))
+        showInfoMessage(getStringResource("error.clipboard.message.empty.data"))
         return
     }
 
     if (copyToClipboard(this)) {
-        infoManager.showInfoMessage(getStringResource("success.clipboard.message"))
+        showInfoMessage(getStringResource("success.clipboard.message"))
     } else {
-        infoManager.showInfoMessage(getStringResource("error.clipboard.message.failed"))
+        showInfoMessage(getStringResource("error.clipboard.message.failed"))
     }
 }
 
@@ -34,13 +31,13 @@ private fun copyToClipboard(text: String): Boolean {
 
 fun String.exportToFile(exportPath: String? = null) {
     if (this.isBlank()) {
-        infoManager.showInfoMessage(getStringResource("error.export.empty.data"))
+        showInfoMessage(getStringResource("error.export.empty.data"))
         return
     }
 
     val path = exportPath ?: pickDirectoryDialog()
     if (path.isNullOrBlank()) {
-        infoManager.showInfoMessage(getStringResource("error.export.empty.path"))
+        showInfoMessage(getStringResource("error.export.empty.path"))
         return
     }
 
@@ -56,11 +53,11 @@ fun String.exportToFile(exportPath: String? = null) {
     }
 
     result.onFailure { e ->
-        logManager.addLog("${getStringResource("error.export.general")}: ${e.message}")
+        addLog("${getStringResource("error.export.general")}: ${e.message}")
     }
 
     result.onSuccess {
-        logManager.addLog("${getStringResource("success.export.general")}: $filePath", filePath)
+        addLog("${getStringResource("success.export.general")}: $filePath", filePath)
     }
 }
 

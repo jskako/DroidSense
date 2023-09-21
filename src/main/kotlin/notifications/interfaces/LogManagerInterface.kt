@@ -1,6 +1,6 @@
-package logs.interfaces
+package notifications.interfaces
 
-import logs.ExtendedLog
+import notifications.ExtendedLog
 import utils.EMPTY_STRING
 
 interface LogManagerInterface {
@@ -9,5 +9,6 @@ interface LogManagerInterface {
         documentPath: String = EMPTY_STRING,
         extra: ExtendedLog? = null
     )
+
     fun clearLogs()
 }

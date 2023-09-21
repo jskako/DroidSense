@@ -1,6 +1,6 @@
 package adb
 
-import logs.ExtendedLog
+import notifications.ExtendedLog
 
 data class DeviceDetails(
     val serialNumber: String,

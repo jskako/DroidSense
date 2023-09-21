@@ -1,10 +1,10 @@
 package utils
 
-import di.AppModule.provideInfoManager
-import di.AppModule.provideLogManager
 import di.AppModule.provideResourceBundle
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.withContext
+import notifications.InfoManager.showInfoMessage
+import notifications.LogManager.addLog
 import java.awt.Desktop
 import java.awt.FileDialog
 import java.awt.Frame
@@ -13,10 +13,12 @@ import java.net.URL
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.util.*
 import java.util.regex.Pattern
 
-fun getStringResource(resourceName: String) = provideResourceBundle(STRING_RESOURCES).getString(resourceName) ?: EMPTY_STRING
+fun getStringResource(resourceName: String) =
+    provideResourceBundle(STRING_RESOURCES).getString(resourceName) ?: EMPTY_STRING
+
 fun getRegexPattern(regex: String): Pattern = Pattern.compile(regex)
 fun isValidIPAddress(ip: String) = getRegexPattern(ipRegex).matcher(ip).matches()
 fun isValidNumber(port: String) = getRegexPattern(NUMBER_REGEX).matcher(port).matches()
@@ -35,9 +37,9 @@ fun openFile(path: String) {
     }
 
     result.getOrElse { e ->
-        provideLogManager().addLog("${getStringResource("error.openfile.cannot.open")} $path\n${e.message}")
+        addLog("${getStringResource("error.openfile.cannot.open")} $path\n${e.message}")
     }.let {
-        provideInfoManager().showInfoMessage("${getStringResource("success.openfile.general")}: $path")
+        showInfoMessage("${getStringResource("success.openfile.general")}: $path")
     }
 }
 

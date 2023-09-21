@@ -1,15 +1,8 @@
 package di
 
-import adb.AdbManager
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import logs.InfoManager
-import logs.LogManager
-import ui.application.state.ProgressStateManager
-import java.util.ResourceBundle
+import kotlinx.coroutines.*
+import notifications.LogManager.addLog
+import java.util.*
 
 object AppModule {
 
@@ -19,16 +12,11 @@ object AppModule {
                 + Dispatchers.Default
                 + SupervisorJob()
                 + CoroutineExceptionHandler { _, exception ->
-            provideLogManager().addLog(
+            addLog(
                 "CoroutineExceptionHandler: ${exception.message}"
             )
         }
     )
-
-    fun provideLogManager() = LogManager
-    fun provideInfoManager() = InfoManager
-    fun provideAdbManager() = AdbManager
-    fun provideProgressStateManager() = ProgressStateManager
 }
 
 private const val COROUTINE_NAME = "DroidSense-Coroutine"

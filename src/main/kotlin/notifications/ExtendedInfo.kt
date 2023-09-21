@@ -1,4 +1,4 @@
-package logs
+package notifications
 
 import androidx.compose.ui.graphics.Color
 

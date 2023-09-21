@@ -1,28 +1,28 @@
 package adb
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.Color
-import di.AppModule
+import notifications.InfoManager.showInfoMessage
 import utils.DEVICE_MODEL_PROPERTY
 import utils.EMPTY_STRING
 import utils.getStringResource
 
 object DeviceManager : DeviceManagerInterface {
 
-    private val _devices = mutableListOf<DeviceDetails>()
-    private val infoManager = AppModule.provideInfoManager()
+    private val _devices = mutableStateListOf<DeviceDetails>()
 
     override suspend fun addDevice(serialNumber: String) {
         val model = getDeviceProperty(serialNumber, DEVICE_MODEL_PROPERTY)
-        DeviceDetails(serialNumber, model, AdbDeviceStatus.CONNECTED).also { device ->
-            _devices.add(device)
-            infoManager.showInfoMessage("${getStringResource("info.add.device")}: $device")
-        }
+        val newDevice = DeviceDetails(serialNumber, model, AdbDeviceStatus.CONNECTED)
+        _devices.add(newDevice)
+        showInfoMessage("${getStringResource("info.add.device")}: $newDevice")
     }
 
     override suspend fun removeDevice(serialNumber: String) {
-        _devices.firstOrNull { it.serialNumber == serialNumber }.let { device ->
+        val deviceToRemove = _devices.firstOrNull { it.serialNumber == serialNumber }
+        deviceToRemove?.let { device ->
             _devices.remove(device)
-            infoManager.showInfoMessage(
+            showInfoMessage(
                 message = "${getStringResource("info.remove.device")}: $device",
                 backgroundColor = Color.Red
             )
@@ -34,11 +34,12 @@ object DeviceManager : DeviceManagerInterface {
     }
 
     override suspend fun updateDevicesStatus(status: AdbDeviceStatus) {
-        _devices.forEach { it.state = AdbDeviceStatus.NOT_MONITORING }
+        _devices.forEachIndexed { index, device ->
+            _devices[index] = device.copy(state = status)
+        }
     }
 
-    val devices: List<DeviceDetails>
-        get() = _devices
+    val devices: List<DeviceDetails> get() = _devices
 
     private fun getDeviceProperty(serialNumber: String, property: String): String {
         return runCatching {

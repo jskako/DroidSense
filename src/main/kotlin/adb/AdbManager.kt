@@ -5,11 +5,11 @@ import adb.DeviceManager.clearDevices
 import adb.DeviceManager.devices
 import adb.DeviceManager.removeDevice
 import adb.DeviceManager.updateDevicesStatus
-import di.AppModule.provideCoroutineScope
-import di.AppModule.provideLogManager
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import notifications.LogManager.addLog
 import utils.ADB_POLLING_INTERVAL_MS
 import utils.getStringResource
 import java.io.BufferedReader
@@ -18,10 +18,8 @@ import java.io.InputStreamReader
 object AdbManager : AdbManagerInterface {
 
     private var monitorJob: Job? = null
-    private val coroutineScope = provideCoroutineScope()
-    private val logManager = provideLogManager()
 
-    override fun startListening() {
+    override fun startListening(coroutineScope: CoroutineScope) {
         monitorJob?.cancel()
         monitorJob = coroutineScope.launch {
             clearDevices()
@@ -29,7 +27,7 @@ object AdbManager : AdbManagerInterface {
         }
     }
 
-    override fun stopListening() {
+    override fun stopListening(coroutineScope: CoroutineScope) {
         coroutineScope.launch {
             monitorJob?.cancel()
             updateDevicesStatus()
@@ -51,29 +49,29 @@ object AdbManager : AdbManagerInterface {
                             val parts = line.split("\\s+".toRegex())
                             val serialNumber = parts[0].trim()
                             currentDevices.add(serialNumber)
-                            handleNewDevice(serialNumber, devices)
+                            handleNewDevice(serialNumber)
                         }
                     }
                 }
 
-                handleDisconnectedDevices(devices, currentDevices)
+                handleDisconnectedDevices(currentDevices)
 
             }.getOrElse { exception ->
-                logManager.addLog("${getStringResource("error.monitor.general")}: $exception")
+                addLog("${getStringResource("error.monitor.general")}: $exception")
             }
 
             delay(ADB_POLLING_INTERVAL_MS)
         }
     }
 
-    private suspend fun handleNewDevice(serialNumber: String, previousDevices: List<DeviceDetails>) {
-        if (serialNumber !in previousDevices.map { it.serialNumber }) {
+    private suspend fun handleNewDevice(serialNumber: String) {
+        if (serialNumber !in devices.map { it.serialNumber }) {
             addDevice(serialNumber)
         }
     }
 
-    private suspend fun handleDisconnectedDevices(previousDevices: List<DeviceDetails>, currentDevices: Set<String>) {
-        val disconnectedSerialNumbers = previousDevices.map { it.serialNumber } - currentDevices
+    private suspend fun handleDisconnectedDevices(currentDevices: Set<String>) {
+        val disconnectedSerialNumbers = devices.map { it.serialNumber } - currentDevices
         for (serialNumber in disconnectedSerialNumbers) {
             removeDevice(serialNumber)
         }
