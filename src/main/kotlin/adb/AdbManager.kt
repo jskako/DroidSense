@@ -5,16 +5,16 @@ import adb.DeviceManager.clearDevices
 import adb.DeviceManager.devices
 import adb.DeviceManager.removeDevice
 import adb.DeviceManager.updateDevicesStatus
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import notifications.LogManager.addLog
+import settitngs.GlobalSettings.adbPath
 import utils.ADB_POLLING_INTERVAL_MS
 import utils.getStringResource
-import java.io.BufferedReader
-import java.io.File
-import java.io.InputStreamReader
 
 object AdbManager : AdbManagerInterface {
 
@@ -41,8 +41,7 @@ object AdbManager : AdbManagerInterface {
             val currentDevices = mutableSetOf<String>()
 
             runCatching {
-                val adbFile = File("tools/adb/mac/adb")
-                val process = ProcessBuilder(adbFile.absolutePath, "devices", "-l").start()
+                val process = ProcessBuilder(adbPath.value, "devices", "-l").start()
                 val reader = BufferedReader(InputStreamReader(process.inputStream))
 
                 reader.useLines { lines ->

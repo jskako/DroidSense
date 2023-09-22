@@ -1,5 +1,9 @@
 package ui.application
 
+import androidx.compose.runtime.Composable
+
 sealed class ApplicationEvent {
-    data object NewWindow : ApplicationEvent()
+    data class NewWindow(
+        val startingComposable: @Composable () -> Unit
+    ) : ApplicationEvent()
 }

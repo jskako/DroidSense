@@ -1,10 +1,6 @@
 package utils
 
 import di.AppModule.provideResourceBundle
-import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.withContext
-import notifications.InfoManager.showInfoMessage
-import notifications.LogManager.addLog
 import java.awt.Desktop
 import java.awt.FileDialog
 import java.awt.Frame
@@ -13,8 +9,12 @@ import java.net.URL
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Locale
 import java.util.regex.Pattern
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.withContext
+import notifications.InfoManager.showInfoMessage
+import notifications.LogManager.addLog
 
 fun getStringResource(resourceName: String) =
     provideResourceBundle(STRING_RESOURCES).getString(resourceName) ?: EMPTY_STRING
@@ -78,30 +78,10 @@ fun pickDirectoryDialog(): String? {
     }
 }
 
-private fun getUserOS() = System.getProperty(SYSTEM_OS_PROPERTY).lowercase(Locale.getDefault())
-fun initialSettings() {
-    val osName = getUserOS()
-    when {
-        osName.contains(OS.WINDOWS.osName()) -> System.getenv(OS.WINDOWS.path())
-        osName.contains(OS.MAC.osName()) -> OS.MAC.path()
-        osName.contains(OS.LINUX.osName()) -> OS.LINUX.path()
-        else -> OS.UNSUPPORTED.path()
-    }
-}
-
-fun getUserDataDirectory(): File {
+fun getUserOS(): String {
     val osName = System.getProperty(SYSTEM_OS_PROPERTY).lowercase(Locale.getDefault())
-    val appDataDir = when {
-        osName.contains(OS.WINDOWS.osName()) -> System.getenv(OS.WINDOWS.path())
-        osName.contains(OS.MAC.osName()) -> OS.MAC.path()
-        osName.contains(OS.LINUX.osName()) -> OS.LINUX.path()
-        else -> OS.UNSUPPORTED.path()
-    }
-
-    val userDataDir = File(System.getProperty(SYSTEM_HOME_PROPERTY), appDataDir + File.separator + APP_NAME)
-    if (!userDataDir.exists()) {
-        userDataDir.mkdir()
-    }
-
-    return userDataDir
+    return OS.entries.firstOrNull { osName.contains(it.osName(), ignoreCase = true) }
+        ?.osName() ?: OS.UNSUPPORTED.osName()
 }
+
+fun isSoftwareInstalled(software: String) = ProcessBuilder("which", software).start().waitFor() == 0

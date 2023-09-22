@@ -14,7 +14,10 @@ class ApplicationManager {
             is ApplicationEvent.NewWindow -> {
                 for (window in applicationState.windows) {
                     key(window) {
-                        Window(window)
+                        Window(
+                            state = window,
+                            startingComposable = event.startingComposable
+                        )
                     }
                 }
             }

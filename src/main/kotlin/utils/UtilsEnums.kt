@@ -17,4 +17,5 @@ enum class OS {
         override fun osName() = "unsupported"
     };
 
-    abstract fun osName(): String }
+    abstract fun osName(): String
+}

@@ -9,12 +9,12 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
 import ui.application.WindowState
-import ui.composable.screens.MainScreen
 import utils.getStringResource
 
 @Composable
 fun Window(
     state: WindowState,
+    startingComposable: @Composable () -> Unit
 ) = Window(
     onCloseRequest = state::close,
     icon = rememberVectorPainter(state.icon),
@@ -29,7 +29,7 @@ fun Window(
         Scaffold(
             modifier = Modifier.fillMaxSize()
         ) {
-            MainScreen()
+            startingComposable()
         }
     }
 }
