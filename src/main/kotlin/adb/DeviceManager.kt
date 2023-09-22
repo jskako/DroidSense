@@ -3,6 +3,13 @@ package adb
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.Color
 import notifications.InfoManager.showInfoMessage
+import utils.DEVICE_ANDROID_VERSION
+import utils.DEVICE_BRAND
+import utils.DEVICE_BUILD_SDK
+import utils.DEVICE_DISPLAY_DENSITY
+import utils.DEVICE_DISPLAY_RESOLUTION
+import utils.DEVICE_IP_ADDRESS
+import utils.DEVICE_MANUFACTURER
 import utils.DEVICE_MODEL_PROPERTY
 import utils.EMPTY_STRING
 import utils.getStringResource
@@ -12,8 +19,18 @@ object DeviceManager : DeviceManagerInterface {
     private val _devices = mutableStateListOf<DeviceDetails>()
 
     override suspend fun addDevice(serialNumber: String) {
-        val model = getDeviceProperty(serialNumber, DEVICE_MODEL_PROPERTY)
-        val newDevice = DeviceDetails(serialNumber, model, AdbDeviceStatus.CONNECTED)
+        val newDevice = DeviceDetails(
+            serialNumber = serialNumber,
+            model = getDeviceProperty(serialNumber, DEVICE_MODEL_PROPERTY),
+            manufacturer = getDeviceProperty(serialNumber, DEVICE_MANUFACTURER),
+            brand = getDeviceProperty(serialNumber, DEVICE_BRAND),
+            buildSDK = getDeviceProperty(serialNumber, DEVICE_BUILD_SDK),
+            androidVersion = getDeviceProperty(serialNumber, DEVICE_ANDROID_VERSION),
+            displayResolution = getDeviceProperty(serialNumber, DEVICE_DISPLAY_RESOLUTION),
+            displayDensity = getDeviceProperty(serialNumber, DEVICE_DISPLAY_DENSITY),
+            ipAddress = getDeviceProperty(serialNumber, DEVICE_IP_ADDRESS),
+            state = AdbDeviceStatus.CONNECTED
+        )
         _devices.add(newDevice)
         showInfoMessage("${getStringResource("info.add.device")}: $newDevice")
     }
@@ -43,7 +60,7 @@ object DeviceManager : DeviceManagerInterface {
 
     private fun getDeviceProperty(serialNumber: String, property: String): String {
         return runCatching {
-            ProcessBuilder("adb", "-s", serialNumber, "shell", "getprop", property).start().inputStream
+            ProcessBuilder("adb", "-s", serialNumber, "shell", property).start().inputStream
                 .bufferedReader()
                 .use { reader ->
                     reader.readLine()

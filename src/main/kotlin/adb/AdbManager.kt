@@ -13,6 +13,7 @@ import notifications.LogManager.addLog
 import utils.ADB_POLLING_INTERVAL_MS
 import utils.getStringResource
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 
 object AdbManager : AdbManagerInterface {
@@ -40,7 +41,8 @@ object AdbManager : AdbManagerInterface {
             val currentDevices = mutableSetOf<String>()
 
             runCatching {
-                val process = ProcessBuilder("adb", "devices", "-l").start()
+                val adbFile = File("tools/adb/mac/adb")
+                val process = ProcessBuilder(adbFile.absolutePath, "devices", "-l").start()
                 val reader = BufferedReader(InputStreamReader(process.inputStream))
 
                 reader.useLines { lines ->

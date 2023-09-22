@@ -78,6 +78,17 @@ fun pickDirectoryDialog(): String? {
     }
 }
 
+private fun getUserOS() = System.getProperty(SYSTEM_OS_PROPERTY).lowercase(Locale.getDefault())
+fun initialSettings() {
+    val osName = getUserOS()
+    when {
+        osName.contains(OS.WINDOWS.osName()) -> System.getenv(OS.WINDOWS.path())
+        osName.contains(OS.MAC.osName()) -> OS.MAC.path()
+        osName.contains(OS.LINUX.osName()) -> OS.LINUX.path()
+        else -> OS.UNSUPPORTED.path()
+    }
+}
+
 fun getUserDataDirectory(): File {
     val osName = System.getProperty(SYSTEM_OS_PROPERTY).lowercase(Locale.getDefault())
     val appDataDir = when {
