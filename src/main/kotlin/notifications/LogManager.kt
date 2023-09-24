@@ -1,9 +1,9 @@
 package notifications
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.graphics.Color
-import notifications.InfoManager.showInfoMessage
+import notifications.InfoManager.showTimeLimitedInfoMessage
 import notifications.interfaces.LogManagerInterface
+import utils.Colors.darkRed
 import utils.getStringResource
 import utils.getTimeStamp
 
@@ -22,9 +22,9 @@ object LogManager : LogManagerInterface {
 
     override fun clearLogs() {
         _logs.clear()
-        showInfoMessage(
+        showTimeLimitedInfoMessage(
             message = getStringResource("info.log.clear"),
-            backgroundColor = Color.Red
+            backgroundColor = darkRed
         )
     }
 

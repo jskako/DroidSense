@@ -18,7 +18,7 @@ object InfoManager : InfoManagerInterface {
     val extendedInfo: State<ExtendedInfo>
         get() = _extendedInfo
 
-    override fun showInfoMessage(
+    override fun showTimeLimitedInfoMessage(
         message: String,
         backgroundColor: Color,
         duration: Long
@@ -29,5 +29,16 @@ object InfoManager : InfoManagerInterface {
             delay(duration)
             _extendedInfo.value = ExtendedInfo()
         }
+    }
+
+    override fun showInfoMessage(
+        message: String,
+        backgroundColor: Color
+    ) {
+        _extendedInfo.value = ExtendedInfo(message, backgroundColor)
+    }
+
+    override fun clearInfoMessage() {
+        _extendedInfo.value = ExtendedInfo()
     }
 }

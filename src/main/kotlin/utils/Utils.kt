@@ -13,7 +13,7 @@ import java.util.Locale
 import java.util.regex.Pattern
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.withContext
-import notifications.InfoManager.showInfoMessage
+import notifications.InfoManager.showTimeLimitedInfoMessage
 import notifications.LogManager.addLog
 
 fun getStringResource(resourceName: String) =
@@ -39,7 +39,7 @@ fun openFile(path: String) {
     result.getOrElse { e ->
         addLog("${getStringResource("error.openfile.cannot.open")} $path\n${e.message}")
     }.let {
-        showInfoMessage("${getStringResource("success.openfile.general")}: $path")
+        showTimeLimitedInfoMessage("${getStringResource("success.openfile.general")}: $path")
     }
 }
 

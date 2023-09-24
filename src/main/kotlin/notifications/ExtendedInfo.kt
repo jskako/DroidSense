@@ -1,9 +1,9 @@
 package notifications
 
 import androidx.compose.ui.graphics.Color
+import utils.Colors.darkBlue
 
 data class ExtendedInfo(
     val message: String = "",
-    val color: Color = Color.Gray,
-    val functions: Map<String, () -> Unit>? = null,
+    val color: Color = darkBlue
 )

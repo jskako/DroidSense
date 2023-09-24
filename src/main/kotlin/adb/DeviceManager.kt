@@ -1,8 +1,8 @@
 package adb
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.graphics.Color
-import notifications.InfoManager.showInfoMessage
+import notifications.InfoManager.showTimeLimitedInfoMessage
+import utils.Colors.darkRed
 import utils.DEVICE_ANDROID_VERSION
 import utils.DEVICE_BRAND
 import utils.DEVICE_BUILD_SDK
@@ -32,16 +32,16 @@ object DeviceManager : DeviceManagerInterface {
             state = AdbDeviceStatus.CONNECTED
         )
         _devices.add(newDevice)
-        showInfoMessage("${getStringResource("info.add.device")}: $newDevice")
+        showTimeLimitedInfoMessage("${getStringResource("info.add.device")}: $newDevice")
     }
 
     override suspend fun removeDevice(serialNumber: String) {
         val deviceToRemove = _devices.firstOrNull { it.serialNumber == serialNumber }
         deviceToRemove?.let { device ->
             _devices.remove(device)
-            showInfoMessage(
+            showTimeLimitedInfoMessage(
                 message = "${getStringResource("info.remove.device")}: $device",
-                backgroundColor = Color.Red
+                backgroundColor = darkRed
             )
         }
     }
