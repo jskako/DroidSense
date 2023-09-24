@@ -5,8 +5,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import ui.composable.elements.Window
 
-class ApplicationManager {
-
+object ApplicationManager {
     @Composable
     fun CreateWindow(event: ApplicationEvent) {
         val applicationState = remember { ApplicationState() }
@@ -16,7 +15,6 @@ class ApplicationManager {
                     key(window) {
                         Window(
                             state = window,
-                            startingComposable = event.startingComposable
                         )
                     }
                 }

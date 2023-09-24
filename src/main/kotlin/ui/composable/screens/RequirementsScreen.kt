@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import requirements.RequirementsManager.executeRequirements
+import ui.application.navigation.NavigationManager.navigateTo
+import ui.application.navigation.Route
 import ui.composable.sections.RequirementsSection
 
 @Composable
@@ -16,10 +18,10 @@ fun RequirementsScreen() {
     rememberCoroutineScope().launch {
         executeRequirements().fold(
             onSuccess = {
-                println("Succeed")
+                navigateTo(Route.MainScreen)
             },
             onFailure = {
-                println("Fail")
+                // TODO - add failure logic
             }
         )
     }
