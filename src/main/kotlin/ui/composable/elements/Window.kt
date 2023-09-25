@@ -8,11 +8,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
+import java.awt.Dimension
 import ui.application.WindowState
 import ui.application.navigation.NavigationManager.currentRoute
 import ui.application.navigation.Route
 import ui.composable.screens.MainScreen
 import ui.composable.screens.RequirementsScreen
+import utils.MIN_WINDOW_HEIGHT
+import utils.MIN_WINDOW_WIDTH
 import utils.getStringResource
 
 @Composable
@@ -23,6 +26,7 @@ fun Window(
     icon = rememberVectorPainter(state.icon),
     title = state.title
 ) {
+    window.minimumSize = Dimension(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
     if (currentRoute != Route.RequirementsScreen) {
         MenuBar {
             Menu(getStringResource("info.window.menu")) {

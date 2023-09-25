@@ -1,13 +1,8 @@
 package utils
 
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
 import di.AppModule.provideResourceBundle
-import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.withContext
-import notifications.InfoManager.showTimeLimitedInfoMessage
-import notifications.LogManager.addLog
 import java.awt.Desktop
 import java.awt.FileDialog
 import java.awt.Frame
@@ -18,6 +13,10 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.regex.Pattern
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.withContext
+import notifications.InfoManager.showTimeLimitedInfoMessage
+import notifications.LogManager.addLog
 
 fun getStringResource(resourceName: String) =
     provideResourceBundle(STRING_RESOURCES).getString(resourceName) ?: EMPTY_STRING
