@@ -12,6 +12,8 @@ const val ADB_PACKAGE = "adb"
 const val SCRCPY_PACKAGE = "scrcpy"
 const val ADB_WINDOWS_PATH = "tools/scrcpy/windows/adb.exe"
 const val SCRCPY_WINDOWS_PATH = "tools/scrcpy/windows/scrcpy.exe"
+const val MIN_WINDOW_WIDTH = 800
+const val MIN_WINDOW_HEIGHT = 600
 
 private const val GET_PROPERTY: String = "getprop"
 const val DEVICE_MODEL_PROPERTY: String = "$GET_PROPERTY ro.product.model"
