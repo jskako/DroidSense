@@ -4,15 +4,15 @@ import notifications.ExtendedLog
 
 data class DeviceDetails(
     val serialNumber: String,
-    val model: String,
-    val manufacturer: String,
-    val brand: String,
-    val buildSDK: String,
-    val androidVersion: String,
-    val displayResolution: String,
-    val displayDensity: String,
-    val ipAddress: String,
-    var state: AdbDeviceStatus,
+    val model: String? = null,
+    val manufacturer: String? = null,
+    val brand: String? = null,
+    val buildSDK: String? = null,
+    val androidVersion: String? = null,
+    val displayResolution: String? = null,
+    val displayDensity: String? = null,
+    val ipAddress: String? = null,
+    var state: AdbDeviceStatus? = null,
     val extra: ExtendedLog? = null
 ) {
     override fun toString(): String {

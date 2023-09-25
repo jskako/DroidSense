@@ -1,4 +1,4 @@
-package ui.composable
+package ui.composable.elements
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.ClickableText

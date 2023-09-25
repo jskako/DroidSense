@@ -7,7 +7,7 @@ const val LOG_EXTENSION: String = ".log"
 const val EMPTY_STRING: String = ""
 const val SYSTEM_OS_PROPERTY: String = "os.name"
 const val ADB_POLLING_INTERVAL_MS = 1000L
-const val DEFAULT_DELAY = 2000L
+const val DEFAULT_DELAY = 1000L
 const val ADB_PACKAGE = "adb"
 const val SCRCPY_PACKAGE = "scrcpy"
 const val ADB_WINDOWS_PATH = "tools/scrcpy/windows/adb.exe"
@@ -22,3 +22,6 @@ const val DEVICE_ANDROID_VERSION: String = "$GET_PROPERTY ro.build.version.relea
 const val DEVICE_DISPLAY_RESOLUTION: String = "wm size"
 const val DEVICE_DISPLAY_DENSITY: String = "wm density"
 const val DEVICE_IP_ADDRESS: String = "ip route | awk '{print $9}'"
+
+const val IMAGES_DIRECTORY: String = "images"
+const val DEFAULT_PHONE_IMAGE: String = "phone.png"

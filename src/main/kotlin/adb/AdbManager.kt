@@ -5,25 +5,34 @@ import adb.DeviceManager.clearDevices
 import adb.DeviceManager.devices
 import adb.DeviceManager.removeDevice
 import adb.DeviceManager.updateDevicesStatus
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import notifications.LogManager.addLog
+import notifications.InfoManager.showInfoMessage
+import notifications.InfoManager.showTimeLimitedInfoMessage
 import settitngs.GlobalSettings.adbPath
 import utils.ADB_POLLING_INTERVAL_MS
+import utils.Colors
 import utils.getStringResource
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 object AdbManager : AdbManagerInterface {
 
     private var monitorJob: Job? = null
+    private val _listeningStatus = mutableStateOf(ListeningStatus.NOT_LISTENING)
+
+    val listeningStatus: State<ListeningStatus>
+        get() = _listeningStatus
 
     override fun startListening(coroutineScope: CoroutineScope) {
         monitorJob?.cancel()
         monitorJob = coroutineScope.launch {
             clearDevices()
+            _listeningStatus.value = ListeningStatus.LISTENING
             monitorAdbDevices()
         }
     }
@@ -31,7 +40,18 @@ object AdbManager : AdbManagerInterface {
     override fun stopListening(coroutineScope: CoroutineScope) {
         coroutineScope.launch {
             monitorJob?.cancel()
+            _listeningStatus.value = ListeningStatus.NOT_LISTENING
             updateDevicesStatus()
+        }
+    }
+
+    override fun manageListeningStatus(coroutineScope: CoroutineScope) {
+        if (_listeningStatus.value == ListeningStatus.LISTENING) {
+            stopListening(coroutineScope)
+            showTimeLimitedInfoMessage("Stop Listening")
+        } else {
+            startListening(coroutineScope)
+            showTimeLimitedInfoMessage("Start Listening")
         }
     }
 
@@ -58,7 +78,10 @@ object AdbManager : AdbManagerInterface {
                 handleDisconnectedDevices(currentDevices)
 
             }.getOrElse { exception ->
-                addLog("${getStringResource("error.monitor.general")}: $exception")
+                showInfoMessage(
+                    "${getStringResource("error.monitor.general")}: $exception",
+                    backgroundColor = Colors.darkRed
+                )
             }
 
             delay(ADB_POLLING_INTERVAL_MS)
@@ -72,9 +95,11 @@ object AdbManager : AdbManagerInterface {
     }
 
     private suspend fun handleDisconnectedDevices(currentDevices: Set<String>) {
-        val disconnectedSerialNumbers = devices.map { it.serialNumber } - currentDevices
-        for (serialNumber in disconnectedSerialNumbers) {
-            removeDevice(serialNumber)
+        if (listeningStatus.value == ListeningStatus.LISTENING) {
+            val disconnectedSerialNumbers = devices.map { it.serialNumber } - currentDevices
+            for (serialNumber in disconnectedSerialNumbers) {
+                removeDevice(serialNumber)
+            }
         }
     }
 }

@@ -1,6 +1,9 @@
 package adb
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import notifications.InfoManager.showTimeLimitedInfoMessage
 import utils.Colors.darkRed
 import utils.DEVICE_ANDROID_VERSION
@@ -56,7 +59,8 @@ object DeviceManager : DeviceManagerInterface {
         }
     }
 
-    val devices: List<DeviceDetails> get() = _devices
+    var devices by mutableStateOf<List<DeviceDetails>>(_devices)
+        private set
 
     private fun getDeviceProperty(serialNumber: String, property: String): String {
         return runCatching {

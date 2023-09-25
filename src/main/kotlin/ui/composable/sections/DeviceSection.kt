@@ -13,7 +13,7 @@ import ui.composable.elements.device.DeviceView
 fun DeviceSection(
     modifier: Modifier = Modifier
         .fillMaxWidth()
-        .padding(15.dp),
+        .padding(start = 15.dp, end = 15.dp),
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically
 ) {
     Row(
