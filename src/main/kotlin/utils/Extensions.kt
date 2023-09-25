@@ -69,3 +69,5 @@ fun List<LogDetails>.prepareLogs() = buildString {
         appendLine(emptyLine(1))
     }
 }.trim()
+
+fun String.capitalizeFirstChar() = replaceFirstChar(Char::titlecase)

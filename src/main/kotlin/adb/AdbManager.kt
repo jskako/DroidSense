@@ -48,10 +48,10 @@ object AdbManager : AdbManagerInterface {
     override fun manageListeningStatus(coroutineScope: CoroutineScope) {
         if (_listeningStatus.value == ListeningStatus.LISTENING) {
             stopListening(coroutineScope)
-            showTimeLimitedInfoMessage("Stop Listening")
+            showTimeLimitedInfoMessage(getStringResource("info.stop.listening"))
         } else {
             startListening(coroutineScope)
-            showTimeLimitedInfoMessage("Start Listening")
+            showTimeLimitedInfoMessage(getStringResource("info.start.listening"))
         }
     }
 

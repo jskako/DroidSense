@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,7 +24,9 @@ import utils.IMAGES_DIRECTORY
 import utils.getImageBitmap
 
 @Composable
-fun DeviceCard(deviceDetails: DeviceDetails) {
+fun DeviceCard(
+    device: DeviceDetails
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -38,29 +41,31 @@ fun DeviceCard(deviceDetails: DeviceDetails) {
         ) {
             Image(
                 bitmap = getImageBitmap("$IMAGES_DIRECTORY/$DEFAULT_PHONE_IMAGE"),
-                contentDescription = "Device Image",
+                contentDescription = "",
                 modifier = Modifier.size(48.dp)
             )
 
             Spacer(modifier = Modifier.width(16.dp))
-
             Column {
-                Row {
-                    BasicText(
-                        value = "Model: ${deviceDetails.model ?: ""}"
-                    )
+                val chunkedItems = rememberUpdatedState(device.toDeviceCardInfoList()).value.chunked(2)
 
-                    Spacer(modifier = Modifier.width(16.dp))
+                for (chunk in chunkedItems) {
+                    Row {
+                        for (item in chunk) {
+                            BasicText(
+                                value = "${item.description}: ${item.value}"
+                            )
 
-                    BasicText(
-                        value = "Serial Number: ${deviceDetails.serialNumber}"
-                    )
+                            Spacer(modifier = Modifier.width(16.dp))
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Device State: ${deviceDetails.state}",
+                    text = "Device State: ${device.state}",
                     color = Color.Gray
                 )
 
