@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.withContext
 import notifications.InfoManager.showTimeLimitedInfoMessage
 import notifications.LogManager.addLog
+import settitngs.GlobalSettings
 
 fun getStringResource(resourceName: String) =
     provideResourceBundle(STRING_RESOURCES).getString(resourceName) ?: EMPTY_STRING
@@ -89,3 +90,5 @@ fun getUserOS(): String {
 fun isSoftwareInstalled(software: String) = ProcessBuilder("which", software).start().waitFor() == 0
 
 fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }
+
+fun startScrCpy(serialNumber: String) = ProcessBuilder(GlobalSettings.scrCpyPath.value, "-s", serialNumber).start()

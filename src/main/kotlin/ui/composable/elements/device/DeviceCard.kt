@@ -19,9 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ui.composable.elements.BasicText
+import ui.composable.elements.OutlinedButton
 import utils.DEFAULT_PHONE_IMAGE
 import utils.IMAGES_DIRECTORY
 import utils.getImageBitmap
+import utils.getStringResource
+import utils.startScrCpy
 
 @Composable
 fun DeviceCard(
@@ -65,11 +68,34 @@ fun DeviceCard(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Device State: ${device.state}",
+                    text = "${getStringResource("info.device.state")}: ${device.state}",
                     color = Color.Gray
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            Column(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            ) {
+                OutlinedButton(
+                    text = getStringResource("info.share.screen"),
+                    onClick = { startScrCpy(device.serialNumber) }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedButton(
+                    text = getStringResource("info.log.manager"),
+                    onClick = { }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedButton(
+                    text = getStringResource("info.log.options"),
+                    onClick = { }
+                )
             }
         }
     }

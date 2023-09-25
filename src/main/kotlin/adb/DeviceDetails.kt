@@ -24,7 +24,7 @@ data class DeviceDetails(
 
     fun toDeviceCardInfoList(): List<DeviceCardInfo> {
         val propertyList = listOf(
-            "info.serial.number" to serialNumber,
+            ("info.serial.number" to serialNumber),
             ("info.model" to model),
             ("info.manufacturer" to manufacturer?.capitalizeFirstChar()),
             ("info.brand" to brand?.capitalizeFirstChar()),
