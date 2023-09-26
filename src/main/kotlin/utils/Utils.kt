@@ -114,6 +114,7 @@ fun getDevicePropertyList(serialNumber: String, property: String): List<String> 
             .filter { it.startsWith("package:") }
             .map { it.removePrefix("package:") }
             .toList()
+            .sorted()
         process.waitFor()
         lines
     }.getOrElse {
