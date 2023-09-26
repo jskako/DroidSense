@@ -21,6 +21,7 @@ import utils.getStringResource
 fun MainScreen() {
     startListening(rememberCoroutineScope())
     showInfoMessage(getStringResource("info.usb.debugging.enabled"))
+
     Column {
         InfoSection(
             onCloseClicked = { clearInfoMessage() }

@@ -1,11 +1,6 @@
 package ui
 
-import androidx.compose.ui.window.application
 import ui.application.ApplicationEvent
-import ui.application.ApplicationManager.CreateWindow
+import ui.application.ApplicationManager.createWindow
 
-fun main() = application {
-    CreateWindow(
-        event = ApplicationEvent.NewWindow
-    )
-}
+fun main() = createWindow(ApplicationEvent.NavWindow)

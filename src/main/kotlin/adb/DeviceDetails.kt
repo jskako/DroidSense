@@ -19,7 +19,7 @@ data class DeviceDetails(
     val extra: ExtendedLog? = null
 ) {
     override fun toString(): String {
-        return "$model ($serialNumber)"
+        return "${manufacturer?.capitalizeFirstChar()} $model ($serialNumber)"
     }
 
     fun toDeviceCardInfoList(): List<DeviceCardInfo> {

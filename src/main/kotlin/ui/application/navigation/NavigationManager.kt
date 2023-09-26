@@ -5,13 +5,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
-object NavigationManager {
+object NavigationManager: NavigationInterface {
 
-    private var _currentRoute by mutableStateOf<Route>(Route.RequirementsScreen)
-    val currentRoute: Route by derivedStateOf { _currentRoute }
+    private var _navRoute by mutableStateOf<NavRoute>(NavRoute.RequirementsScreen)
+    val navRoute: NavRoute by derivedStateOf { _navRoute }
 
-
-    fun navigateTo(route: Route) {
-        _currentRoute = route
+    override fun navigateTo(navRoute: NavRoute) {
+        _navRoute = navRoute
     }
 }

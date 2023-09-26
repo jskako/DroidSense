@@ -92,3 +92,32 @@ fun isSoftwareInstalled(software: String) = ProcessBuilder("which", software).st
 fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }
 
 fun startScrCpy(serialNumber: String) = ProcessBuilder(GlobalSettings.scrCpyPath.value, "-s", serialNumber).start()
+
+fun getDeviceProperty(serialNumber: String, property: String): String {
+    return runCatching {
+        ProcessBuilder("adb", "-s", serialNumber, "shell", property).start().inputStream
+            .bufferedReader()
+            .use { reader ->
+                reader.readLine()
+            }
+    }.getOrElse {
+        EMPTY_STRING
+    }
+}
+
+fun getDevicePropertyList(serialNumber: String, property: String): List<String> {
+    return runCatching {
+        val process = ProcessBuilder("adb", "-s", serialNumber, "shell", property).start()
+        val lines = process.inputStream
+            .bufferedReader()
+            .lineSequence()
+            .filter { it.startsWith("package:") }
+            .map { it.removePrefix("package:") }
+            .toList()
+        process.waitFor()
+        lines
+    }.getOrElse {
+        it.printStackTrace()
+        emptyList()
+    }
+}

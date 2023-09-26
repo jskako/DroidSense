@@ -22,7 +22,6 @@ import utils.getStringResource
 @Composable
 fun StatusSection() {
     val scope = rememberCoroutineScope()
-
     Box(
         modifier = Modifier
             .wrapContentWidth()

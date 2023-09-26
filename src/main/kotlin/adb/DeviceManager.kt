@@ -4,6 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.withContext
 import notifications.InfoManager.showTimeLimitedInfoMessage
 import utils.Colors.darkRed
 import utils.DEVICE_ANDROID_VERSION
@@ -14,7 +16,8 @@ import utils.DEVICE_DISPLAY_RESOLUTION
 import utils.DEVICE_IP_ADDRESS
 import utils.DEVICE_MANUFACTURER
 import utils.DEVICE_MODEL_PROPERTY
-import utils.EMPTY_STRING
+import utils.DEVICE_PACKAGES
+import utils.getDeviceProperty
 import utils.getStringResource
 
 object DeviceManager : DeviceManagerInterface {
@@ -49,6 +52,12 @@ object DeviceManager : DeviceManagerInterface {
         }
     }
 
+    override suspend fun getDevicePackages(serialNumber: String): String {
+        return withContext(Default) {
+            getDeviceProperty(serialNumber = serialNumber, property = DEVICE_PACKAGES)
+        }
+    }
+
     override fun clearDevices() {
         _devices.clear()
     }
@@ -61,16 +70,4 @@ object DeviceManager : DeviceManagerInterface {
 
     var devices by mutableStateOf<List<DeviceDetails>>(_devices)
         private set
-
-    private fun getDeviceProperty(serialNumber: String, property: String): String {
-        return runCatching {
-            ProcessBuilder("adb", "-s", serialNumber, "shell", property).start().inputStream
-                .bufferedReader()
-                .use { reader ->
-                    reader.readLine()
-                }
-        }.getOrElse {
-            EMPTY_STRING
-        }
-    }
 }

@@ -12,14 +12,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ui.application.WindowStateManager.windowState
 import ui.composable.elements.BasicText
 import ui.composable.elements.OutlinedButton
+import ui.composable.screens.LogScreen
 import utils.DEFAULT_PHONE_IMAGE
 import utils.IMAGES_DIRECTORY
 import utils.getImageBitmap
@@ -85,10 +89,12 @@ fun DeviceCard(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedButton(
-                    text = getStringResource("info.log.manager"),
-                    onClick = { }
-                )
+                getStringResource("info.log.manager").also { title ->
+                    OutlinedButton(
+                        text = title,
+                        onClick = { windowState?.openNewWindow?.let { it(title, Icons.Default.Info) { LogScreen(device) } } }
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 

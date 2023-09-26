@@ -24,6 +24,7 @@ const val DEVICE_ANDROID_VERSION: String = "$GET_PROPERTY ro.build.version.relea
 const val DEVICE_DISPLAY_RESOLUTION: String = "wm size"
 const val DEVICE_DISPLAY_DENSITY: String = "wm density"
 const val DEVICE_IP_ADDRESS: String = "ip route | awk '{print $9}'"
+const val DEVICE_PACKAGES: String = "pm list packages"
 
 const val IMAGES_DIRECTORY: String = "images"
 const val DEFAULT_PHONE_IMAGE: String = "phone.png"

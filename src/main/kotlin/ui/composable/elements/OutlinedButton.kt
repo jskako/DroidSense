@@ -11,41 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import utils.Colors.darkBlue
 
-/*@Composable
-fun CustomButton(
-    text: String,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = darkBlue,
-            contentColor = Color.White
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Text(
-            text = text,
-            style = TextStyle(fontSize = 16.sp)
-        )
-    }
-}*/
-
 @Composable
 fun OutlinedButton(
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+        .fillMaxWidth()
+        .height(48.dp)
 ) {
     Button(
         onClick = {
             onClick()
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp),
+        modifier = modifier,
         border = BorderStroke(1.dp, darkBlue),
         colors = ButtonDefaults.outlinedButtonColors(contentColor = darkBlue)
     ) {
