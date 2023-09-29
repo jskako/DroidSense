@@ -54,7 +54,9 @@ fun LogStatusSection(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 OutlinedButton(
                     text = when (operation) {
                         LogOperation.START -> getStringResource("info.start.log.manager")
@@ -96,7 +98,9 @@ fun LogStatusSection(
                     onItemSelected = { item ->
                         selectedItem = item
                     },
-                    visible = operation == LogOperation.START
+                    visible = operation == LogOperation.START,
+                    buttonText = getStringResource("info.open.package"),
+                    descriptionText = getStringResource("info.selected.package")
                 )
             }
         }

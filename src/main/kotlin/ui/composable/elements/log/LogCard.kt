@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import log.LogData
+import ui.composable.elements.BasicText
 import utils.getTimeStamp
 
 @Composable
@@ -43,8 +44,8 @@ fun LogCard(item: LogData) {
             )
         }
         Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = item.log,
+        BasicText(
+            value = item.log,
             color = if (item.level.simplified() == 'E') Color.Red else Color.Black
         )
     }
