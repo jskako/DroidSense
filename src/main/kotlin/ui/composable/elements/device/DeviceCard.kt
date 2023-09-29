@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import log.LogManager
-import notifications.InfoManager
 import notifications.InfoManager.showTimeLimitedInfoMessage
 import ui.application.WindowExtra
 import ui.application.WindowStateManager.windowState
@@ -137,7 +136,7 @@ fun DeviceCard(
                                         },
                                         onClose = {
                                             scope.launch {
-                                                if(logManager.isActive) {
+                                                if (logManager.isActive) {
                                                     logManager.stopMonitoringLogs()
                                                     showTimeLimitedInfoMessage(getStringResource("info.log.closing"))
                                                 }

@@ -3,8 +3,6 @@ package utils
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
 import di.AppModule.provideResourceBundle
-import notifications.InfoManager.showTimeLimitedInfoMessage
-import settitngs.GlobalSettings
 import java.awt.Desktop
 import java.awt.FileDialog
 import java.awt.Frame
@@ -13,6 +11,8 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import notifications.InfoManager.showTimeLimitedInfoMessage
+import settitngs.GlobalSettings
 
 fun getStringResource(resourceName: String) =
     provideResourceBundle(STRING_RESOURCES).getString(resourceName) ?: EMPTY_STRING

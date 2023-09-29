@@ -1,11 +1,11 @@
 package utils
 
-import notifications.InfoManager.showTimeLimitedInfoMessage
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
 import java.io.File
 import java.io.FileWriter
+import notifications.InfoManager.showTimeLimitedInfoMessage
 
 fun String.copyToClipboard() {
     if (this.trim().isEmpty()) {
