@@ -92,6 +92,7 @@ fun LogStatusSection(
                         property = DEVICE_PACKAGES,
                         startingItem = getStringResource("info.log.starting.package")
                     ),
+                    text = selectedItem,
                     onItemSelected = { item ->
                         selectedItem = item
                     },

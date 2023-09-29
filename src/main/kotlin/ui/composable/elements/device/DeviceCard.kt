@@ -138,7 +138,7 @@ fun DeviceCard(
                                             scope.launch {
                                                 if (logManager.isActive) {
                                                     logManager.stopMonitoringLogs()
-                                                    showTimeLimitedInfoMessage(getStringResource("info.log.closing"))
+                                                    showTimeLimitedInfoMessage("${getStringResource("info.log.closing")} $device - ${device.serialNumber}")
                                                 }
                                             }
                                         }

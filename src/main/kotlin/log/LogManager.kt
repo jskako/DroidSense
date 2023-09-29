@@ -26,6 +26,7 @@ class LogManager : LogManagerInterface {
         serialNumber: String
     ) {
         stopMonitoringLogs()
+        println("Package name: $packageName")
         monitorJob = coroutineScope.launch {
             try {
                 monitorLogs(packageName, serialNumber)

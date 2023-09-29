@@ -22,12 +22,13 @@ import utils.getStringResource
 @Composable
 fun DropdownItem(
     list: List<String>,
+    text: String,
     onItemSelected: (String) -> Unit,
     visible: Boolean = true
 ) {
     if (visible) {
         var expanded by remember { mutableStateOf(false) }
-        var selectedItem by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
+        var selectedItem by remember { mutableStateOf(text) }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
