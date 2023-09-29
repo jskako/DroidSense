@@ -7,15 +7,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.window.Window
-import java.awt.Dimension
 import ui.application.WindowState
-import ui.application.navigation.NavigationManager.navRoute
 import ui.application.navigation.NavRoute
+import ui.application.navigation.NavigationManager.navRoute
 import ui.composable.screens.MainScreen
 import ui.composable.screens.RequirementsScreen
 import ui.composable.utils.createMenu
 import utils.MIN_WINDOW_HEIGHT
 import utils.MIN_WINDOW_WIDTH
+import java.awt.Dimension
 
 @Composable
 fun NavWindow(
@@ -33,9 +33,14 @@ fun NavWindow(
         Scaffold(
             modifier = Modifier.fillMaxSize()
         ) {
-            state.content?.invoke() ?: when (navRoute) {
-                is NavRoute.MainScreen -> { MainScreen() }
-                is NavRoute.RequirementsScreen -> { RequirementsScreen() }
+            state.extra.screen?.invoke() ?: when (navRoute) {
+                is NavRoute.MainScreen -> {
+                    MainScreen()
+                }
+
+                is NavRoute.RequirementsScreen -> {
+                    RequirementsScreen()
+                }
             }
         }
     }

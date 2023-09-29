@@ -12,8 +12,9 @@ import androidx.compose.ui.unit.dp
 import notifications.InfoManager.clearInfoMessage
 import notifications.InfoManager.showInfoMessage
 import ui.composable.elements.CircularProgressBar
-import ui.composable.sections.DeviceSection
+import ui.composable.elements.device.DeviceView
 import ui.composable.sections.InfoSection
+import ui.composable.sections.LazySection
 import ui.composable.sections.StatusSection
 import utils.getStringResource
 
@@ -35,6 +36,6 @@ fun MainScreen() {
         CircularProgressBar(
             text = getStringResource("info.waiting.device"),
         )
-        DeviceSection()
+        LazySection(view = { DeviceView() })
     }
 }

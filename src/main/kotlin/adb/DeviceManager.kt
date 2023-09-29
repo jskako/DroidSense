@@ -1,9 +1,6 @@
 package adb
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.withContext
 import notifications.InfoManager.showTimeLimitedInfoMessage
@@ -68,6 +65,6 @@ object DeviceManager : DeviceManagerInterface {
         }
     }
 
-    var devices by mutableStateOf<List<DeviceDetails>>(_devices)
-        private set
+    val devices: List<DeviceDetails>
+        get() = _devices
 }

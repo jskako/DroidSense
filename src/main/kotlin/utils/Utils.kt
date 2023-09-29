@@ -3,28 +3,19 @@ package utils
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
 import di.AppModule.provideResourceBundle
+import notifications.InfoManager.showTimeLimitedInfoMessage
+import settitngs.GlobalSettings
 import java.awt.Desktop
 import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
-import java.net.URL
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import java.util.regex.Pattern
-import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.withContext
-import notifications.InfoManager.showTimeLimitedInfoMessage
-import notifications.LogManager.addLog
-import settitngs.GlobalSettings
 
 fun getStringResource(resourceName: String) =
     provideResourceBundle(STRING_RESOURCES).getString(resourceName) ?: EMPTY_STRING
-
-fun getRegexPattern(regex: String): Pattern = Pattern.compile(regex)
-fun isValidIPAddress(ip: String) = getRegexPattern(ipRegex).matcher(ip).matches()
-fun isValidNumber(port: String) = getRegexPattern(NUMBER_REGEX).matcher(port).matches()
 
 fun getTimeStamp(format: String = DEFAULT_TIMESTAMP): String = DateTimeFormatter
     .ofPattern(format)
@@ -40,32 +31,11 @@ fun openFile(path: String) {
     }
 
     result.getOrElse { e ->
-        addLog("${getStringResource("error.openfile.cannot.open")} $path\n${e.message}")
+        showTimeLimitedInfoMessage("${getStringResource("error.openfile.cannot.open")} $path\n${e.message}")
     }.let {
         showTimeLimitedInfoMessage("${getStringResource("success.openfile.general")}: $path")
     }
 }
-
-suspend fun isInternetAvailable(): Result<String> = withContext(Default) {
-    runCatching {
-        URL(DEFAULT_WEB).openConnection().connect()
-        Result.success(getStringResource("success.network.general"))
-    }.getOrElse {
-        Result.failure(
-            IllegalArgumentException(
-                "${getStringResource("error.network.not.unavailable")}\n" +
-                        "${it.message}"
-            )
-        )
-    }
-}
-
-fun emptyLine(numberOfEmptyLines: Int = 1) =
-    buildString {
-        repeat(numberOfEmptyLines) {
-            appendLine()
-        }
-    }
 
 fun pickDirectoryDialog(): String? {
     val fileDialog = FileDialog(Frame(), getStringResource("info.directory.general"), FileDialog.LOAD).apply {
@@ -102,10 +72,10 @@ fun getDeviceProperty(serialNumber: String, property: String): String {
             }
     }.getOrElse {
         EMPTY_STRING
-    }
+    }.trim()
 }
 
-fun getDevicePropertyList(serialNumber: String, property: String): List<String> {
+fun getDevicePropertyList(serialNumber: String, property: String, startingItem: String? = null): List<String> {
     return runCatching {
         val process = ProcessBuilder("adb", "-s", serialNumber, "shell", property).start()
         val lines = process.inputStream
@@ -116,7 +86,11 @@ fun getDevicePropertyList(serialNumber: String, property: String): List<String> 
             .toList()
             .sorted()
         process.waitFor()
-        lines
+        return (startingItem?.let {
+            mutableListOf(it).apply {
+                addAll(lines)
+            }
+        } ?: lines)
     }.getOrElse {
         it.printStackTrace()
         emptyList()

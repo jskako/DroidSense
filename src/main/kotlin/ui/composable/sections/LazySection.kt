@@ -7,19 +7,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ui.composable.elements.device.DeviceView
 
 @Composable
-fun DeviceSection(
+fun LazySection(
     modifier: Modifier = Modifier
         .fillMaxWidth()
         .padding(start = 15.dp, end = 15.dp),
-    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically
+    view: @Composable () -> Unit,
+    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = verticalAlignment
     ) {
-        DeviceView()
+        view()
     }
 }

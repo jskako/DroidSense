@@ -1,12 +1,12 @@
 package di
 
-import java.util.ResourceBundle
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import notifications.LogManager.addLog
+import notifications.InfoManager.showTimeLimitedInfoMessage
+import java.util.ResourceBundle
 
 object AppModule {
 
@@ -16,7 +16,7 @@ object AppModule {
                 + Dispatchers.Default
                 + SupervisorJob()
                 + CoroutineExceptionHandler { _, exception ->
-            addLog(
+            showTimeLimitedInfoMessage(
                 "CoroutineExceptionHandler: ${exception.message}"
             )
         }

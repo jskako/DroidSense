@@ -1,13 +1,11 @@
 package utils
 
+import notifications.InfoManager.showTimeLimitedInfoMessage
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
 import java.io.File
 import java.io.FileWriter
-import notifications.InfoManager.showTimeLimitedInfoMessage
-import notifications.LogDetails
-import notifications.LogManager.addLog
 
 fun String.copyToClipboard() {
     if (this.trim().isEmpty()) {
@@ -53,21 +51,12 @@ fun String.exportToFile(exportPath: String? = null) {
     }
 
     result.onFailure { e ->
-        addLog("${getStringResource("error.export.general")}: ${e.message}")
+        showTimeLimitedInfoMessage("${getStringResource("error.export.general")}: ${e.message}")
     }
 
     result.onSuccess {
-        addLog("${getStringResource("success.export.general")}: $filePath", filePath)
+        showTimeLimitedInfoMessage("${getStringResource("success.export.general")}: $filePath")
     }
 }
-
-fun List<LogDetails>.prepareLogs() = buildString {
-    for (log in this@prepareLogs) {
-        appendLine(log.time)
-        appendLine()
-        appendLine(log.log)
-        appendLine(emptyLine(1))
-    }
-}.trim()
 
 fun String.capitalizeFirstChar() = replaceFirstChar(Char::titlecase)

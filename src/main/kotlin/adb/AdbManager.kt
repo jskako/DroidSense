@@ -7,18 +7,20 @@ import adb.DeviceManager.removeDevice
 import adb.DeviceManager.updateDevicesStatus
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import notifications.InfoManager.showInfoMessage
 import notifications.InfoManager.showTimeLimitedInfoMessage
 import settitngs.GlobalSettings.adbPath
 import utils.ADB_POLLING_INTERVAL_MS
 import utils.Colors
 import utils.getStringResource
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 object AdbManager : AdbManagerInterface {
 
@@ -56,35 +58,36 @@ object AdbManager : AdbManagerInterface {
     }
 
     private suspend fun monitorAdbDevices() {
+        withContext(Default) {
+            while (true) {
+                val currentDevices = mutableSetOf<String>()
 
-        while (true) {
-            val currentDevices = mutableSetOf<String>()
+                runCatching {
+                    val process = ProcessBuilder(adbPath.value, "devices", "-l").start()
+                    val reader = BufferedReader(InputStreamReader(process.inputStream))
 
-            runCatching {
-                val process = ProcessBuilder(adbPath.value, "devices", "-l").start()
-                val reader = BufferedReader(InputStreamReader(process.inputStream))
-
-                reader.useLines { lines ->
-                    lines.forEach { line ->
-                        if (line.matches(Regex(".*device\\s+.*"))) {
-                            val parts = line.split("\\s+".toRegex())
-                            val serialNumber = parts[0].trim()
-                            currentDevices.add(serialNumber)
-                            handleNewDevice(serialNumber)
+                    reader.useLines { lines ->
+                        lines.forEach { line ->
+                            if (line.matches(Regex(".*device\\s+.*"))) {
+                                val parts = line.split("\\s+".toRegex())
+                                val serialNumber = parts[0].trim()
+                                currentDevices.add(serialNumber)
+                                handleNewDevice(serialNumber)
+                            }
                         }
                     }
+
+                    handleDisconnectedDevices(currentDevices)
+
+                }.getOrElse { exception ->
+                    showInfoMessage(
+                        "${getStringResource("error.monitor.general")}: $exception",
+                        backgroundColor = Colors.darkRed
+                    )
                 }
 
-                handleDisconnectedDevices(currentDevices)
-
-            }.getOrElse { exception ->
-                showInfoMessage(
-                    "${getStringResource("error.monitor.general")}: $exception",
-                    backgroundColor = Colors.darkRed
-                )
+                delay(ADB_POLLING_INTERVAL_MS)
             }
-
-            delay(ADB_POLLING_INTERVAL_MS)
         }
     }
 

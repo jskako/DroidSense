@@ -2,7 +2,6 @@ package ui.application
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import utils.getStringResource
@@ -15,11 +14,11 @@ data class ApplicationState(
     val windows = mutableStateListOf<WindowState>()
 
     init {
-        windows += createWindowState(title, icon, null)
+        windows += createWindowState(title, icon, WindowExtra())
     }
 
-    fun openNewWindow(title: String, icon: ImageVector, content: @Composable (() -> Unit)? = null) {
-        windows += createWindowState(title, icon, content)
+    fun openNewWindow(title: String, icon: ImageVector, extra: WindowExtra) {
+        windows += createWindowState(title, icon, extra)
     }
 
     private fun exit() {
@@ -29,15 +28,20 @@ data class ApplicationState(
     private fun createWindowState(
         title: String,
         icon: ImageVector,
-        content: @Composable (() -> Unit)? = null
+        extra: WindowExtra
     ): WindowState {
         return WindowState(
             title = title,
             icon = icon,
-            content = content,
+            extra = extra,
             openNewWindow = ::openNewWindow,
             exit = ::exit,
-            close = { window -> windows.remove(window) }
+            close = { window ->
+                extra.onClose?.let {
+                    it()
+                }
+                windows.remove(window)
+            }
         )
     }
 }

@@ -22,45 +22,47 @@ import utils.getStringResource
 @Composable
 fun DropdownItem(
     list: List<String>,
-    onItemSelected: (String) -> Unit
+    onItemSelected: (String) -> Unit,
+    visible: Boolean = true
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("") }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Column {
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                list.forEach { property ->
-                    DropdownMenuItem(
-                        onClick = {
-                            selectedItem = property
-                            expanded = false
-                            onItemSelected(property)
+    if (visible) {
+        var expanded by remember { mutableStateOf(false) }
+        var selectedItem by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Column {
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    list.forEach { property ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedItem = property
+                                expanded = false
+                                onItemSelected(property)
+                            }
+                        ) {
+                            Text(text = property)
                         }
-                    ) {
-                        Text(text = property)
                     }
                 }
+
+                OutlinedButton(
+                    text = getStringResource("info.open.package"),
+                    onClick = { expanded = true },
+                    modifier = Modifier.wrapContentSize()
+                )
             }
 
-            OutlinedButton(
-                text = getStringResource("info.open.package"),
-                onClick = { expanded = true },
-                modifier = Modifier.wrapContentSize()
+            Text(
+                text = selectedItem,
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable { expanded = true }
             )
         }
-
-        Text(
-            text = selectedItem,
-            modifier = Modifier
-                .weight(1f)
-                .clickable { expanded = true }
-        )
     }
 }

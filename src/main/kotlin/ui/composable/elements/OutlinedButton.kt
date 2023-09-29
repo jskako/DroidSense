@@ -17,12 +17,14 @@ fun OutlinedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
         .fillMaxWidth()
-        .height(48.dp)
+        .height(48.dp),
+    enabled: Boolean = true
 ) {
     Button(
         onClick = {
             onClick()
         },
+        enabled = enabled,
         modifier = modifier,
         border = BorderStroke(1.dp, darkBlue),
         colors = ButtonDefaults.outlinedButtonColors(contentColor = darkBlue)

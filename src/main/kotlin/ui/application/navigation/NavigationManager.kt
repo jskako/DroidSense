@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
-object NavigationManager: NavigationInterface {
+object NavigationManager : NavigationInterface {
 
     private var _navRoute by mutableStateOf<NavRoute>(NavRoute.RequirementsScreen)
     val navRoute: NavRoute by derivedStateOf { _navRoute }
