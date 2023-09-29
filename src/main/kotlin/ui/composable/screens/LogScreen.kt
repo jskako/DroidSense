@@ -30,7 +30,10 @@ fun LogScreen(device: DeviceDetails): LogManager {
                 thickness = 1.dp
             )
 
-            LazySection(view = { LogView(logManager.logs.takeLast(LOG_MANAGER_NUMBER_OF_LINES)) })
+            LazySection(
+                modifier = Modifier.fillMaxWidth(),
+                view = { LogView(logManager.logs.takeLast(LOG_MANAGER_NUMBER_OF_LINES)) }
+            )
         }
         logManager
     }
