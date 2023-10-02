@@ -26,7 +26,6 @@ class LogManager : LogManagerInterface {
         serialNumber: String
     ) {
         stopMonitoringLogs()
-        println("Package name: $packageName")
         monitorJob = coroutineScope.launch {
             try {
                 monitorLogs(packageName, serialNumber)
@@ -46,18 +45,21 @@ class LogManager : LogManagerInterface {
         serialNumber: String
     ) {
         try {
+            //adb logcat | grep "$(adb shell ps | grep de.bdr.eid.asta | awk '{print $2}')"
+            val command = "| grep de.bdr.eid.asta | awk '{print $2}' | xargs adb logcat | grep"
             val process = ProcessBuilder(
-                adbPath.value, "-s", serialNumber, "logcat", "-v", "thread"
-            ).apply {
-                if (packageName != getStringResource("info.log.starting.package")) {
-                    command().add(packageName)
-                }
-            }.start()
+                adbPath.value,
+                "-s",
+                serialNumber,
+                "logcat",
+                command
+            ).start()
 
             currentProcess = process
 
             process.inputStream.bufferedReader().useLines { lines ->
                 lines.forEach { line ->
+                    println(line)
                     val text = line.split(" ").drop(3).joinToString(" ")
                     val logType = line[0].let {
                         when (it) {

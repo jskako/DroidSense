@@ -7,8 +7,6 @@ import adb.DeviceManager.removeDevice
 import adb.DeviceManager.updateDevicesStatus
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
@@ -21,6 +19,8 @@ import settitngs.GlobalSettings.adbPath
 import utils.ADB_POLLING_INTERVAL_MS
 import utils.Colors
 import utils.getStringResource
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 object AdbManager : AdbManagerInterface {
 

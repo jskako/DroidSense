@@ -9,9 +9,6 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
-import java.io.File
-import kotlin.Result.Companion.failure
-import kotlin.Result.Companion.success
 import kotlinx.coroutines.delay
 import settitngs.GlobalSettings.setAdbPath
 import settitngs.GlobalSettings.setScrCpyPath
@@ -24,6 +21,9 @@ import utils.SCRCPY_WINDOWS_PATH
 import utils.getStringResource
 import utils.getUserOS
 import utils.isSoftwareInstalled
+import java.io.File
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 object RequirementsManager {
 
