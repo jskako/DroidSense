@@ -17,11 +17,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import log.LogData
+import log.LogLevel
 
 
 @Composable
-fun LogView(logs: List<LogData>) {
+fun LogView(
+    logs: List<LogData>,
+    logLevel: LogLevel,
+    filteredText: String
+) {
     val listState = rememberLazyListState()
+
+    val filteredLogs = logs.filter { log ->
+        log.level.ordinal <= logLevel.ordinal &&
+                (filteredText.isEmpty() || log.log.contains(filteredText, ignoreCase = true))
+    }
 
     LaunchedEffect(logs.size) {
         listState.animateScrollToItem(logs.size)
@@ -35,7 +45,7 @@ fun LogView(logs: List<LogData>) {
             modifier = Modifier.padding(end = 15.dp),
             state = listState
         ) {
-            items(logs) { item ->
+            items(filteredLogs) { item ->
                 LogCard(item)
             }
         }

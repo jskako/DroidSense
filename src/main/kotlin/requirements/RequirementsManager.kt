@@ -10,13 +10,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.coroutines.delay
+import settitngs.GlobalSettings.adbPath
+import settitngs.GlobalSettings.scrCpyPath
 import settitngs.GlobalSettings.setAdbPath
 import settitngs.GlobalSettings.setScrCpyPath
-import utils.ADB_PACKAGE
 import utils.ADB_WINDOWS_PATH
 import utils.DEFAULT_DELAY
 import utils.OS
-import utils.SCRCPY_PACKAGE
 import utils.SCRCPY_WINDOWS_PATH
 import utils.getStringResource
 import utils.getUserOS
@@ -94,13 +94,13 @@ private val requirementsList = listOf(
     RequirementsDetails(
         description = getStringResource("info.requirements.adb.general"),
         icon = Icons.Default.Build,
-        function = { isSoftwareInstalled(ADB_PACKAGE) },
+        function = { isSoftwareInstalled(adbPath.value) },
         descriptionError = getStringResource("info.requirements.adb.error")
     ),
     RequirementsDetails(
         description = getStringResource("info.requirements.scrcpy.general"),
         icon = Icons.Default.List,
-        function = { isSoftwareInstalled(SCRCPY_PACKAGE) },
+        function = { isSoftwareInstalled(scrCpyPath.value) },
         descriptionError = getStringResource("info.requirements.scrcpy.error")
     )
 )

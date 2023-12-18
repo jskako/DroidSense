@@ -60,3 +60,9 @@ fun String.exportToFile(exportPath: String? = null) {
 }
 
 fun String.capitalizeFirstChar() = replaceFirstChar(Char::titlecase)
+
+fun String.runCommand(): String? = try {
+    Runtime.getRuntime().exec(this).inputStream.bufferedReader().use { it.readText() }
+} catch (e: Exception) {
+    null
+}

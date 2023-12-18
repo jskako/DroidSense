@@ -5,9 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import log.LogLevel
 import log.LogManager
 import ui.composable.elements.log.LogView
 import ui.composable.sections.LazySection
@@ -16,12 +21,22 @@ import utils.LOG_MANAGER_NUMBER_OF_LINES
 
 @Composable
 fun LogScreen(device: DeviceDetails): LogManager {
+
+    var logLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
+    var filteredText by remember { mutableStateOf("") }
+
     return LogManager().let { logManager ->
         Column {
             LogStatusSection(
                 serialNumber = device.serialNumber,
                 text = device.toString(),
-                logManager = logManager
+                logManager = logManager,
+                onLogLevelSelected = {
+                    logLevel = it
+                },
+                onTextChanged = {
+                    filteredText = it
+                }
             )
 
             Divider(
@@ -32,7 +47,15 @@ fun LogScreen(device: DeviceDetails): LogManager {
 
             LazySection(
                 modifier = Modifier.fillMaxWidth(),
-                view = { LogView(logManager.logs.takeLast(LOG_MANAGER_NUMBER_OF_LINES)) }
+                view = {
+                    LogView(
+                        logs = logManager.logs.takeLast(
+                            LOG_MANAGER_NUMBER_OF_LINES
+                        ),
+                        logLevel = logLevel,
+                        filteredText = filteredText
+                    )
+                }
             )
         }
         logManager

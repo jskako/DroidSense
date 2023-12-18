@@ -30,3 +30,5 @@ const val IMAGES_DIRECTORY: String = "images"
 const val DEFAULT_PHONE_IMAGE: String = "phone.png"
 
 const val LOG_MANAGER_NUMBER_OF_LINES = 12389
+const val LOG_TYPE_REGEX = "DWIEV"
+const val APK_EXTENSION = "apk"

@@ -2,9 +2,14 @@ package utils
 
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
+import di.AppModule.provideCoroutineScope
 import di.AppModule.provideResourceBundle
+import kotlinx.coroutines.launch
+import notifications.InfoManager.showInfoMessage
 import notifications.InfoManager.showTimeLimitedInfoMessage
 import settitngs.GlobalSettings
+import settitngs.GlobalSettings.adbPath
+import utils.Colors.darkRed
 import java.awt.Desktop
 import java.awt.FileDialog
 import java.awt.Frame
@@ -51,6 +56,15 @@ fun pickDirectoryDialog(): String? {
     }
 }
 
+fun pickFile(allowedExtension: String? = null): File? {
+    val fileDialog = FileDialog(null as Frame?, "Choose File", FileDialog.LOAD)
+    fileDialog.isVisible = true
+    fileDialog.isMultipleMode = false
+
+    val selectedFile = File(fileDialog.directory, fileDialog.file)
+    return selectedFile.takeIf { allowedExtension?.equals(it.extension, ignoreCase = true) != false }
+}
+
 fun getUserOS(): String {
     val osName = System.getProperty(SYSTEM_OS_PROPERTY).lowercase(Locale.getDefault())
     return OS.entries.firstOrNull { osName.contains(it.osName(), ignoreCase = true) }
@@ -65,7 +79,7 @@ fun startScrCpy(serialNumber: String) = ProcessBuilder(GlobalSettings.scrCpyPath
 
 fun getDeviceProperty(serialNumber: String, property: String): String {
     return runCatching {
-        ProcessBuilder("adb", "-s", serialNumber, "shell", property).start().inputStream
+        ProcessBuilder(adbPath.value, "-s", serialNumber, "shell", property).start().inputStream
             .bufferedReader()
             .use { reader ->
                 reader.readLine()
@@ -77,7 +91,7 @@ fun getDeviceProperty(serialNumber: String, property: String): String {
 
 fun getDevicePropertyList(serialNumber: String, property: String, startingItem: String? = null): List<String> {
     return runCatching {
-        val process = ProcessBuilder("adb", "-s", serialNumber, "shell", property).start()
+        val process = ProcessBuilder(adbPath.value, "-s", serialNumber, "shell", property).start()
         val lines = process.inputStream
             .bufferedReader()
             .lineSequence()
@@ -94,5 +108,33 @@ fun getDevicePropertyList(serialNumber: String, property: String, startingItem: 
     }.getOrElse {
         it.printStackTrace()
         emptyList()
+    }
+}
+
+fun installApplication(serialNumber: String) {
+    provideCoroutineScope().launch {
+        pickFile(allowedExtension = APK_EXTENSION)?.let { file ->
+            showInfoMessage(
+                message = getStringResource("info.file.install"),
+            )
+            val command = "${adbPath.value} -s $serialNumber install -r ${file.absolutePath}"
+            val process = Runtime.getRuntime().exec(command)
+
+            val exitCode = process.waitFor()
+
+            if (exitCode == 0) {
+                showTimeLimitedInfoMessage(
+                    message = "${getStringResource("success.file.install")}: ${file.canonicalPath}",
+                )
+            } else {
+                showTimeLimitedInfoMessage(
+                    message = "${getStringResource("error.file.install")}: ${file.canonicalPath}",
+                    backgroundColor = darkRed
+                )
+            }
+        } ?: showTimeLimitedInfoMessage(
+            message = getStringResource("error.file.install"),
+            backgroundColor = darkRed
+        )
     }
 }

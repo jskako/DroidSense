@@ -21,10 +21,13 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import log.LogLevel
 import log.LogManager
 import ui.composable.BasicTextCaption
 import ui.composable.elements.DropdownItem
+import ui.composable.elements.EditText
 import ui.composable.elements.OutlinedButton
+import ui.composable.elements.window.DropdownTextItem
 import utils.DEVICE_PACKAGES
 import utils.getDevicePropertyList
 import utils.getStringResource
@@ -33,11 +36,14 @@ import utils.getStringResource
 fun LogStatusSection(
     serialNumber: String,
     text: String,
-    logManager: LogManager
+    logManager: LogManager,
+    onLogLevelSelected: (LogLevel) -> Unit,
+    onTextChanged: (String) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     var selectedItem by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
     var operation by remember { mutableStateOf(LogOperation.START) }
+    var selectedLogLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
 
     Box(
         modifier = Modifier
@@ -98,9 +104,35 @@ fun LogStatusSection(
                     onItemSelected = { item ->
                         selectedItem = item
                     },
-                    visible = operation == LogOperation.START,
-                    buttonText = getStringResource("info.open.package"),
-                    descriptionText = getStringResource("info.selected.package")
+                    enabled = operation == LogOperation.START,
+                    buttonText = getStringResource("info.open.package")
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                DropdownTextItem(
+                    list = enumValues<LogLevel>().map { it.name },
+                    text = selectedLogLevel.name,
+                    onItemSelected = { item ->
+                        LogLevel.valueOf(item).also {
+                            selectedLogLevel = it
+                            onLogLevelSelected(it)
+                        }
+                    },
+                    descriptionText = "${getStringResource("info.log.level")}:"
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                EditText(
+                    caption = "${getStringResource("info.log.text.filter")}:",
+                    onTextChanged = {
+                        onTextChanged(it)
+                    },
                 )
             }
         }

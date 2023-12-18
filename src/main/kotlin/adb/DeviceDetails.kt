@@ -1,6 +1,5 @@
 package adb
 
-import notifications.ExtendedLog
 import utils.capitalizeFirstChar
 
 data class DeviceDetails(
@@ -14,7 +13,6 @@ data class DeviceDetails(
     val displayDensity: String? = null,
     val ipAddress: String? = null,
     var state: AdbDeviceStatus? = null,
-    val extra: ExtendedLog? = null
 ) {
     override fun toString(): String {
         return "${manufacturer?.capitalizeFirstChar()} $model"

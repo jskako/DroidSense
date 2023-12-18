@@ -1,6 +1,7 @@
 package ui.composable.elements.device
 
 import adb.DeviceDetails
+import adb.DeviceOptions
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import ui.application.WindowExtra
 import ui.application.WindowStateManager.windowState
 import ui.composable.BasicTextCaption
 import ui.composable.elements.BasicText
+import ui.composable.elements.ClickableMenu
 import ui.composable.elements.OutlinedButton
 import ui.composable.screens.LogScreen
 import utils.DEFAULT_PHONE_IMAGE
@@ -36,6 +38,7 @@ import utils.IMAGES_DIRECTORY
 import utils.capitalizeFirstChar
 import utils.getImageBitmap
 import utils.getStringResource
+import utils.installApplication
 import utils.startScrCpy
 
 @Composable
@@ -151,9 +154,16 @@ fun DeviceCard(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedButton(
+                ClickableMenu(
                     text = getStringResource("info.log.options"),
-                    onClick = { }
+                    functions = listOf(
+                        DeviceOptions(
+                            text = getStringResource("info.install.apk"),
+                            function = {
+                                installApplication(device.serialNumber)
+                            }
+                        ),
+                    )
                 )
             }
         }

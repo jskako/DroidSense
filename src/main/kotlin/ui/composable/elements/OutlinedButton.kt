@@ -8,6 +8,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import utils.Colors.darkBlue
 
@@ -18,7 +19,8 @@ fun OutlinedButton(
     modifier: Modifier = Modifier
         .fillMaxWidth()
         .height(48.dp),
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    color: Color = darkBlue
 ) {
     Button(
         onClick = {
@@ -26,9 +28,9 @@ fun OutlinedButton(
         },
         enabled = enabled,
         modifier = modifier,
-        border = BorderStroke(1.dp, darkBlue),
-        colors = ButtonDefaults.outlinedButtonColors(contentColor = darkBlue)
+        border = BorderStroke(1.dp, color),
+        colors = ButtonDefaults.outlinedButtonColors(contentColor = color)
     ) {
-        Text(text = text, color = darkBlue)
+        Text(text = text, color = color)
     }
 }

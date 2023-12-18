@@ -1,24 +1,15 @@
 package ui.composable.elements.log
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import log.LogData
 import ui.composable.elements.BasicText
-import utils.getTimeStamp
+import ui.composable.elements.TextBox
 
 @Composable
 fun LogCard(item: LogData) {
@@ -26,23 +17,19 @@ fun LogCard(item: LogData) {
     val (backgroundColor, textColor) = getColors(item.level.simplified())
 
     Row {
-        Text(text = getTimeStamp())
+        TextBox(
+            text = item.time,
+            width = 100.dp,
+            isBold = false,
+            startPadding = 0.dp,
+            endPadding = 0.dp
+        )
         Spacer(modifier = Modifier.width(8.dp))
-        Box(
-            modifier = Modifier
-                .width(25.dp)
-                .background(color = backgroundColor)
-                .padding(start = 3.dp, end = 3.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = item.level.simplified().toString(),
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                color = textColor,
-                style = TextStyle(fontWeight = FontWeight.Bold)
-            )
-        }
+        TextBox(
+            text = item.level.simplified().toString(),
+            backgroundColor = backgroundColor,
+            textColor = textColor
+        )
         Spacer(modifier = Modifier.width(8.dp))
         BasicText(
             value = item.log,
