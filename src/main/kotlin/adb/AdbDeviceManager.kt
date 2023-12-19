@@ -15,14 +15,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import notifications.InfoManager.showInfoMessage
 import notifications.InfoManager.showTimeLimitedInfoMessage
-import settitngs.GlobalSettings.adbPath
+import settitngs.GlobalVariables.adbPath
 import utils.ADB_POLLING_INTERVAL_MS
 import utils.Colors
 import utils.getStringResource
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-object AdbManager : AdbManagerInterface {
+object AdbDeviceManager : AdbDeviceManagerInterface {
 
     private var monitorJob: Job? = null
     private val _listeningStatus = mutableStateOf(ListeningStatus.NOT_LISTENING)

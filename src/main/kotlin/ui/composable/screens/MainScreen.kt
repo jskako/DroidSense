@@ -1,6 +1,6 @@
 package ui.composable.screens
 
-import adb.AdbManager.startListening
+import adb.AdbDeviceManager.startListening
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.TabRowDefaults.Divider

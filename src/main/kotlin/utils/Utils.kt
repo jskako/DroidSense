@@ -7,8 +7,8 @@ import di.AppModule.provideResourceBundle
 import kotlinx.coroutines.launch
 import notifications.InfoManager.showInfoMessage
 import notifications.InfoManager.showTimeLimitedInfoMessage
-import settitngs.GlobalSettings
-import settitngs.GlobalSettings.adbPath
+import settitngs.GlobalVariables
+import settitngs.GlobalVariables.adbPath
 import utils.Colors.darkRed
 import java.awt.Desktop
 import java.awt.FileDialog
@@ -75,7 +75,7 @@ fun isSoftwareInstalled(software: String) = ProcessBuilder("which", software).st
 
 fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }
 
-fun startScrCpy(serialNumber: String) = ProcessBuilder(GlobalSettings.scrCpyPath.value, "-s", serialNumber).start()
+fun startScrCpy(serialNumber: String) = ProcessBuilder(GlobalVariables.scrCpyPath.value, "-s", serialNumber).start()
 
 fun getDeviceProperty(serialNumber: String, property: String): String {
     return runCatching {

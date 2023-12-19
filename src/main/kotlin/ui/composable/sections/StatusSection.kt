@@ -1,7 +1,7 @@
 package ui.composable.sections
 
-import adb.AdbManager.listeningStatus
-import adb.AdbManager.manageListeningStatus
+import adb.AdbDeviceManager.listeningStatus
+import adb.AdbDeviceManager.manageListeningStatus
 import adb.DeviceManager.devices
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

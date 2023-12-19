@@ -10,10 +10,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.coroutines.delay
-import settitngs.GlobalSettings.adbPath
-import settitngs.GlobalSettings.scrCpyPath
-import settitngs.GlobalSettings.setAdbPath
-import settitngs.GlobalSettings.setScrCpyPath
+import settitngs.GlobalVariables.adbPath
+import settitngs.GlobalVariables.scrCpyPath
+import settitngs.GlobalVariables.setAdbPath
+import settitngs.GlobalVariables.setScrCpyPath
 import utils.ADB_WINDOWS_PATH
 import utils.DEFAULT_DELAY
 import utils.OS

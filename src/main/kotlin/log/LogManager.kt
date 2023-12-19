@@ -8,7 +8,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import notifications.InfoManager.showTimeLimitedInfoMessage
-import settitngs.GlobalSettings.adbPath
+import settitngs.GlobalVariables.adbPath
 import utils.LOG_TYPE_REGEX
 import utils.getStringResource
 import utils.getTimeStamp
