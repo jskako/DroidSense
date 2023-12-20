@@ -1,11 +1,11 @@
 package ui.composable.elements.window
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
@@ -16,57 +16,49 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import ui.composable.elements.OutlinedButton
 
 @Composable
-fun DropdownTextItem(
+internal fun DropdownTextItem(
+    modifier: Modifier = Modifier,
     list: List<String>,
     text: String,
-    onItemSelected: (String) -> Unit,
-    descriptionText: String
+    onItemSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(text) }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = descriptionText,
-            modifier = Modifier
-                .wrapContentSize(),
-            style = TextStyle(
-                fontWeight = FontWeight.Bold
-            )
-        )
 
-        Spacer(modifier = Modifier.width(4.dp))
-
-        Column {
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                list.forEach { property ->
-                    DropdownMenuItem(
-                        onClick = {
-                            selectedItem = property
-                            expanded = false
-                            onItemSelected(property)
+    Column {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = modifier
+        ) {
+            list.forEach { property ->
+                DropdownMenuItem(
+                    onClick = {
+                        selectedItem = property
+                        expanded = false
+                        onItemSelected(property)
+                    },
+                    content = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = property)
                         }
-                    ) {
-                        Text(text = property)
                     }
-                }
+                )
             }
         }
-
-        Text(
-            text = selectedItem,
-            modifier = Modifier
-                .wrapContentSize()
-                .clickable { expanded = true }
-        )
     }
+
+    OutlinedButton(
+        text = selectedItem,
+        onClick = { expanded = true }
+    )
 }

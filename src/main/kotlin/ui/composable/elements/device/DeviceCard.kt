@@ -28,7 +28,7 @@ import log.LogManager
 import notifications.InfoManager.showTimeLimitedInfoMessage
 import ui.application.WindowExtra
 import ui.application.WindowStateManager.windowState
-import ui.composable.BasicTextCaption
+import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.BasicText
 import ui.composable.elements.ClickableMenu
 import ui.composable.elements.OutlinedButton
@@ -120,13 +120,19 @@ fun DeviceCard(
             ) {
                 OutlinedButton(
                     text = getStringResource("info.share.screen"),
-                    onClick = { startScrCpy(device.serialNumber) }
+                    onClick = { startScrCpy(device.serialNumber) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 getStringResource("info.log.manager").also { title ->
                     OutlinedButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
                         text = title,
                         onClick = {
                             windowState?.openNewWindow?.let {

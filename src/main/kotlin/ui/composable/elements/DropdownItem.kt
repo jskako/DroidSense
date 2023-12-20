@@ -29,6 +29,7 @@ fun DropdownItem(
     onItemSelected: (String) -> Unit,
     enabled: Boolean = true,
     buttonText: String,
+    showPackageName: Boolean = false,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(text) }
@@ -78,10 +79,12 @@ fun DropdownItem(
             }
         }
 
-        Text(
-            text = selectedItem,
-            modifier = Modifier
-                .wrapContentSize()
-        )
+        if(showPackageName) {
+            Text(
+                text = selectedItem,
+                modifier = Modifier
+                    .wrapContentSize()
+            )
+        }
     }
 }

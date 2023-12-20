@@ -34,7 +34,8 @@ fun LogScreen(device: DeviceDetails): LogManager {
                 onLogLevelSelected = {
                     logLevel = it
                 },
-                onTextChanged = {
+                searchText = filteredText,
+                onSearchTextChanged = {
                     filteredText = it
                 }
             )

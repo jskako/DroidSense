@@ -16,9 +16,7 @@ import utils.Colors.darkBlue
 fun OutlinedButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
-        .fillMaxWidth()
-        .height(48.dp),
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     color: Color = darkBlue
 ) {

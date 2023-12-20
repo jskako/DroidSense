@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -23,10 +24,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import log.LogLevel
 import log.LogManager
-import ui.composable.BasicTextCaption
+import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.DropdownItem
-import ui.composable.elements.EditText
+import ui.composable.elements.FilterText
+import ui.composable.elements.HintText
 import ui.composable.elements.OutlinedButton
+import ui.composable.elements.StyledTextCaption
 import ui.composable.elements.window.DropdownTextItem
 import utils.DEVICE_PACKAGES
 import utils.getDevicePropertyList
@@ -38,12 +41,14 @@ fun LogStatusSection(
     text: String,
     logManager: LogManager,
     onLogLevelSelected: (LogLevel) -> Unit,
-    onTextChanged: (String) -> Unit,
+    searchText: String,
+    onSearchTextChanged: (String) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     var selectedItem by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
     var operation by remember { mutableStateOf(LogOperation.START) }
     var selectedLogLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
+    var filterVisible by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -52,7 +57,7 @@ fun LogStatusSection(
         contentAlignment = Alignment.Center
     ) {
         Column {
-            BasicTextCaption(
+            StyledTextCaption(
                 text1 = text,
                 text2 = "($serialNumber)",
                 specialChar = ""
@@ -105,35 +110,80 @@ fun LogStatusSection(
                         selectedItem = item
                     },
                     enabled = operation == LogOperation.START,
-                    buttonText = getStringResource("info.open.package")
+                    buttonText = selectedItem
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                FilterText(
+                    onClick = {
+                        filterVisible = it
+                    }
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            if (filterVisible) {
+                HintText(
+                    modifier = Modifier
+                        .padding(top = 8.dp, bottom = 8.dp)
+                        .fillMaxWidth(),
+                    text = searchText,
+                    onValueChanged = {
+                        onSearchTextChanged(it)
+                    }
+                )
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                DropdownTextItem(
-                    list = enumValues<LogLevel>().map { it.name },
-                    text = selectedLogLevel.name,
-                    onItemSelected = { item ->
-                        LogLevel.valueOf(item).also {
-                            selectedLogLevel = it
-                            onLogLevelSelected(it)
+                Row {
+                    DropdownTextItem(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp)
+                            .fillMaxWidth(),
+                        list = enumValues<LogLevel>().map { it.name },
+                        text = selectedLogLevel.name,
+                        onItemSelected = { item ->
+                            LogLevel.valueOf(item).also {
+                                selectedLogLevel = it
+                                onLogLevelSelected(it)
+                            }
                         }
-                    },
-                    descriptionText = "${getStringResource("info.log.level")}:"
-                )
+                    )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                    // TODO - Fix this
+                    /*CheckboxBoxText(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp),
+                        icon = Icons.Default.List,
+                        text = "Reversed logs",
+                        checkedState = reversedLogs,
+                        onChecked = {
+                            reversedLogs = it
+                            scrollToEnd = when (it) {
+                                true -> {
+                                    false
+                                }
 
-                EditText(
-                    caption = "${getStringResource("info.log.text.filter")}:",
-                    onTextChanged = {
-                        onTextChanged(it)
-                    },
-                )
+                                false -> {
+                                    true
+                                }
+                            }
+                        }
+                    )
+
+                    if (!reversedLogs) {
+                        CheckboxBoxText(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, end = 16.dp),
+                            icon = Icons.Default.ArtTrack,
+                            text = "Scroll to End",
+                            checkedState = scrollToEnd,
+                            onChecked = {
+                                scrollToEnd = it
+                            }
+                        )
+                    }*/
+                }
             }
         }
     }
