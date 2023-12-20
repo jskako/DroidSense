@@ -24,6 +24,8 @@ fun LogScreen(device: DeviceDetails): LogManager {
 
     var logLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
     var filteredText by remember { mutableStateOf("") }
+    var reversedLogs by remember { mutableStateOf(false) }
+    var scrollToEnd by remember { mutableStateOf(true) }
 
     return LogManager().let { logManager ->
         Column {
@@ -34,9 +36,14 @@ fun LogScreen(device: DeviceDetails): LogManager {
                 onLogLevelSelected = {
                     logLevel = it
                 },
-                searchText = filteredText,
                 onSearchTextChanged = {
                     filteredText = it
+                },
+                onScrollToEnd = {
+                    scrollToEnd = it
+                },
+                onReversedLogs = {
+                    reversedLogs = it
                 }
             )
 
@@ -54,7 +61,9 @@ fun LogScreen(device: DeviceDetails): LogManager {
                             LOG_MANAGER_NUMBER_OF_LINES
                         ),
                         logLevel = logLevel,
-                        filteredText = filteredText
+                        filteredText = filteredText,
+                        reversedLogs = reversedLogs,
+                        scrollToEnd = scrollToEnd
                     )
                 }
             )

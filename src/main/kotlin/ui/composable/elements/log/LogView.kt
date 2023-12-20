@@ -24,17 +24,21 @@ import log.LogLevel
 fun LogView(
     logs: List<LogData>,
     logLevel: LogLevel,
-    filteredText: String
+    filteredText: String,
+    scrollToEnd: Boolean,
+    reversedLogs: Boolean
 ) {
     val listState = rememberLazyListState()
+
+    if (scrollToEnd) {
+        LaunchedEffect(logs.size) {
+            listState.scrollToItem(logs.size)
+        }
+    }
 
     val filteredLogs = logs.filter { log ->
         log.level.ordinal <= logLevel.ordinal &&
                 (filteredText.isEmpty() || log.log.contains(filteredText, ignoreCase = true))
-    }
-
-    LaunchedEffect(logs.size) {
-        listState.animateScrollToItem(logs.size)
     }
 
     Box(
@@ -45,7 +49,9 @@ fun LogView(
             modifier = Modifier.padding(end = 15.dp),
             state = listState
         ) {
-            items(filteredLogs) { item ->
+            items(
+                if (reversedLogs) filteredLogs.reversed() else filteredLogs
+            ) { item ->
                 LogCard(item)
             }
         }

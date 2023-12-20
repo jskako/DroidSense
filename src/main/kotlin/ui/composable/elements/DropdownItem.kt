@@ -79,7 +79,7 @@ fun DropdownItem(
             }
         }
 
-        if(showPackageName) {
+        if (showPackageName) {
             Text(
                 text = selectedItem,
                 modifier = Modifier

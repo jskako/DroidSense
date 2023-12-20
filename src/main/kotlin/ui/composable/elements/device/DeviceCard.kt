@@ -28,8 +28,8 @@ import log.LogManager
 import notifications.InfoManager.showTimeLimitedInfoMessage
 import ui.application.WindowExtra
 import ui.application.WindowStateManager.windowState
-import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.BasicText
+import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.ClickableMenu
 import ui.composable.elements.OutlinedButton
 import ui.composable.screens.LogScreen
