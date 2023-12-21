@@ -1,6 +1,7 @@
 package ui.composable.screens
 
 import adb.AdbDeviceManager.startListening
+import adb.DeviceManager.devices
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.TabRowDefaults.Divider
@@ -34,7 +35,7 @@ fun MainScreen() {
             thickness = 1.dp
         )
         CircularProgressBar(
-            text = getStringResource("info.waiting.device"),
+            text = getStringResource("info.waiting.device")
         )
         LazySection(view = { DeviceView() })
     }

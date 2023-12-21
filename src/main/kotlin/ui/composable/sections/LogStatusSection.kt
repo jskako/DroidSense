@@ -37,10 +37,10 @@ import utils.getStringResource
 @Composable
 fun LogStatusSection(
     serialNumber: String,
-    text: String,
     logManager: LogManager,
     onLogLevelSelected: (LogLevel) -> Unit,
     onSearchTextChanged: (String) -> Unit,
+    onOperationChanged: (LogOperation) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var selectedItem by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
@@ -86,6 +86,7 @@ fun LogStatusSection(
                                         LogOperation.START
                                     }
                                 }
+                                onOperationChanged(operation)
                             }
                         }
                     },
@@ -147,6 +148,6 @@ fun LogStatusSection(
     }
 }
 
-private enum class LogOperation {
+enum class LogOperation {
     START, STOP
 }
