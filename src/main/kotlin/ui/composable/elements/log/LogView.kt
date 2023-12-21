@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import log.LogData
 import log.LogLevel
@@ -26,7 +27,8 @@ fun LogView(
     logLevel: LogLevel,
     filteredText: String,
     scrollToEnd: Boolean,
-    reversedLogs: Boolean
+    reversedLogs: Boolean,
+    fontSize: TextUnit
 ) {
     val listState = rememberLazyListState()
 
@@ -52,7 +54,10 @@ fun LogView(
             items(
                 if (reversedLogs) filteredLogs.reversed() else filteredLogs
             ) { item ->
-                LogCard(item)
+                LogCard(
+                    item = item,
+                    fontSize = fontSize
+                )
             }
         }
         VerticalScrollbar(

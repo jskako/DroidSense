@@ -128,35 +128,33 @@ fun DeviceCard(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                getStringResource("info.log.manager").also { title ->
-                    OutlinedButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        text = title,
-                        onClick = {
-                            windowState?.openNewWindow?.let {
-                                it(
-                                    title,
-                                    Icons.Default.Info,
-                                    WindowExtra(
-                                        screen = {
-                                            logManager = LogScreen(device)
-                                        },
-                                        onClose = {
-                                            scope.launch {
-                                                if (logManager.isActive) {
-                                                    logManager.stopMonitoringLogs()
-                                                    showTimeLimitedInfoMessage("${getStringResource("info.log.closing")} $device - ${device.serialNumber}")
-                                                }
+                OutlinedButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    text = getStringResource("info.log.manager"),
+                    onClick = {
+                        windowState?.openNewWindow?.let {
+                            it(
+                                "${device.model} (${device.serialNumber})",
+                                Icons.Default.Info,
+                                WindowExtra(
+                                    screen = {
+                                        logManager = LogScreen(device)
+                                    },
+                                    onClose = {
+                                        scope.launch {
+                                            if (logManager.isActive) {
+                                                logManager.stopMonitoringLogs()
+                                                showTimeLimitedInfoMessage("${getStringResource("info.log.closing")} $device - ${device.serialNumber}")
                                             }
                                         }
-                                    )
+                                    }
                                 )
-                            }
+                            )
                         }
-                    )
-                }
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 

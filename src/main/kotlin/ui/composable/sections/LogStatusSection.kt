@@ -5,14 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,12 +23,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import log.LogLevel
 import log.LogManager
-import ui.composable.elements.CheckboxBoxText
 import ui.composable.elements.DropdownItem
 import ui.composable.elements.FilterText
 import ui.composable.elements.HintText
 import ui.composable.elements.OutlinedButton
-import ui.composable.elements.StyledTextCaption
 import ui.composable.elements.window.DropdownTextItem
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
@@ -47,8 +41,6 @@ fun LogStatusSection(
     logManager: LogManager,
     onLogLevelSelected: (LogLevel) -> Unit,
     onSearchTextChanged: (String) -> Unit,
-    onReversedLogs: (Boolean) -> Unit,
-    onScrollToEnd: (Boolean) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     var selectedItem by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
@@ -56,8 +48,6 @@ fun LogStatusSection(
     var selectedLogLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
     var searchText by remember { mutableStateOf("") }
     var filterVisible by remember { mutableStateOf(false) }
-    var reversedLogs by remember { mutableStateOf(false) }
-    var scrollToEnd by remember { mutableStateOf(true) }
 
     Box(
         modifier = Modifier
@@ -66,14 +56,6 @@ fun LogStatusSection(
         contentAlignment = Alignment.Center
     ) {
         Column {
-            StyledTextCaption(
-                text1 = text,
-                text2 = "($serialNumber)",
-                specialChar = ""
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -147,43 +129,19 @@ fun LogStatusSection(
                     }
                 )
 
-                Row {
-                    DropdownTextItem(
-                        modifier = Modifier
-                            .padding(start = 8.dp, end = 8.dp)
-                            .fillMaxWidth(),
-                        list = enumValues<LogLevel>().map { it.name },
-                        text = selectedLogLevel.name,
-                        onItemSelected = { item ->
-                            LogLevel.valueOf(item).also {
-                                selectedLogLevel = it
-                                onLogLevelSelected(it)
-                            }
+                DropdownTextItem(
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 8.dp)
+                        .fillMaxWidth(),
+                    list = enumValues<LogLevel>().map { it.name },
+                    text = selectedLogLevel.name,
+                    onItemSelected = { item ->
+                        LogLevel.valueOf(item).also {
+                            selectedLogLevel = it
+                            onLogLevelSelected(it)
                         }
-                    )
-
-                    CheckboxBoxText(
-                        modifier = Modifier
-                            .padding(start = 16.dp, end = 8.dp),
-                        icon = Icons.Default.List,
-                        text = getStringResource("info.reversed"),
-                        checkedState = reversedLogs,
-                        onChecked = {
-                            reversedLogs = it
-                            onReversedLogs(it)
-                        }
-                    )
-
-                    CheckboxBoxText(
-                        icon = Icons.Default.ArrowDropDown,
-                        text = getStringResource("info.scroll.end"),
-                        checkedState = scrollToEnd,
-                        onChecked = {
-                            onScrollToEnd(it)
-                            scrollToEnd = it
-                        }
-                    )
-                }
+                    }
+                )
             }
         }
     }

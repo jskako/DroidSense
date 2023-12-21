@@ -11,14 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import log.LogData
 import ui.composable.elements.BasicText
 import ui.composable.elements.TextBox
 
 @Composable
-fun LogCard(item: LogData) {
+fun LogCard(
+    item: LogData,
+    fontSize: TextUnit
+) {
 
     val (backgroundColor, textColor) = item.level.getLogColor()
 
@@ -42,7 +45,7 @@ fun LogCard(item: LogData) {
         }
         BasicText(
             value = item.log,
-            fontSize = 12.sp,
+            fontSize = fontSize,
             color = if (item.level.simplified() == 'E') Color.Red else Color.Black
         )
         Divider(
