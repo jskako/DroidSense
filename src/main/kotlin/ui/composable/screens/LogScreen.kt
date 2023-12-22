@@ -35,7 +35,6 @@ import ui.composable.elements.iconButtons.IconButtonsColumn
 import ui.composable.elements.iconButtons.IconButtonsData
 import ui.composable.elements.log.LogView
 import ui.composable.sections.LazySection
-import ui.composable.sections.LogOperation
 import ui.composable.sections.LogStatusSection
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
@@ -50,11 +49,11 @@ fun LogScreen(
 
     var logLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
     var filteredText by remember { mutableStateOf("") }
-    var reversedLogs by remember { mutableStateOf(false) }
+    var reverseLogs by remember { mutableStateOf(false) }
     var scrollToEnd by remember { mutableStateOf(true) }
     var saveToDatabase by remember { mutableStateOf(true) }
     var fontSize by remember { mutableStateOf(12.sp) }
-    var operation by remember { mutableStateOf(LogOperation.START) }
+    var isRunning by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     Column {
@@ -67,8 +66,8 @@ fun LogScreen(
             onSearchTextChanged = {
                 filteredText = it
             },
-            onOperationChanged = {
-                operation = it
+            onIsRunning = {
+                isRunning = it
             }
         )
 
@@ -103,13 +102,13 @@ fun LogScreen(
                         ),
                         IconButtonsData(
                             modifier = Modifier.background(
-                                color = if (reversedLogs) darkBlue else Color.Transparent,
+                                color = if (reverseLogs) darkBlue else Color.Transparent,
                                 shape = CircleShape
                             ),
                             icon = Icons.Default.ArrowOutward,
                             contentDescription = getStringResource("info.reversed"),
-                            tint = if (reversedLogs) Color.White else darkBlue,
-                            function = { reversedLogs = !reversedLogs }
+                            tint = if (reverseLogs) Color.White else darkBlue,
+                            function = { reverseLogs = !reverseLogs }
                         ),
                         IconButtonsData(
                             icon = Icons.Default.TextIncrease,
@@ -138,19 +137,21 @@ fun LogScreen(
             LazySection(
                 modifier = Modifier.fillMaxWidth(),
                 view = {
-                    if (logManager.logs.isEmpty() && operation == LogOperation.STOP) {
+                    if (logManager.logs.isEmpty() && isRunning) {
+                        println("Here1")
                         CircularProgressBar(
                             text = "${getStringResource("info.waiting.application.logs")} packageName",
                             isVisible = true
                         )
                     } else {
+                        println("Here2")
                         LogView(
                             logs = logManager.logs.takeLast(
                                 LOG_MANAGER_NUMBER_OF_LINES
                             ),
                             logLevel = logLevel,
                             filteredText = filteredText,
-                            reversedLogs = reversedLogs,
+                            reversedLogs = reverseLogs,
                             scrollToEnd = scrollToEnd,
                             fontSize = fontSize
                         )

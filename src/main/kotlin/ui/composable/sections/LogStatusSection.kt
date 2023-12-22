@@ -40,11 +40,11 @@ fun LogStatusSection(
     logManager: LogManager,
     onLogLevelSelected: (LogLevel) -> Unit,
     onSearchTextChanged: (String) -> Unit,
-    onOperationChanged: (LogOperation) -> Unit
+    onIsRunning: (Boolean) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var selectedItem by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
-    var operation by remember { mutableStateOf(LogOperation.START) }
+    var isRunning by remember { mutableStateOf(false) }
     var selectedLogLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
     var searchText by remember { mutableStateOf("") }
     var filterVisible by remember { mutableStateOf(false) }
@@ -60,33 +60,31 @@ fun LogStatusSection(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 OutlinedButton(
-                    text = when (operation) {
-                        LogOperation.START -> getStringResource("info.start.log.manager")
-                        LogOperation.STOP -> getStringResource("info.stop.log.manager")
+                    text = when (isRunning) {
+                        false -> getStringResource("info.start.log.manager")
+                        true -> getStringResource("info.stop.log.manager")
                     },
-                    color = when (operation) {
-                        LogOperation.START -> darkBlue
-                        LogOperation.STOP -> darkRed
+                    color = when (isRunning) {
+                        false -> darkBlue
+                        true -> darkRed
                     },
                     onClick = {
                         scope.launch {
                             withContext(Default) {
-                                operation = when (operation) {
-                                    LogOperation.START -> {
+                                when (isRunning) {
+                                    false -> {
                                         logManager.startMonitoringLogs(
                                             coroutineScope = this,
                                             packageName = selectedItem,
                                             serialNumber = serialNumber
                                         )
-                                        LogOperation.STOP
                                     }
 
-                                    LogOperation.STOP -> {
+                                    true -> {
                                         logManager.stopMonitoringLogs()
-                                        LogOperation.START
                                     }
                                 }
-                                onOperationChanged(operation)
+                                isRunning = !isRunning.also { onIsRunning(it) }
                             }
                         }
                     },
@@ -105,7 +103,7 @@ fun LogStatusSection(
                     onItemSelected = { item ->
                         selectedItem = item
                     },
-                    enabled = operation == LogOperation.START,
+                    enabled = !isRunning,
                     buttonText = selectedItem
                 )
 
@@ -146,8 +144,4 @@ fun LogStatusSection(
             }
         }
     }
-}
-
-enum class LogOperation {
-    START, STOP
 }
