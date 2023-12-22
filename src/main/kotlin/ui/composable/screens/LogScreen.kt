@@ -10,10 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowOutward
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoveDown
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.TextDecrease
 import androidx.compose.material.icons.filled.TextIncrease
 import androidx.compose.runtime.Composable
@@ -39,6 +38,7 @@ import ui.composable.sections.LazySection
 import ui.composable.sections.LogOperation
 import ui.composable.sections.LogStatusSection
 import utils.Colors.darkBlue
+import utils.Colors.darkRed
 import utils.LOG_MANAGER_NUMBER_OF_LINES
 import utils.getStringResource
 
@@ -52,6 +52,7 @@ fun LogScreen(
     var filteredText by remember { mutableStateOf("") }
     var reversedLogs by remember { mutableStateOf(false) }
     var scrollToEnd by remember { mutableStateOf(true) }
+    var saveToDatabase by remember { mutableStateOf(true) }
     var fontSize by remember { mutableStateOf(12.sp) }
     var operation by remember { mutableStateOf(LogOperation.START) }
     val scope = rememberCoroutineScope()
@@ -119,6 +120,16 @@ fun LogScreen(
                             icon = Icons.Default.TextDecrease,
                             contentDescription = getStringResource("info.font.size.decrease"),
                             function = { fontSize /= 1.1f }
+                        ),
+                        IconButtonsData(
+                            modifier = Modifier.background(
+                                color = if (saveToDatabase) darkRed else Color.Transparent,
+                                shape = CircleShape
+                            ),
+                            icon = Icons.Default.Save,
+                            contentDescription = getStringResource("info.save.database"),
+                            tint = if (saveToDatabase) Color.White else darkRed,
+                            function = { saveToDatabase = !saveToDatabase }
                         ),
                     )
                 )
