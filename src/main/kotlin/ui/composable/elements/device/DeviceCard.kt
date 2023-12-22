@@ -46,7 +46,6 @@ fun DeviceCard(
     device: DeviceDetails
 ) {
     val scope = rememberCoroutineScope()
-    lateinit var logManager: LogManager
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -134,13 +133,17 @@ fun DeviceCard(
                         .height(48.dp),
                     text = getStringResource("info.log.manager"),
                     onClick = {
+                        val logManager = LogManager()
                         windowState?.openNewWindow?.let {
                             it(
                                 "${device.model} (${device.serialNumber})",
                                 Icons.Default.Info,
                                 WindowExtra(
                                     screen = {
-                                        logManager = LogScreen(device)
+                                        LogScreen(
+                                            device = device,
+                                            logManager = logManager
+                                        )
                                     },
                                     onClose = {
                                         scope.launch {

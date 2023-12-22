@@ -39,7 +39,10 @@ import utils.LOG_MANAGER_NUMBER_OF_LINES
 import utils.getStringResource
 
 @Composable
-fun LogScreen(device: DeviceDetails): LogManager {
+fun LogScreen(
+    logManager: LogManager,
+    device: DeviceDetails
+) {
 
     var logLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
     var filteredText by remember { mutableStateOf("") }
@@ -48,95 +51,92 @@ fun LogScreen(device: DeviceDetails): LogManager {
     var fontSize by remember { mutableStateOf(12.sp) }
     var operation by remember { mutableStateOf(LogOperation.START) }
 
-    return LogManager().let { logManager ->
-        Column {
-            LogStatusSection(
-                serialNumber = device.serialNumber,
-                logManager = logManager,
-                onLogLevelSelected = {
-                    logLevel = it
-                },
-                onSearchTextChanged = {
-                    filteredText = it
-                },
-                onOperationChanged = {
-                    operation = it
-                }
-            )
+    Column {
+        LogStatusSection(
+            serialNumber = device.serialNumber,
+            logManager = logManager,
+            onLogLevelSelected = {
+                logLevel = it
+            },
+            onSearchTextChanged = {
+                filteredText = it
+            },
+            onOperationChanged = {
+                operation = it
+            }
+        )
 
-            DividerColored()
+        DividerColored()
 
-            Row {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(2.dp)
-                ) {
-                    IconButtonsColumn(
-                        listOf(
-                            IconButtonsData(
-                                icon = Icons.Default.Delete,
-                                contentDescription = getStringResource("info.clear.logs"),
-                                function = {}
+        Row {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(2.dp)
+            ) {
+                IconButtonsColumn(
+                    listOf(
+                        IconButtonsData(
+                            icon = Icons.Default.Delete,
+                            contentDescription = getStringResource("info.clear.logs"),
+                            function = {}
+                        ),
+                        IconButtonsData(
+                            modifier = Modifier.background(
+                                color = if (scrollToEnd) darkBlue else Color.Transparent,
+                                shape = CircleShape
                             ),
-                            IconButtonsData(
-                                modifier = Modifier.background(
-                                    color = if (scrollToEnd) darkBlue else Color.Transparent,
-                                    shape = CircleShape
-                                ),
-                                icon = Icons.Default.MoveDown,
-                                contentDescription = getStringResource("info.scroll.end"),
-                                tint = if (scrollToEnd) Color.White else darkBlue,
-                                function = { scrollToEnd = !scrollToEnd }
+                            icon = Icons.Default.MoveDown,
+                            contentDescription = getStringResource("info.scroll.end"),
+                            tint = if (scrollToEnd) Color.White else darkBlue,
+                            function = { scrollToEnd = !scrollToEnd }
+                        ),
+                        IconButtonsData(
+                            modifier = Modifier.background(
+                                color = if (reversedLogs) darkBlue else Color.Transparent,
+                                shape = CircleShape
                             ),
-                            IconButtonsData(
-                                modifier = Modifier.background(
-                                    color = if (reversedLogs) darkBlue else Color.Transparent,
-                                    shape = CircleShape
-                                ),
-                                icon = Icons.Default.ArrowOutward,
-                                contentDescription = getStringResource("info.reversed"),
-                                tint = if (reversedLogs) Color.White else darkBlue,
-                                function = { reversedLogs = !reversedLogs }
-                            ),
-                            IconButtonsData(
-                                icon = Icons.Default.TextIncrease,
-                                contentDescription = getStringResource("info.font.size.increase"),
-                                function = { fontSize *= 1.1f }
-                            ),
-                            IconButtonsData(
-                                icon = Icons.Default.TextDecrease,
-                                contentDescription = getStringResource("info.font.size.decrease"),
-                                function = { fontSize /= 1.1f }
-                            ),
-                        )
+                            icon = Icons.Default.ArrowOutward,
+                            contentDescription = getStringResource("info.reversed"),
+                            tint = if (reversedLogs) Color.White else darkBlue,
+                            function = { reversedLogs = !reversedLogs }
+                        ),
+                        IconButtonsData(
+                            icon = Icons.Default.TextIncrease,
+                            contentDescription = getStringResource("info.font.size.increase"),
+                            function = { fontSize *= 1.1f }
+                        ),
+                        IconButtonsData(
+                            icon = Icons.Default.TextDecrease,
+                            contentDescription = getStringResource("info.font.size.decrease"),
+                            function = { fontSize /= 1.1f }
+                        ),
                     )
-                }
-
-                LazySection(
-                    modifier = Modifier.fillMaxWidth(),
-                    view = {
-                        if (logManager.logs.isEmpty() && operation == LogOperation.STOP) {
-                            CircularProgressBar(
-                                text = "${getStringResource("info.waiting.application.logs")} packageName",
-                                isVisible = true
-                            )
-                        } else {
-                            LogView(
-                                logs = logManager.logs.takeLast(
-                                    LOG_MANAGER_NUMBER_OF_LINES
-                                ),
-                                logLevel = logLevel,
-                                filteredText = filteredText,
-                                reversedLogs = reversedLogs,
-                                scrollToEnd = scrollToEnd,
-                                fontSize = fontSize
-                            )
-                        }
-                    }
                 )
             }
+
+            LazySection(
+                modifier = Modifier.fillMaxWidth(),
+                view = {
+                    if (logManager.logs.isEmpty() && operation == LogOperation.STOP) {
+                        CircularProgressBar(
+                            text = "${getStringResource("info.waiting.application.logs")} packageName",
+                            isVisible = true
+                        )
+                    } else {
+                        LogView(
+                            logs = logManager.logs.takeLast(
+                                LOG_MANAGER_NUMBER_OF_LINES
+                            ),
+                            logLevel = logLevel,
+                            filteredText = filteredText,
+                            reversedLogs = reversedLogs,
+                            scrollToEnd = scrollToEnd,
+                            fontSize = fontSize
+                        )
+                    }
+                }
+            )
         }
-        logManager
     }
 }
