@@ -10,4 +10,5 @@ interface LogManagerInterface {
     )
 
     suspend fun stopMonitoringLogs()
+    suspend fun clearLogs()
 }

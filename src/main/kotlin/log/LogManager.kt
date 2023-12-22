@@ -54,6 +54,10 @@ class LogManager : LogManagerInterface {
         currentProcess?.destroy()
     }
 
+    override suspend fun clearLogs() {
+        _logs.clear()
+    }
+
     private suspend fun monitorLogs(packageName: String?, serialNumber: String) {
         withContext(Dispatchers.IO) {
             var pid = ""

@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowOutward
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoveDown
 import androidx.compose.material.icons.filled.TextDecrease
@@ -18,12 +20,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import log.LogLevel
 import log.LogManager
 import ui.composable.elements.CircularProgressBar
@@ -50,6 +54,7 @@ fun LogScreen(
     var scrollToEnd by remember { mutableStateOf(true) }
     var fontSize by remember { mutableStateOf(12.sp) }
     var operation by remember { mutableStateOf(LogOperation.START) }
+    val scope = rememberCoroutineScope()
 
     Column {
         LogStatusSection(
@@ -79,7 +84,11 @@ fun LogScreen(
                         IconButtonsData(
                             icon = Icons.Default.Delete,
                             contentDescription = getStringResource("info.clear.logs"),
-                            function = {}
+                            function = {
+                                scope.launch {
+                                    logManager.clearLogs()
+                                }
+                            }
                         ),
                         IconButtonsData(
                             modifier = Modifier.background(
