@@ -33,12 +33,13 @@ fun LogCard(
             TextBox(
                 startPadding = 0.dp,
                 text = item.time,
-                isBold = false,
+                fontSize = fontSize,
             )
             Spacer(modifier = Modifier.width(8.dp))
             TextBox(
                 startPadding = 0.dp,
                 text = item.level.toString(),
+                fontSize = fontSize,
                 backgroundColor = backgroundColor,
                 textColor = textColor,
             )

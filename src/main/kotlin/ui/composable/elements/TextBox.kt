@@ -14,11 +14,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
 @Composable
 internal fun TextBox(
     text: String,
+    fontSize: TextUnit,
     textColor: Color = Color.Black,
     backgroundColor: Color = Color.White,
     width: Dp? = null,
@@ -41,6 +43,7 @@ internal fun TextBox(
     ) {
         Text(
             text = text,
+            fontSize = fontSize,
             textAlign = TextAlign.Center,
             color = textColor,
             style = if (isBold) {

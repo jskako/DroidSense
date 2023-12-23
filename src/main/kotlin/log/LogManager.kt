@@ -65,24 +65,10 @@ class LogManager : LogManagerInterface {
                 pid = getPid(packageName)
 
                 if (pid.isEmpty()) {
-                    _logs.add(
-                        LogData(
-                            time = getTimeStamp(LOGGER_TIMESTAMP),
-                            log = getStringResource("info.app.not.running"),
-                            level = LogLevel.NONE
-                        )
-                    )
-
                     while (pid.isEmpty()) {
                         delay(1000)
-                        LogData(
-                            time = getTimeStamp(LOGGER_TIMESTAMP),
-                            log = getStringResource("info.checking.app.online"),
-                            level = LogLevel.NONE
-                        )
                         pid = getPid(packageName)
                     }
-
                     _logs.clear()
                 }
             }

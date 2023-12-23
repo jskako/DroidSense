@@ -52,8 +52,9 @@ fun LogScreen(
     var reverseLogs by remember { mutableStateOf(false) }
     var scrollToEnd by remember { mutableStateOf(true) }
     var saveToDatabase by remember { mutableStateOf(true) }
-    var fontSize by remember { mutableStateOf(12.sp) }
+    var fontSize by remember { mutableStateOf(13.sp) }
     var isRunning by remember { mutableStateOf(false) }
+    var selectedPackage by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
 
     Column {
@@ -68,6 +69,9 @@ fun LogScreen(
             },
             onIsRunning = {
                 isRunning = it
+            },
+            onPackageSelected = {
+                selectedPackage = it
             }
         )
 
@@ -133,18 +137,15 @@ fun LogScreen(
                     )
                 )
             }
-
-            LazySection(
-                modifier = Modifier.fillMaxWidth(),
-                view = {
-                    if (logManager.logs.isEmpty() && isRunning) {
-                        println("Here1")
-                        CircularProgressBar(
-                            text = "${getStringResource("info.waiting.application.logs")} packageName",
-                            isVisible = true
-                        )
-                    } else {
-                        println("Here2")
+            if (logManager.logs.isEmpty() && isRunning) {
+                CircularProgressBar(
+                    text = "${getStringResource("info.waiting.application.logs")}\n$selectedPackage",
+                    isVisible = true
+                )
+            } else {
+                LazySection(
+                    modifier = Modifier.fillMaxWidth(),
+                    view = {
                         LogView(
                             logs = logManager.logs.takeLast(
                                 LOG_MANAGER_NUMBER_OF_LINES
@@ -156,8 +157,8 @@ fun LogScreen(
                             fontSize = fontSize
                         )
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

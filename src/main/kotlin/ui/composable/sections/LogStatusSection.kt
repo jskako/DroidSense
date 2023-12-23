@@ -40,10 +40,11 @@ fun LogStatusSection(
     logManager: LogManager,
     onLogLevelSelected: (LogLevel) -> Unit,
     onSearchTextChanged: (String) -> Unit,
-    onIsRunning: (Boolean) -> Unit
+    onIsRunning: (Boolean) -> Unit,
+    onPackageSelected: (String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    var selectedItem by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
+    var selectedPackage by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
     var isRunning by remember { mutableStateOf(false) }
     var selectedLogLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
     var searchText by remember { mutableStateOf("") }
@@ -75,7 +76,7 @@ fun LogStatusSection(
                                     false -> {
                                         logManager.startMonitoringLogs(
                                             coroutineScope = this,
-                                            packageName = selectedItem,
+                                            packageName = selectedPackage,
                                             serialNumber = serialNumber
                                         )
                                     }
@@ -84,7 +85,8 @@ fun LogStatusSection(
                                         logManager.stopMonitoringLogs()
                                     }
                                 }
-                                isRunning = !isRunning.also { onIsRunning(it) }
+                                isRunning = !isRunning
+                                onIsRunning(isRunning)
                             }
                         }
                     },
@@ -99,12 +101,13 @@ fun LogStatusSection(
                         property = DEVICE_PACKAGES,
                         startingItem = getStringResource("info.log.starting.package")
                     ),
-                    text = selectedItem,
+                    text = selectedPackage,
                     onItemSelected = { item ->
-                        selectedItem = item
+                        onPackageSelected(item)
+                        selectedPackage = item
                     },
                     enabled = !isRunning,
-                    buttonText = selectedItem
+                    buttonText = selectedPackage
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
