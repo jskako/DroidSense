@@ -22,7 +22,6 @@ object DeviceManager : DeviceManagerInterface {
     private val _devices = mutableStateListOf<DeviceDetails>()
 
     override suspend fun addDevice(serialNumber: String) {
-        // TODO - Cannot fetch ip address
         val newDevice = DeviceDetails(
             serialNumber = serialNumber,
             model = getDeviceProperty(serialNumber, DEVICE_MODEL_PROPERTY),
