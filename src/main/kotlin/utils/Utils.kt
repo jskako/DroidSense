@@ -84,9 +84,7 @@ fun getDeviceProperty(serialNumber: String, property: String): String {
             .use { reader ->
                 reader.readLine()
             }
-    }.getOrElse {
-        EMPTY_STRING
-    }.trim()
+    }.getOrNull()?.trim() ?: EMPTY_STRING
 }
 
 fun getDevicePropertyList(serialNumber: String, property: String, startingItem: String? = null): List<String> {

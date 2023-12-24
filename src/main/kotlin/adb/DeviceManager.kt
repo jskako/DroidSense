@@ -22,6 +22,7 @@ object DeviceManager : DeviceManagerInterface {
     private val _devices = mutableStateListOf<DeviceDetails>()
 
     override suspend fun addDevice(serialNumber: String) {
+        // TODO - Cannot fetch ip address
         val newDevice = DeviceDetails(
             serialNumber = serialNumber,
             model = getDeviceProperty(serialNumber, DEVICE_MODEL_PROPERTY),
@@ -31,7 +32,8 @@ object DeviceManager : DeviceManagerInterface {
             androidVersion = getDeviceProperty(serialNumber, DEVICE_ANDROID_VERSION),
             displayResolution = getDeviceProperty(serialNumber, DEVICE_DISPLAY_RESOLUTION),
             displayDensity = getDeviceProperty(serialNumber, DEVICE_DISPLAY_DENSITY),
-            ipAddress = getDeviceProperty(serialNumber, DEVICE_IP_ADDRESS),
+            ipAddress = getDeviceProperty(serialNumber, DEVICE_IP_ADDRESS).takeIf { it.isNotEmpty() }
+                ?: getStringResource("info.not.connected"),
             state = AdbDeviceStatus.CONNECTED
         )
         _devices.add(newDevice)
