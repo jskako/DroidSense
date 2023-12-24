@@ -30,10 +30,4 @@ enum class LogLevel {
 
     abstract fun simplified(): Char
     abstract fun getLogColor(): Pair<Color, Color>
-
-    companion object {
-        fun fromString(simplified: String): LogLevel {
-            return entries.find { it.simplified().toString() == simplified } ?: NONE
-        }
-    }
 }
