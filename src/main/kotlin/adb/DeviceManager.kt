@@ -17,11 +17,12 @@ import utils.DEVICE_PACKAGES
 import utils.getDeviceProperty
 import utils.getStringResource
 
-object DeviceManager : DeviceManagerInterface {
+class DeviceManager : DeviceManagerInterface {
 
     private val _devices = mutableStateListOf<DeviceDetails>()
 
     override suspend fun addDevice(serialNumber: String) {
+        // TODO: Update details if changed
         val newDevice = DeviceDetails(
             serialNumber = serialNumber,
             model = getDeviceProperty(serialNumber, DEVICE_MODEL_PROPERTY),

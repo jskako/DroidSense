@@ -1,12 +1,9 @@
 package adb
 
-import adb.DeviceManager.addDevice
-import adb.DeviceManager.clearDevices
-import adb.DeviceManager.devices
-import adb.DeviceManager.removeDevice
-import adb.DeviceManager.updateDevicesStatus
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
@@ -19,8 +16,6 @@ import settitngs.GlobalVariables.adbPath
 import utils.ADB_POLLING_INTERVAL_MS
 import utils.Colors
 import utils.getStringResource
-import java.io.BufferedReader
-import java.io.InputStreamReader
 
 object AdbDeviceManager : AdbDeviceManagerInterface {
 
@@ -30,34 +25,51 @@ object AdbDeviceManager : AdbDeviceManagerInterface {
     val listeningStatus: State<ListeningStatus>
         get() = _listeningStatus
 
-    override fun startListening(coroutineScope: CoroutineScope) {
+    override fun startListening(
+        deviceManager: DeviceManager,
+        coroutineScope: CoroutineScope
+    ) {
         monitorJob?.cancel()
         monitorJob = coroutineScope.launch {
-            clearDevices()
+            deviceManager.clearDevices()
             _listeningStatus.value = ListeningStatus.LISTENING
-            monitorAdbDevices()
+            monitorAdbDevices(
+                deviceManager = deviceManager
+            )
         }
     }
 
-    override fun stopListening(coroutineScope: CoroutineScope) {
+    override fun stopListening(
+        deviceManager: DeviceManager,
+        coroutineScope: CoroutineScope
+    ) {
         coroutineScope.launch {
             monitorJob?.cancel()
             _listeningStatus.value = ListeningStatus.NOT_LISTENING
-            updateDevicesStatus()
+            deviceManager.updateDevicesStatus()
         }
     }
 
-    override fun manageListeningStatus(coroutineScope: CoroutineScope) {
+    override fun manageListeningStatus(
+        deviceManager: DeviceManager,
+        coroutineScope: CoroutineScope
+    ) {
         if (_listeningStatus.value == ListeningStatus.LISTENING) {
-            stopListening(coroutineScope)
+            stopListening(
+                deviceManager = deviceManager,
+                coroutineScope = coroutineScope
+            )
             showTimeLimitedInfoMessage(getStringResource("info.stop.listening"))
         } else {
-            startListening(coroutineScope)
+            startListening(
+                deviceManager = deviceManager,
+                coroutineScope = coroutineScope
+            )
             showTimeLimitedInfoMessage(getStringResource("info.start.listening"))
         }
     }
 
-    private suspend fun monitorAdbDevices() {
+    private suspend fun monitorAdbDevices(deviceManager: DeviceManager) {
         withContext(Default) {
             while (true) {
                 val currentDevices = mutableSetOf<String>()
@@ -72,12 +84,17 @@ object AdbDeviceManager : AdbDeviceManagerInterface {
                                 val parts = line.split("\\s+".toRegex())
                                 val serialNumber = parts[0].trim()
                                 currentDevices.add(serialNumber)
-                                handleNewDevice(serialNumber)
+                                if (!deviceManager.devices.any { it.serialNumber == serialNumber }) {
+                                    deviceManager.addDevice(serialNumber)
+                                }
                             }
                         }
                     }
 
-                    handleDisconnectedDevices(currentDevices)
+                    handleDisconnectedDevices(
+                        deviceManager = deviceManager,
+                        currentDevices = currentDevices
+                    )
 
                 }.getOrElse { exception ->
                     showInfoMessage(
@@ -91,17 +108,14 @@ object AdbDeviceManager : AdbDeviceManagerInterface {
         }
     }
 
-    private suspend fun handleNewDevice(serialNumber: String) {
-        if (serialNumber !in devices.map { it.serialNumber }) {
-            addDevice(serialNumber)
-        }
-    }
-
-    private suspend fun handleDisconnectedDevices(currentDevices: Set<String>) {
+    private suspend fun handleDisconnectedDevices(
+        deviceManager: DeviceManager,
+        currentDevices: Set<String>
+    ) {
         if (listeningStatus.value == ListeningStatus.LISTENING) {
-            val disconnectedSerialNumbers = devices.map { it.serialNumber } - currentDevices
+            val disconnectedSerialNumbers = deviceManager.devices.map { it.serialNumber } - currentDevices
             for (serialNumber in disconnectedSerialNumbers) {
-                removeDevice(serialNumber)
+                deviceManager.removeDevice(serialNumber)
             }
         }
     }

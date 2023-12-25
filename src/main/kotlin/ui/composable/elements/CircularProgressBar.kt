@@ -1,6 +1,5 @@
 package ui.composable.elements
 
-import adb.DeviceManager.devices
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +19,7 @@ import utils.Colors.darkBlue
 fun CircularProgressBar(
     text: String,
     circularColor: Color = darkBlue,
-    isVisible: Boolean = devices.isEmpty()
+    isVisible: Boolean
 ) {
     if (isVisible) {
         Column(

@@ -3,7 +3,7 @@ package adb
 import kotlinx.coroutines.CoroutineScope
 
 interface AdbDeviceManagerInterface {
-    fun startListening(coroutineScope: CoroutineScope)
-    fun stopListening(coroutineScope: CoroutineScope)
-    fun manageListeningStatus(coroutineScope: CoroutineScope)
+    fun startListening(deviceManager: DeviceManager, coroutineScope: CoroutineScope)
+    fun stopListening(deviceManager: DeviceManager, coroutineScope: CoroutineScope)
+    fun manageListeningStatus(deviceManager: DeviceManager, coroutineScope: CoroutineScope)
 }

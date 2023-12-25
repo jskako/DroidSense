@@ -1,10 +1,13 @@
 package ui.composable.screens
 
 import adb.AdbDeviceManager.startListening
+import adb.DeviceManager
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,22 +23,35 @@ import utils.getStringResource
 
 @Composable
 fun MainScreen() {
-    startListening(rememberCoroutineScope())
+
+    val deviceManager = remember { DeviceManager() }
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        startListening(
+            coroutineScope = scope,
+            deviceManager = deviceManager
+        )
+    }
     showInfoMessage(getStringResource("info.usb.debugging.enabled"))
 
     Column {
         InfoSection(
             onCloseClicked = { clearInfoMessage() }
         )
-        StatusSection()
+        StatusSection(deviceManager = deviceManager)
         Divider(
             modifier = Modifier.fillMaxWidth(),
             color = Color.Gray,
             thickness = 1.dp
         )
         CircularProgressBar(
-            text = getStringResource("info.waiting.device")
+            text = getStringResource("info.waiting.device"),
+            isVisible = deviceManager.devices.isEmpty()
         )
-        LazySection(view = { DeviceView() })
+        LazySection(view = {
+            DeviceView(
+                devices = deviceManager.devices
+            )
+        })
     }
 }

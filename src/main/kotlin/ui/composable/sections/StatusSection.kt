@@ -2,7 +2,7 @@ package ui.composable.sections
 
 import adb.AdbDeviceManager.listeningStatus
 import adb.AdbDeviceManager.manageListeningStatus
-import adb.DeviceManager.devices
+import adb.DeviceManager
 import adb.DeviceOptions
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -29,7 +29,7 @@ import utils.getStringResource
 import utils.startScrCpy
 
 @Composable
-fun StatusSection() {
+fun StatusSection(deviceManager: DeviceManager) {
     val scope = rememberCoroutineScope()
     Box(
         modifier = Modifier
@@ -42,18 +42,23 @@ fun StatusSection() {
                 modifier = Modifier
                     .weight(1f)
                     .wrapContentSize()
-                    .clickable { manageListeningStatus(scope) }
+                    .clickable {
+                        manageListeningStatus(
+                            deviceManager = deviceManager,
+                            coroutineScope = scope
+                        )
+                    }
             ) {
                 Text(
                     text = "${getStringResource("info.status.general")}: ${listeningStatus.value.status()}",
                     textAlign = TextAlign.Center,
                 )
 
-                if (devices.isNotEmpty()) {
+                if (deviceManager.devices.isNotEmpty()) {
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Text(
-                        text = "${getStringResource("info.device.number")}: ${devices.size}",
+                        text = "${getStringResource("info.device.number")}: ${deviceManager.devices.size}",
                         textAlign = TextAlign.Center
                     )
                 }
@@ -81,7 +86,7 @@ fun StatusSection() {
                     DeviceOptions(
                         text = getStringResource("info.share.all.screens"),
                         function = {
-                            devices.forEach {
+                            deviceManager.devices.forEach {
                                 startScrCpy(it.serialNumber)
                             }
                         }

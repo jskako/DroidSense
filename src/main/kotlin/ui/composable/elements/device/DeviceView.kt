@@ -1,6 +1,6 @@
 package ui.composable.elements.device
 
-import adb.DeviceManager.devices
+import adb.DeviceDetails
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DeviceView() {
+fun DeviceView(devices: List<DeviceDetails>) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         modifier = Modifier.padding(top = 8.dp),

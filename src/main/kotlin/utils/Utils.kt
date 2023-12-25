@@ -4,12 +4,6 @@ import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
 import di.AppModule.provideCoroutineScope
 import di.AppModule.provideResourceBundle
-import kotlinx.coroutines.launch
-import notifications.InfoManager.showInfoMessage
-import notifications.InfoManager.showTimeLimitedInfoMessage
-import settitngs.GlobalVariables
-import settitngs.GlobalVariables.adbPath
-import utils.Colors.darkRed
 import java.awt.Desktop
 import java.awt.FileDialog
 import java.awt.Frame
@@ -18,6 +12,12 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlinx.coroutines.launch
+import notifications.InfoManager.showInfoMessage
+import notifications.InfoManager.showTimeLimitedInfoMessage
+import settitngs.GlobalVariables
+import settitngs.GlobalVariables.adbPath
+import utils.Colors.darkRed
 
 fun getStringResource(resourceName: String) =
     provideResourceBundle(STRING_RESOURCES).getString(resourceName) ?: EMPTY_STRING
