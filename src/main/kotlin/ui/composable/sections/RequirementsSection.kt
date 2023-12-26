@@ -15,12 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import requirements.RequirementsManager.description
-import requirements.RequirementsManager.icon
+import requirements.RequirementsManager
 import utils.getStringResource
 
 @Composable
-fun RequirementsSection() {
+fun RequirementsSection(
+    requirementsManager: RequirementsManager
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -35,10 +36,10 @@ fun RequirementsSection() {
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Text(description.value, fontSize = 24.sp)
+            Text(requirementsManager.description.value, fontSize = 24.sp)
             Spacer(modifier = Modifier.height(8.dp))
             Icon(
-                imageVector = icon.value,
+                imageVector = requirementsManager.icon.value,
                 contentDescription = null,
                 modifier = Modifier.size(48.dp)
             )

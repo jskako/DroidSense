@@ -25,7 +25,7 @@ import utils.getStringResource
 import utils.getUserOS
 import utils.isSoftwareInstalled
 
-object RequirementsManager {
+class RequirementsManager {
 
     private val _description = mutableStateOf(DEFAULT_DESCRIPTION)
     private val _icon = mutableStateOf(DEFAULT_ICON)
