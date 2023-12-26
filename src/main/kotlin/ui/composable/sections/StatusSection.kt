@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import notifications.InfoManagerData
 import ui.application.WindowExtra
-import ui.application.WindowStateManager.windowState
+import ui.application.WindowStateManager
 import ui.composable.elements.ClickableIconMenu
 import utils.getStringResource
 import utils.startScrCpy
@@ -32,6 +32,7 @@ import utils.startScrCpy
 fun StatusSection(
     deviceManager: DeviceManager,
     onMessage: (InfoManagerData) -> Unit,
+    windowStateManager: WindowStateManager
 ) {
     val scope = rememberCoroutineScope()
     Box(
@@ -74,7 +75,7 @@ fun StatusSection(
                     DeviceOptions(
                         text = getStringResource("info.log.history"),
                         function = {
-                            windowState?.openNewWindow?.let {
+                            windowStateManager.windowState?.openNewWindow?.let {
                                 it(
                                     getStringResource("info.log.history"),
                                     Icons.Default.History,

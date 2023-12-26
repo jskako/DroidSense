@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.window.Window
 import java.awt.Dimension
 import ui.application.WindowState
+import ui.application.WindowStateManager
 import ui.application.navigation.NavRoute
 import ui.application.navigation.NavigationManager
 import ui.composable.screens.MainScreen
@@ -21,6 +22,7 @@ import utils.MIN_WINDOW_WIDTH
 @Composable
 fun NavWindow(
     state: WindowState,
+    windowStateManager: WindowStateManager
 ) = Window(
     onCloseRequest = state::close,
     icon = rememberVectorPainter(state.icon),
@@ -37,7 +39,9 @@ fun NavWindow(
         ) {
             state.extra.screen?.invoke() ?: when (navigationManager.navRoute) {
                 is NavRoute.MainScreen -> {
-                    MainScreen()
+                    MainScreen(
+                        windowStateManager = windowStateManager
+                    )
                 }
 
                 is NavRoute.RequirementsScreen -> {

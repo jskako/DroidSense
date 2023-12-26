@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import notifications.InfoManager
 import notifications.InfoManagerData
+import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.device.DeviceView
 import ui.composable.sections.InfoSection
@@ -22,7 +23,9 @@ import ui.composable.sections.StatusSection
 import utils.getStringResource
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    windowStateManager: WindowStateManager
+) {
 
     val deviceManager = remember { DeviceManager() }
     val infoManager = remember { InfoManager() }
@@ -55,6 +58,7 @@ fun MainScreen() {
         )
         StatusSection(
             deviceManager = deviceManager,
+            windowStateManager = windowStateManager,
             onMessage = {
                 infoManager.showMessage(
                     infoManagerData = it,
@@ -74,6 +78,7 @@ fun MainScreen() {
         LazySection(view = {
             DeviceView(
                 devices = deviceManager.devices,
+                windowStateManager = windowStateManager,
                 onMessage = {
                     infoManager.showMessage(
                         infoManagerData = it,

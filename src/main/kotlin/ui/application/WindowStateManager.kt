@@ -1,6 +1,6 @@
 package ui.application
 
-object WindowStateManager {
+class WindowStateManager {
 
     var windowState: WindowState? = null
         private set

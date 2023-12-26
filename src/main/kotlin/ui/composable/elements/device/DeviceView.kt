@@ -9,11 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import notifications.InfoManagerData
+import ui.application.WindowStateManager
 
 @Composable
 fun DeviceView(
     devices: List<DeviceDetails>,
-    onMessage: (InfoManagerData) -> Unit
+    onMessage: (InfoManagerData) -> Unit,
+    windowStateManager: WindowStateManager
 ) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
@@ -22,7 +24,8 @@ fun DeviceView(
         items(devices) { device ->
             DeviceCard(
                 device = device,
-                onMessage = onMessage
+                onMessage = onMessage,
+                windowStateManager = windowStateManager
             )
         }
     }

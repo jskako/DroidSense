@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import log.LogManager
 import notifications.InfoManagerData
 import ui.application.WindowExtra
-import ui.application.WindowStateManager.windowState
+import ui.application.WindowStateManager
 import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.ClickableMenu
@@ -44,7 +44,8 @@ import utils.startScrCpy
 @Composable
 fun DeviceCard(
     device: DeviceDetails,
-    onMessage: (InfoManagerData) -> Unit
+    onMessage: (InfoManagerData) -> Unit,
+    windowStateManager: WindowStateManager
 ) {
     val scope = rememberCoroutineScope()
 
@@ -136,7 +137,7 @@ fun DeviceCard(
                     text = getStringResource("info.log.manager"),
                     onClick = {
                         val logManager = LogManager()
-                        windowState?.openNewWindow?.let {
+                        windowStateManager.windowState?.openNewWindow?.let {
                             it(
                                 "${device.model} (${device.serialNumber})",
                                 Icons.Default.Info,
