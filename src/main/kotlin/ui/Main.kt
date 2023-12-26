@@ -1,6 +1,6 @@
 package ui
 
 import ui.application.ApplicationEvent
-import ui.application.ApplicationManager.createWindow
+import ui.application.ApplicationManager
 
-fun main() = createWindow(ApplicationEvent.NavWindow)
+fun main() = ApplicationManager().createWindow(ApplicationEvent.NavWindow)

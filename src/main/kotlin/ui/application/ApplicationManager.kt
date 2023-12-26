@@ -3,7 +3,7 @@ package ui.application
 import androidx.compose.ui.window.application
 import ui.composable.elements.window.Window
 
-object ApplicationManager {
+class ApplicationManager {
 
     fun createWindow(event: ApplicationEvent) {
         application {
