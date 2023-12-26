@@ -5,18 +5,26 @@ import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
 import java.io.File
 import java.io.FileWriter
-import notifications.InfoManager.showTimeLimitedInfoMessage
+import notifications.InfoManagerData
+import utils.Colors.darkRed
 
-fun String.copyToClipboard() {
+fun String.copyToClipboard(): InfoManagerData {
     if (this.trim().isEmpty()) {
-        showTimeLimitedInfoMessage(getStringResource("error.clipboard.message.empty.data"))
-        return
+        return InfoManagerData(
+            message = getStringResource("error.clipboard.message.empty.data"),
+            color = darkRed
+        )
     }
 
-    if (copyToClipboard(this)) {
-        showTimeLimitedInfoMessage(getStringResource("success.clipboard.message"))
+    return if (copyToClipboard(this)) {
+        InfoManagerData(
+            message = getStringResource("success.clipboard.message")
+        )
     } else {
-        showTimeLimitedInfoMessage(getStringResource("error.clipboard.message.failed"))
+        InfoManagerData(
+            message = getStringResource("error.clipboard.message.failed"),
+            color = darkRed
+        )
     }
 }
 
@@ -27,16 +35,20 @@ private fun copyToClipboard(text: String): Boolean {
     }.isSuccess
 }
 
-fun String.exportToFile(exportPath: String? = null) {
+fun String.exportToFile(exportPath: String? = null): InfoManagerData {
     if (this.isBlank()) {
-        showTimeLimitedInfoMessage(getStringResource("error.export.empty.data"))
-        return
+        return InfoManagerData(
+            message = getStringResource("error.export.empty.data"),
+            color = darkRed
+        )
     }
 
     val path = exportPath ?: pickDirectoryDialog()
     if (path.isNullOrBlank()) {
-        showTimeLimitedInfoMessage(getStringResource("error.export.empty.path"))
-        return
+        return InfoManagerData(
+            message = getStringResource("error.export.empty.path"),
+            color = darkRed
+        )
     }
 
     val timestamp = getTimeStamp(EXPORT_DATA_TIMESTAMP)
@@ -50,12 +62,16 @@ fun String.exportToFile(exportPath: String? = null) {
         }
     }
 
-    result.onFailure { e ->
-        showTimeLimitedInfoMessage("${getStringResource("error.export.general")}: ${e.message}")
-    }
-
-    result.onSuccess {
-        showTimeLimitedInfoMessage("${getStringResource("success.export.general")}: $filePath")
+    return if (result.isFailure) {
+        InfoManagerData(
+            message = getStringResource("error.export.general"),
+            color = darkRed
+        )
+    } else {
+        InfoManagerData(
+            message = getStringResource("${getStringResource("success.export.general")}: $filePath"),
+            duration = null
+        )
     }
 }
 

@@ -2,43 +2,48 @@ package notifications
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
-import di.AppModule.provideCoroutineScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import notifications.interfaces.InfoManagerInterface
 
-object InfoManager : InfoManagerInterface {
+class InfoManager : InfoManagerInterface {
 
-    private var _extendedInfo = mutableStateOf(ExtendedInfo())
-    private var scope = provideCoroutineScope()
+    private var _InfoManagerData = mutableStateOf(InfoManagerData(message = ""))
     private var job: Job? = null
 
-    val extendedInfo: State<ExtendedInfo>
-        get() = _extendedInfo
+    val infoManagerData: State<InfoManagerData>
+        get() = _InfoManagerData
 
-    override fun showTimeLimitedInfoMessage(
-        message: String,
-        backgroundColor: Color,
-        duration: Long
+    override fun showMessage(
+        infoManagerData: InfoManagerData,
+        scope: CoroutineScope
     ) {
-        _extendedInfo.value = ExtendedInfo(message, backgroundColor)
-        job?.cancel()
-        job = scope.launch {
-            delay(duration)
-            _extendedInfo.value = ExtendedInfo()
+        _InfoManagerData.value = InfoManagerData(
+            message = infoManagerData.message,
+            color = infoManagerData.color
+        )
+        if (infoManagerData.duration != null) {
+            showTimeLimitedInfoMessage(
+                duration = infoManagerData.duration,
+                scope = scope
+            )
         }
     }
 
-    override fun showInfoMessage(
-        message: String,
-        backgroundColor: Color
+    private fun showTimeLimitedInfoMessage(
+        duration: Long,
+        scope: CoroutineScope
     ) {
-        _extendedInfo.value = ExtendedInfo(message, backgroundColor)
+        job?.cancel()
+        job = scope.launch {
+            delay(duration)
+            _InfoManagerData.value = InfoManagerData(message = "")
+        }
     }
 
     override fun clearInfoMessage() {
-        _extendedInfo.value = ExtendedInfo()
+        _InfoManagerData.value = InfoManagerData(message = "")
     }
 }

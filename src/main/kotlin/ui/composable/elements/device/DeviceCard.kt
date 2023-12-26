@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import log.LogManager
-import notifications.InfoManager.showTimeLimitedInfoMessage
+import notifications.InfoManagerData
 import ui.application.WindowExtra
 import ui.application.WindowStateManager.windowState
 import ui.composable.elements.BasicText
@@ -43,9 +43,11 @@ import utils.startScrCpy
 
 @Composable
 fun DeviceCard(
-    device: DeviceDetails
+    device: DeviceDetails,
+    onMessage: (InfoManagerData) -> Unit
 ) {
     val scope = rememberCoroutineScope()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -142,14 +144,19 @@ fun DeviceCard(
                                     screen = {
                                         LogScreen(
                                             device = device,
-                                            logManager = logManager
+                                            logManager = logManager,
+                                            onMessage = onMessage
                                         )
                                     },
                                     onClose = {
                                         scope.launch {
                                             if (logManager.isActive) {
                                                 logManager.stopMonitoringLogs()
-                                                showTimeLimitedInfoMessage("${getStringResource("info.log.closing")} $device - ${device.serialNumber}")
+                                                onMessage(
+                                                    InfoManagerData(
+                                                        message = "${getStringResource("info.log.closing")} $device - ${device.serialNumber}"
+                                                    )
+                                                )
                                             }
                                         }
                                     }
@@ -167,7 +174,12 @@ fun DeviceCard(
                         DeviceOptions(
                             text = getStringResource("info.install.apk"),
                             function = {
-                                installApplication(device.serialNumber)
+                                scope.launch {
+                                    installApplication(
+                                        device.serialNumber,
+                                        onMessage = onMessage
+                                    )
+                                }
                             }
                         ),
                     )

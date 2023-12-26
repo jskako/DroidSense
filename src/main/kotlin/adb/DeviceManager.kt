@@ -3,7 +3,7 @@ package adb
 import androidx.compose.runtime.mutableStateListOf
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.withContext
-import notifications.InfoManager.showTimeLimitedInfoMessage
+import notifications.InfoManagerData
 import utils.Colors.darkRed
 import utils.DEVICE_ANDROID_VERSION
 import utils.DEVICE_BRAND
@@ -21,7 +21,10 @@ class DeviceManager : DeviceManagerInterface {
 
     private val _devices = mutableStateListOf<DeviceDetails>()
 
-    override suspend fun addDevice(serialNumber: String) {
+    override suspend fun addDevice(
+        serialNumber: String,
+        onMessage: (InfoManagerData) -> Unit
+    ) {
         // TODO: Update details if changed
         val newDevice = DeviceDetails(
             serialNumber = serialNumber,
@@ -34,19 +37,24 @@ class DeviceManager : DeviceManagerInterface {
             displayDensity = getDeviceProperty(serialNumber, DEVICE_DISPLAY_DENSITY),
             ipAddress = getDeviceProperty(serialNumber, DEVICE_IP_ADDRESS).takeIf { it.isNotEmpty() }
                 ?: getStringResource("info.not.connected"),
-            state = AdbDeviceStatus.CONNECTED
+            state = MonitoringStatus.MONITORING
         )
         _devices.add(newDevice)
-        showTimeLimitedInfoMessage("${getStringResource("info.add.device")}: $newDevice")
+        onMessage(InfoManagerData(message = "${getStringResource("info.add.device")}: $newDevice"))
     }
 
-    override suspend fun removeDevice(serialNumber: String) {
+    override suspend fun removeDevice(
+        serialNumber: String,
+        onMessage: (InfoManagerData) -> Unit
+    ) {
         val deviceToRemove = _devices.firstOrNull { it.serialNumber == serialNumber }
         deviceToRemove?.let { device ->
             _devices.remove(device)
-            showTimeLimitedInfoMessage(
-                message = "${getStringResource("info.remove.device")}: $device",
-                backgroundColor = darkRed
+            onMessage(
+                InfoManagerData(
+                    message = "${getStringResource("info.remove.device")}: $device",
+                    color = darkRed
+                ),
             )
         }
     }
@@ -61,7 +69,7 @@ class DeviceManager : DeviceManagerInterface {
         _devices.clear()
     }
 
-    override suspend fun updateDevicesStatus(status: AdbDeviceStatus) {
+    override suspend fun updateDevicesStatus(status: MonitoringStatus) {
         _devices.forEachIndexed { index, device ->
             _devices[index] = device.copy(state = status)
         }

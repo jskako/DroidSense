@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import log.LogLevel
 import log.LogManager
+import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
 import ui.composable.elements.iconButtons.IconButtonsColumn
@@ -44,6 +45,7 @@ import utils.getStringResource
 @Composable
 fun LogScreen(
     logManager: LogManager,
+    onMessage: (InfoManagerData) -> Unit,
     device: DeviceDetails
 ) {
 
@@ -72,7 +74,8 @@ fun LogScreen(
             },
             onPackageSelected = {
                 selectedPackage = it
-            }
+            },
+            onMessage = onMessage
         )
 
         DividerColored()

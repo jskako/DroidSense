@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import log.LogLevel
 import log.LogManager
+import notifications.InfoManagerData
 import ui.composable.elements.DropdownItem
 import ui.composable.elements.FilterText
 import ui.composable.elements.HintText
@@ -38,6 +39,7 @@ import utils.getStringResource
 fun LogStatusSection(
     serialNumber: String,
     logManager: LogManager,
+    onMessage: (InfoManagerData) -> Unit,
     onLogLevelSelected: (LogLevel) -> Unit,
     onSearchTextChanged: (String) -> Unit,
     onIsRunning: (Boolean) -> Unit,
@@ -77,7 +79,8 @@ fun LogStatusSection(
                                         logManager.startMonitoringLogs(
                                             coroutineScope = this,
                                             packageName = selectedPackage,
-                                            serialNumber = serialNumber
+                                            serialNumber = serialNumber,
+                                            onMessage = onMessage
                                         )
                                     }
 

@@ -7,8 +7,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import notifications.InfoManager.showTimeLimitedInfoMessage
+import notifications.InfoManagerData
 import settitngs.GlobalVariables.adbPath
+import utils.Colors.darkRed
 import utils.LOG_TYPE_REGEX
 import utils.getStringResource
 import utils.getTimeStamp
@@ -29,7 +30,8 @@ class LogManager : LogManagerInterface {
     override suspend fun startMonitoringLogs(
         coroutineScope: CoroutineScope,
         packageName: String,
-        serialNumber: String
+        serialNumber: String,
+        onMessage: (InfoManagerData) -> Unit
     ) {
         stopMonitoringLogs()
         _logs.clear()
@@ -37,7 +39,8 @@ class LogManager : LogManagerInterface {
             try {
                 monitorLogs(
                     packageName = if (packageName == getStringResource("info.log.starting.package")) null else packageName,
-                    serialNumber = serialNumber
+                    serialNumber = serialNumber,
+                    onMessage = onMessage
                 )
             } catch (e: Exception) {
                 LogData(
@@ -58,7 +61,11 @@ class LogManager : LogManagerInterface {
         _logs.clear()
     }
 
-    private suspend fun monitorLogs(packageName: String?, serialNumber: String) {
+    private suspend fun monitorLogs(
+        packageName: String?,
+        serialNumber: String,
+        onMessage: (InfoManagerData) -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             var pid = ""
             if (!packageName.isNullOrEmpty()) {
@@ -92,7 +99,12 @@ class LogManager : LogManagerInterface {
                     }
                 }
             }.onFailure { exception ->
-                showTimeLimitedInfoMessage("${getStringResource("info.log.error")} $serialNumber: $exception")
+                onMessage(
+                    InfoManagerData(
+                        message = "${getStringResource("info.log.error")} $serialNumber: $exception",
+                        color = darkRed
+                    )
+                )
             }
         }
     }

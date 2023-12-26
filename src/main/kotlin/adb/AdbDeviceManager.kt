@@ -10,66 +10,83 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import notifications.InfoManager.showInfoMessage
-import notifications.InfoManager.showTimeLimitedInfoMessage
+import notifications.InfoManagerData
 import settitngs.GlobalVariables.adbPath
 import utils.ADB_POLLING_INTERVAL_MS
-import utils.Colors
+import utils.Colors.darkRed
 import utils.getStringResource
 
 object AdbDeviceManager : AdbDeviceManagerInterface {
 
     private var monitorJob: Job? = null
-    private val _listeningStatus = mutableStateOf(ListeningStatus.NOT_LISTENING)
+    private val _monitoringStatus = mutableStateOf(MonitoringStatus.NOT_MONITORING)
 
-    val listeningStatus: State<ListeningStatus>
-        get() = _listeningStatus
+    val monitoringStatus: State<MonitoringStatus>
+        get() = _monitoringStatus
 
-    override fun startListening(
+    private fun startListening(
         deviceManager: DeviceManager,
+        onMessage: (InfoManagerData) -> Unit,
         coroutineScope: CoroutineScope
     ) {
         monitorJob?.cancel()
         monitorJob = coroutineScope.launch {
             deviceManager.clearDevices()
-            _listeningStatus.value = ListeningStatus.LISTENING
+            _monitoringStatus.value = MonitoringStatus.MONITORING
             monitorAdbDevices(
-                deviceManager = deviceManager
+                deviceManager = deviceManager,
+                onMessage = onMessage
             )
         }
     }
 
-    override fun stopListening(
+    private fun stopListening(
         deviceManager: DeviceManager,
         coroutineScope: CoroutineScope
     ) {
         coroutineScope.launch {
             monitorJob?.cancel()
-            _listeningStatus.value = ListeningStatus.NOT_LISTENING
+            _monitoringStatus.value = MonitoringStatus.NOT_MONITORING
             deviceManager.updateDevicesStatus()
         }
     }
 
     override fun manageListeningStatus(
+        monitorStatus: MonitorStatus,
         deviceManager: DeviceManager,
-        coroutineScope: CoroutineScope
+        scope: CoroutineScope,
+        onMessage: (InfoManagerData) -> Unit
     ) {
-        if (_listeningStatus.value == ListeningStatus.LISTENING) {
+        if (_monitoringStatus.value == MonitoringStatus.MONITORING) {
             stopListening(
                 deviceManager = deviceManager,
-                coroutineScope = coroutineScope
+                coroutineScope = scope
             )
-            showTimeLimitedInfoMessage(getStringResource("info.stop.listening"))
+            onMessage(
+                InfoManagerData(
+                    message = getStringResource("info.stop.listening")
+                )
+            )
         } else {
             startListening(
                 deviceManager = deviceManager,
-                coroutineScope = coroutineScope
+                onMessage = onMessage,
+                coroutineScope = scope
             )
-            showTimeLimitedInfoMessage(getStringResource("info.start.listening"))
+            onMessage(
+                InfoManagerData(
+                    message = getStringResource("info.start.listening")
+                )
+            )
         }
     }
 
-    private suspend fun monitorAdbDevices(deviceManager: DeviceManager) {
+    override fun isMonitoring() = _monitoringStatus.value == MonitoringStatus.MONITORING
+
+    private suspend fun monitorAdbDevices(
+        deviceManager: DeviceManager,
+        onMessage: (InfoManagerData) -> Unit
+    ) {
         withContext(Default) {
             while (true) {
                 val currentDevices = mutableSetOf<String>()
@@ -85,7 +102,10 @@ object AdbDeviceManager : AdbDeviceManagerInterface {
                                 val serialNumber = parts[0].trim()
                                 currentDevices.add(serialNumber)
                                 if (!deviceManager.devices.any { it.serialNumber == serialNumber }) {
-                                    deviceManager.addDevice(serialNumber)
+                                    deviceManager.addDevice(
+                                        serialNumber = serialNumber,
+                                        onMessage = onMessage
+                                    )
                                 }
                             }
                         }
@@ -93,13 +113,17 @@ object AdbDeviceManager : AdbDeviceManagerInterface {
 
                     handleDisconnectedDevices(
                         deviceManager = deviceManager,
-                        currentDevices = currentDevices
+                        currentDevices = currentDevices,
+                        onMessage = onMessage
                     )
 
                 }.getOrElse { exception ->
-                    showInfoMessage(
-                        "${getStringResource("error.monitor.general")}: $exception",
-                        backgroundColor = Colors.darkRed
+                    onMessage(
+                        InfoManagerData(
+                            color = darkRed,
+                            message = "${getStringResource("error.monitor.general")}: $exception",
+                            duration = null
+                        )
                     )
                 }
 
@@ -110,14 +134,22 @@ object AdbDeviceManager : AdbDeviceManagerInterface {
 
     private suspend fun handleDisconnectedDevices(
         deviceManager: DeviceManager,
-        currentDevices: Set<String>
+        currentDevices: Set<String>,
+        onMessage: (InfoManagerData) -> Unit
     ) {
-        if (listeningStatus.value == ListeningStatus.LISTENING) {
+        if (monitoringStatus.value == MonitoringStatus.MONITORING) {
             val disconnectedSerialNumbers = deviceManager.devices.map { it.serialNumber } - currentDevices
             for (serialNumber in disconnectedSerialNumbers) {
-                deviceManager.removeDevice(serialNumber)
+                deviceManager.removeDevice(
+                    serialNumber = serialNumber,
+                    onMessage = onMessage
+                )
             }
         }
     }
+}
+
+enum class MonitorStatus {
+    START, STOP
 }
 

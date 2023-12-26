@@ -1,9 +1,11 @@
 package ui.composable.sections
 
-import adb.AdbDeviceManager.listeningStatus
+import adb.AdbDeviceManager.isMonitoring
 import adb.AdbDeviceManager.manageListeningStatus
+import adb.AdbDeviceManager.monitoringStatus
 import adb.DeviceManager
 import adb.DeviceOptions
+import adb.MonitorStatus
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -22,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import notifications.InfoManagerData
 import ui.application.WindowExtra
 import ui.application.WindowStateManager.windowState
 import ui.composable.elements.ClickableIconMenu
@@ -29,7 +32,10 @@ import utils.getStringResource
 import utils.startScrCpy
 
 @Composable
-fun StatusSection(deviceManager: DeviceManager) {
+fun StatusSection(
+    deviceManager: DeviceManager,
+    onMessage: (InfoManagerData) -> Unit,
+) {
     val scope = rememberCoroutineScope()
     Box(
         modifier = Modifier
@@ -44,13 +50,15 @@ fun StatusSection(deviceManager: DeviceManager) {
                     .wrapContentSize()
                     .clickable {
                         manageListeningStatus(
+                            monitorStatus = if (isMonitoring()) MonitorStatus.STOP else MonitorStatus.START,
                             deviceManager = deviceManager,
-                            coroutineScope = scope
+                            scope = scope,
+                            onMessage = onMessage
                         )
                     }
             ) {
                 Text(
-                    text = "${getStringResource("info.status.general")}: ${listeningStatus.value.status()}",
+                    text = "${getStringResource("info.status.general")}: ${monitoringStatus.value.status()}",
                     textAlign = TextAlign.Center,
                 )
 

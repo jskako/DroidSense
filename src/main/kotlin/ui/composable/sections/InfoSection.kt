@@ -20,19 +20,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import notifications.InfoManager.extendedInfo
 
 @Composable
 fun InfoSection(
-    backgroundColor: Color = extendedInfo.value.color,
-    text: String = extendedInfo.value.message,
+    message: String,
+    color: Color,
     onCloseClicked: () -> Unit
 ) {
-    if (text.isNotEmpty()) {
+    if (message.isNotEmpty()) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth(),
-            color = backgroundColor
+            color = color
         ) {
             Row(
                 modifier = Modifier
@@ -50,7 +49,7 @@ fun InfoSection(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 BasicTextField(
-                    value = text,
+                    value = message,
                     onValueChange = { /*  */ },
                     textStyle = TextStyle(
                         color = Color.White,
