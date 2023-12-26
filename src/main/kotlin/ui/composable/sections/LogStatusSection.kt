@@ -37,6 +37,7 @@ import utils.getStringResource
 
 @Composable
 fun LogStatusSection(
+    adbPath: String,
     serialNumber: String,
     logManager: LogManager,
     onMessage: (InfoManagerData) -> Unit,
@@ -100,6 +101,7 @@ fun LogStatusSection(
 
                 DropdownItem(
                     list = getDevicePropertyList(
+                        adbPath = adbPath,
                         serialNumber = serialNumber,
                         property = DEVICE_PACKAGES,
                         startingItem = getStringResource("info.log.starting.package")

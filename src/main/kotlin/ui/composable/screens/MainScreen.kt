@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import notifications.InfoManager
 import notifications.InfoManagerData
+import settitngs.GlobalVariables
 import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.device.DeviceView
@@ -24,10 +25,15 @@ import utils.getStringResource
 
 @Composable
 fun MainScreen(
-    windowStateManager: WindowStateManager
+    windowStateManager: WindowStateManager,
+    globalVariables: GlobalVariables
 ) {
 
-    val deviceManager = remember { DeviceManager() }
+    val deviceManager = remember {
+        DeviceManager(
+            adbPath = globalVariables.adbPath.value
+        )
+    }
     val infoManager = remember { InfoManager() }
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
@@ -57,6 +63,7 @@ fun MainScreen(
             color = infoManager.infoManagerData.value.color,
         )
         StatusSection(
+            scrCpyPath = globalVariables.scrCpyPath.value,
             deviceManager = deviceManager,
             windowStateManager = windowStateManager,
             onMessage = {
@@ -84,7 +91,9 @@ fun MainScreen(
                         infoManagerData = it,
                         scope = scope
                     )
-                }
+                },
+                adbPath = globalVariables.adbPath.value,
+                scrCpyPath = globalVariables.scrCpyPath.value
             )
         })
     }

@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import utils.ADB_PACKAGE
 import utils.SCRCPY_PACKAGE
 
-object GlobalVariables {
+class GlobalVariables {
 
     private val _adbPath = mutableStateOf(ADB_PACKAGE)
     private val _scrCpyPath = mutableStateOf(SCRCPY_PACKAGE)

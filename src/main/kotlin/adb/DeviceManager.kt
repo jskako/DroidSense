@@ -12,7 +12,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
-import settitngs.GlobalVariables.adbPath
 import utils.ADB_POLLING_INTERVAL_MS
 import utils.Colors.darkRed
 import utils.DEVICE_ANDROID_VERSION
@@ -26,7 +25,9 @@ import utils.DEVICE_MODEL_PROPERTY
 import utils.getDeviceProperty
 import utils.getStringResource
 
-class DeviceManager : DeviceManagerInterface {
+class DeviceManager(
+    private val adbPath: String
+) : DeviceManagerInterface {
 
     private var monitorJob: Job? = null
     private val _devices = mutableStateListOf<DeviceDetails>()
@@ -46,6 +47,7 @@ class DeviceManager : DeviceManagerInterface {
             clearDevices()
             _monitoringStatus.value = MonitoringStatus.MONITORING
             monitorAdbDevices(
+                adbPath = adbPath,
                 onMessage = onMessage
             )
         }
@@ -91,6 +93,7 @@ class DeviceManager : DeviceManagerInterface {
     override fun isMonitoring() = _monitoringStatus.value == MonitoringStatus.MONITORING
 
     private suspend fun monitorAdbDevices(
+        adbPath: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
         withContext(Default) {
@@ -98,7 +101,7 @@ class DeviceManager : DeviceManagerInterface {
                 val currentDevices = mutableSetOf<String>()
 
                 runCatching {
-                    val process = ProcessBuilder(adbPath.value, "devices", "-l").start()
+                    val process = ProcessBuilder(adbPath, "devices", "-l").start()
                     val reader = BufferedReader(InputStreamReader(process.inputStream))
 
                     reader.useLines { lines ->
@@ -109,6 +112,7 @@ class DeviceManager : DeviceManagerInterface {
                                 currentDevices.add(serialNumber)
                                 if (!devices.any { it.serialNumber == serialNumber }) {
                                     addDevice(
+                                        adbPath = adbPath,
                                         serialNumber = serialNumber,
                                         onMessage = onMessage
                                     )
@@ -153,20 +157,53 @@ class DeviceManager : DeviceManagerInterface {
     }
 
     private fun addDevice(
+        adbPath: String,
         serialNumber: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
         // TODO: Update details if changed
         val newDevice = DeviceDetails(
             serialNumber = serialNumber,
-            model = getDeviceProperty(serialNumber, DEVICE_MODEL_PROPERTY),
-            manufacturer = getDeviceProperty(serialNumber, DEVICE_MANUFACTURER),
-            brand = getDeviceProperty(serialNumber, DEVICE_BRAND),
-            buildSDK = getDeviceProperty(serialNumber, DEVICE_BUILD_SDK),
-            androidVersion = getDeviceProperty(serialNumber, DEVICE_ANDROID_VERSION),
-            displayResolution = getDeviceProperty(serialNumber, DEVICE_DISPLAY_RESOLUTION),
-            displayDensity = getDeviceProperty(serialNumber, DEVICE_DISPLAY_DENSITY),
-            ipAddress = getDeviceProperty(serialNumber, DEVICE_IP_ADDRESS).takeIf { it.isNotEmpty() }
+            model = getDeviceProperty(
+                serialNumber = serialNumber,
+                property = DEVICE_MODEL_PROPERTY,
+                adbPath = adbPath
+            ),
+            manufacturer = getDeviceProperty(
+                serialNumber = serialNumber,
+                property = DEVICE_MANUFACTURER,
+                adbPath = adbPath
+            ),
+            brand = getDeviceProperty(
+                serialNumber = serialNumber,
+                property = DEVICE_BRAND,
+                adbPath = adbPath
+            ),
+            buildSDK = getDeviceProperty(
+                serialNumber = serialNumber,
+                property = DEVICE_BUILD_SDK,
+                adbPath = adbPath
+            ),
+            androidVersion = getDeviceProperty(
+                serialNumber = serialNumber,
+                property = DEVICE_ANDROID_VERSION,
+                adbPath = adbPath
+            ),
+            displayResolution = getDeviceProperty(
+                serialNumber = serialNumber,
+                property = DEVICE_DISPLAY_RESOLUTION,
+                adbPath = adbPath
+            ),
+            displayDensity = getDeviceProperty(
+                serialNumber = serialNumber,
+                property = DEVICE_DISPLAY_DENSITY,
+                adbPath = adbPath
+            ),
+            ipAddress = getDeviceProperty(
+                serialNumber = serialNumber,
+                property = DEVICE_IP_ADDRESS,
+                adbPath = adbPath
+            ).takeIf { it.isNotEmpty() }
                 ?: getStringResource("info.not.connected"),
             state = MonitoringStatus.MONITORING
         )

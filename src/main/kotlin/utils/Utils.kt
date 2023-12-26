@@ -14,8 +14,6 @@ import java.util.ResourceBundle
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
-import settitngs.GlobalVariables
-import settitngs.GlobalVariables.adbPath
 import utils.Colors.darkRed
 
 fun getResourceBundle(baseName: String): ResourceBundle = ResourceBundle.getBundle(baseName)
@@ -79,12 +77,19 @@ fun isSoftwareInstalled(software: String) = ProcessBuilder("which", software).st
 
 fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }
 
-fun startScrCpy(serialNumber: String): Process =
-    ProcessBuilder(GlobalVariables.scrCpyPath.value, "-s", serialNumber).start()
+fun startScrCpy(
+    scrCpyPath: String,
+    serialNumber: String
+): Process =
+    ProcessBuilder(scrCpyPath, "-s", serialNumber).start()
 
-fun getDeviceProperty(serialNumber: String, property: String): String {
+fun getDeviceProperty(
+    adbPath: String,
+    serialNumber: String,
+    property: String
+): String {
     return runCatching {
-        ProcessBuilder(adbPath.value, "-s", serialNumber, "shell", property).start().inputStream
+        ProcessBuilder(adbPath, "-s", serialNumber, "shell", property).start().inputStream
             .bufferedReader()
             .use { reader ->
                 reader.readLine()
@@ -92,9 +97,14 @@ fun getDeviceProperty(serialNumber: String, property: String): String {
     }.getOrNull()?.trim() ?: EMPTY_STRING
 }
 
-fun getDevicePropertyList(serialNumber: String, property: String, startingItem: String? = null): List<String> {
+fun getDevicePropertyList(
+    adbPath: String,
+    serialNumber: String,
+    property: String,
+    startingItem: String? = null
+): List<String> {
     return runCatching {
-        val process = ProcessBuilder(adbPath.value, "-s", serialNumber, "shell", property).start()
+        val process = ProcessBuilder(adbPath, "-s", serialNumber, "shell", property).start()
         val lines = process.inputStream
             .bufferedReader()
             .lineSequence()
@@ -115,6 +125,7 @@ fun getDevicePropertyList(serialNumber: String, property: String, startingItem: 
 }
 
 suspend fun installApplication(
+    adbPath: String,
     serialNumber: String,
     onMessage: (InfoManagerData) -> Unit
 ) {
@@ -127,7 +138,7 @@ suspend fun installApplication(
                         duration = null
                     )
                 )
-                val command = "${adbPath.value} -s $serialNumber install -r ${file.absolutePath}"
+                val command = "$adbPath -s $serialNumber install -r ${file.absolutePath}"
                 val process = Runtime.getRuntime().exec(command)
 
                 val exitCode = process.waitFor()

@@ -44,6 +44,7 @@ import utils.getStringResource
 
 @Composable
 fun LogScreen(
+    adbPath: String,
     logManager: LogManager,
     onMessage: (InfoManagerData) -> Unit,
     device: DeviceDetails
@@ -61,6 +62,7 @@ fun LogScreen(
 
     Column {
         LogStatusSection(
+            adbPath = adbPath,
             serialNumber = device.serialNumber,
             logManager = logManager,
             onLogLevelSelected = {

@@ -30,6 +30,7 @@ import utils.startScrCpy
 
 @Composable
 fun StatusSection(
+    scrCpyPath: String,
     deviceManager: DeviceManager,
     onMessage: (InfoManagerData) -> Unit,
     windowStateManager: WindowStateManager
@@ -92,7 +93,10 @@ fun StatusSection(
                         text = getStringResource("info.share.all.screens"),
                         function = {
                             deviceManager.devices.forEach {
-                                startScrCpy(it.serialNumber)
+                                startScrCpy(
+                                    scrCpyPath = scrCpyPath,
+                                    serialNumber = it.serialNumber
+                                )
                             }
                         }
                     )

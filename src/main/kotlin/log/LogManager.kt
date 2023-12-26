@@ -8,14 +8,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
-import settitngs.GlobalVariables.adbPath
 import utils.Colors.darkRed
 import utils.LOG_TYPE_REGEX
 import utils.getStringResource
 import utils.getTimeStamp
 import utils.runCommand
 
-class LogManager : LogManagerInterface {
+class LogManager(
+    private val adbPath: String
+) : LogManagerInterface {
 
     private var monitorJob: Job? = null
     private val _logs = mutableStateListOf<LogData>()
@@ -80,7 +81,7 @@ class LogManager : LogManagerInterface {
                 }
             }
 
-            val logcatProcess = ProcessBuilder(adbPath.value, "logcat").apply {
+            val logcatProcess = ProcessBuilder(adbPath, "logcat").apply {
                 if (pid.isNotEmpty()) {
                     command().add("--pid=$pid")
                 }
@@ -109,7 +110,7 @@ class LogManager : LogManagerInterface {
         }
     }
 
-    private fun getPid(packageName: String) = "${adbPath.value} shell pidof -s $packageName".runCommand()?.trim() ?: ""
+    private fun getPid(packageName: String) = "$adbPath shell pidof -s $packageName".runCommand()?.trim() ?: ""
 
     private fun extractLogInfo(log: String): Pair<LogLevel, String>? {
         val logLevelsRegex = Regex("\\b[$LOG_TYPE_REGEX]\\b")

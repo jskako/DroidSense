@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.window.Window
 import java.awt.Dimension
+import settitngs.GlobalVariables
 import ui.application.WindowState
 import ui.application.WindowStateManager
 import ui.application.navigation.NavRoute
@@ -28,6 +29,7 @@ fun NavWindow(
     icon = rememberVectorPainter(state.icon),
     title = state.title
 ) {
+    val globalVariables = remember { GlobalVariables() }
     val navigationManager = remember { NavigationManager() }
     window.minimumSize = Dimension(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
     if (navigationManager.navRoute != NavRoute.RequirementsScreen) {
@@ -40,12 +42,14 @@ fun NavWindow(
             state.extra.screen?.invoke() ?: when (navigationManager.navRoute) {
                 is NavRoute.MainScreen -> {
                     MainScreen(
-                        windowStateManager = windowStateManager
+                        windowStateManager = windowStateManager,
+                        globalVariables = globalVariables
                     )
                 }
 
                 is NavRoute.RequirementsScreen -> {
                     RequirementsScreen(
+                        globalVariables = globalVariables,
                         navigateToMainScreen = { navigationManager.navigateTo(NavRoute.MainScreen) }
                     )
                 }

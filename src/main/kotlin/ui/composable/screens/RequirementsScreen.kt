@@ -6,13 +6,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import requirements.RequirementsManager
+import settitngs.GlobalVariables
 import ui.composable.sections.RequirementsSection
 
 @Composable
 fun RequirementsScreen(
+    globalVariables: GlobalVariables,
     navigateToMainScreen: () -> Unit
 ) {
-    val requirementsManager = remember { RequirementsManager() }
+    val requirementsManager = remember {
+        RequirementsManager(
+            globalVariables = globalVariables
+        )
+    }
     Column {
         RequirementsSection(
             requirementsManager = requirementsManager

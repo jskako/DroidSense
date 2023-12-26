@@ -13,10 +13,7 @@ import java.io.File
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
 import kotlinx.coroutines.delay
-import settitngs.GlobalVariables.adbPath
-import settitngs.GlobalVariables.scrCpyPath
-import settitngs.GlobalVariables.setAdbPath
-import settitngs.GlobalVariables.setScrCpyPath
+import settitngs.GlobalVariables
 import utils.ADB_WINDOWS_PATH
 import utils.DEFAULT_DELAY
 import utils.OS
@@ -25,10 +22,28 @@ import utils.getStringResource
 import utils.getUserOS
 import utils.isSoftwareInstalled
 
-class RequirementsManager {
+class RequirementsManager(private val globalVariables: GlobalVariables) {
 
-    private val _description = mutableStateOf(DEFAULT_DESCRIPTION)
-    private val _icon = mutableStateOf(DEFAULT_ICON)
+    private val requirementsList = listOf(
+        RequirementsDetails(
+            description = getStringResource("info.requirements.adb.general"),
+            icon = Icons.Default.Build,
+            function = { isSoftwareInstalled(globalVariables.adbPath.value) },
+            descriptionError = getStringResource("info.requirements.adb.error")
+        ),
+        RequirementsDetails(
+            description = getStringResource("info.requirements.scrcpy.general"),
+            icon = Icons.Default.List,
+            function = { isSoftwareInstalled(globalVariables.scrCpyPath.value) },
+            descriptionError = getStringResource("info.requirements.scrcpy.error")
+        )
+    )
+
+    private val defaultDescription = getStringResource("info.requirements.general")
+    private val defaultError = getStringResource("info.requirements.error")
+    private val defaultIcon = Icons.Default.Face
+    private val _description = mutableStateOf(defaultDescription)
+    private val _icon = mutableStateOf(defaultIcon)
 
     val description: State<String>
         get() = _description
@@ -40,8 +55,8 @@ class RequirementsManager {
         delay(DEFAULT_DELAY)
         return when (getUserOS()) {
             OS.WINDOWS.osName() -> {
-                setAdbPath(File(ADB_WINDOWS_PATH).absolutePath)
-                setScrCpyPath(File(SCRCPY_WINDOWS_PATH).absolutePath)
+                globalVariables.setAdbPath(File(ADB_WINDOWS_PATH).absolutePath)
+                globalVariables.setScrCpyPath(File(SCRCPY_WINDOWS_PATH).absolutePath)
                 setSucceed()
                 success(true)
             }
@@ -85,26 +100,7 @@ class RequirementsManager {
 
     private suspend fun setFailure(error: String?) {
         _icon.value = Icons.Default.Warning
-        _description.value = error ?: DEFAULT_ERROR
+        _description.value = error ?: defaultError
         delay(DEFAULT_DELAY)
     }
 }
-
-private val requirementsList = listOf(
-    RequirementsDetails(
-        description = getStringResource("info.requirements.adb.general"),
-        icon = Icons.Default.Build,
-        function = { isSoftwareInstalled(adbPath.value) },
-        descriptionError = getStringResource("info.requirements.adb.error")
-    ),
-    RequirementsDetails(
-        description = getStringResource("info.requirements.scrcpy.general"),
-        icon = Icons.Default.List,
-        function = { isSoftwareInstalled(scrCpyPath.value) },
-        descriptionError = getStringResource("info.requirements.scrcpy.error")
-    )
-)
-
-private val DEFAULT_DESCRIPTION = getStringResource("info.requirements.general")
-private val DEFAULT_ERROR = getStringResource("info.requirements.error")
-private val DEFAULT_ICON = Icons.Default.Face

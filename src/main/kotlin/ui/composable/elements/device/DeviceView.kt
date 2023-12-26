@@ -13,6 +13,8 @@ import ui.application.WindowStateManager
 
 @Composable
 fun DeviceView(
+    adbPath: String,
+    scrCpyPath: String,
     devices: List<DeviceDetails>,
     onMessage: (InfoManagerData) -> Unit,
     windowStateManager: WindowStateManager
@@ -23,6 +25,8 @@ fun DeviceView(
     ) {
         items(devices) { device ->
             DeviceCard(
+                adbPath = adbPath,
+                scrCpyPath = scrCpyPath,
                 device = device,
                 onMessage = onMessage,
                 windowStateManager = windowStateManager

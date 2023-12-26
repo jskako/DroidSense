@@ -43,6 +43,8 @@ import utils.startScrCpy
 
 @Composable
 fun DeviceCard(
+    adbPath: String,
+    scrCpyPath: String,
     device: DeviceDetails,
     onMessage: (InfoManagerData) -> Unit,
     windowStateManager: WindowStateManager
@@ -122,7 +124,12 @@ fun DeviceCard(
             ) {
                 OutlinedButton(
                     text = getStringResource("info.share.screen"),
-                    onClick = { startScrCpy(device.serialNumber) },
+                    onClick = {
+                        startScrCpy(
+                            scrCpyPath = scrCpyPath,
+                            serialNumber = device.serialNumber
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp)
@@ -136,7 +143,7 @@ fun DeviceCard(
                         .height(48.dp),
                     text = getStringResource("info.log.manager"),
                     onClick = {
-                        val logManager = LogManager()
+                        val logManager = LogManager(adbPath = adbPath)
                         windowStateManager.windowState?.openNewWindow?.let {
                             it(
                                 "${device.model} (${device.serialNumber})",
@@ -144,6 +151,7 @@ fun DeviceCard(
                                 WindowExtra(
                                     screen = {
                                         LogScreen(
+                                            adbPath = adbPath,
                                             device = device,
                                             logManager = logManager,
                                             onMessage = onMessage
@@ -177,6 +185,7 @@ fun DeviceCard(
                             function = {
                                 scope.launch {
                                     installApplication(
+                                        adbPath = adbPath,
                                         device.serialNumber,
                                         onMessage = onMessage
                                     )
