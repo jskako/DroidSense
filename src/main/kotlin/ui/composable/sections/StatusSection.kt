@@ -1,8 +1,5 @@
 package ui.composable.sections
 
-import adb.AdbDeviceManager.isMonitoring
-import adb.AdbDeviceManager.manageListeningStatus
-import adb.AdbDeviceManager.monitoringStatus
 import adb.DeviceManager
 import adb.DeviceOptions
 import adb.MonitorStatus
@@ -49,16 +46,15 @@ fun StatusSection(
                     .weight(1f)
                     .wrapContentSize()
                     .clickable {
-                        manageListeningStatus(
-                            monitorStatus = if (isMonitoring()) MonitorStatus.STOP else MonitorStatus.START,
-                            deviceManager = deviceManager,
+                        deviceManager.manageListeningStatus(
+                            monitorStatus = if (deviceManager.isMonitoring()) MonitorStatus.STOP else MonitorStatus.START,
                             scope = scope,
                             onMessage = onMessage
                         )
                     }
             ) {
                 Text(
-                    text = "${getStringResource("info.status.general")}: ${monitoringStatus.value.status()}",
+                    text = "${getStringResource("info.status.general")}: ${deviceManager.monitoringStatus.value.status()}",
                     textAlign = TextAlign.Center,
                 )
 

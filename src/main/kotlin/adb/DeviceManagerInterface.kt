@@ -1,19 +1,14 @@
 package adb
 
+import kotlinx.coroutines.CoroutineScope
 import notifications.InfoManagerData
 
 interface DeviceManagerInterface {
-    suspend fun updateDevicesStatus(status: MonitoringStatus = MonitoringStatus.NOT_MONITORING)
-    suspend fun addDevice(
-        serialNumber: String,
+    fun manageListeningStatus(
+        monitorStatus: MonitorStatus,
+        scope: CoroutineScope,
         onMessage: (InfoManagerData) -> Unit
     )
 
-    suspend fun removeDevice(
-        serialNumber: String,
-        onMessage: (InfoManagerData) -> Unit
-    )
-
-    suspend fun getDevicePackages(serialNumber: String): String
-    fun clearDevices()
+    fun isMonitoring(): Boolean
 }

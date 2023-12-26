@@ -1,6 +1,5 @@
 package ui.composable.screens
 
-import adb.AdbDeviceManager.manageListeningStatus
 import adb.DeviceManager
 import adb.MonitorStatus
 import androidx.compose.foundation.layout.Column
@@ -29,10 +28,9 @@ fun MainScreen() {
     val infoManager = remember { InfoManager() }
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
-        manageListeningStatus(
+        deviceManager.manageListeningStatus(
             monitorStatus = MonitorStatus.START,
             scope = scope,
-            deviceManager = deviceManager,
             onMessage = {
                 infoManager.showMessage(
                     infoManagerData = it,
