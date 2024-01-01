@@ -31,6 +31,15 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "DroidSense"
             packageVersion = "1.0.0"
+            macOS {
+                iconFile.set(project.file("icons/mac/icon.icns"))
+            }
+            windows {
+                iconFile.set(project.file("icons/win/icon.ico"))
+            }
+            linux {
+                iconFile.set(project.file("icons/linux/icon.png"))
+            }
         }
     }
 }

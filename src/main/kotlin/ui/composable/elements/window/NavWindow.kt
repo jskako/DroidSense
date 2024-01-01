@@ -26,7 +26,7 @@ fun NavWindow(
     windowStateManager: WindowStateManager
 ) = Window(
     onCloseRequest = state::close,
-    icon = rememberVectorPainter(state.icon),
+    icon = state.icon?.let { rememberVectorPainter(it) },
     title = state.title
 ) {
     val globalVariables = remember { GlobalVariables() }

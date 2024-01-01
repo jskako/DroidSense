@@ -1,10 +1,14 @@
 package requirements
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Adb
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.ScreenShare
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -27,13 +31,13 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
     private val requirementsList = listOf(
         RequirementsDetails(
             description = getStringResource("info.requirements.adb.general"),
-            icon = Icons.Default.Build,
+            icon = Icons.Default.Adb,
             function = { isSoftwareInstalled(globalVariables.adbPath.value) },
             descriptionError = getStringResource("info.requirements.adb.error")
         ),
         RequirementsDetails(
             description = getStringResource("info.requirements.scrcpy.general"),
-            icon = Icons.Default.List,
+            icon = Icons.Default.ScreenShare,
             function = { isSoftwareInstalled(globalVariables.scrCpyPath.value) },
             descriptionError = getStringResource("info.requirements.scrcpy.error")
         )
@@ -41,7 +45,7 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
 
     private val defaultDescription = getStringResource("info.requirements.general")
     private val defaultError = getStringResource("info.requirements.error")
-    private val defaultIcon = Icons.Default.Face
+    private val defaultIcon = Icons.Default.Checklist
     private val _description = mutableStateOf(defaultDescription)
     private val _icon = mutableStateOf(defaultIcon)
 
@@ -94,7 +98,7 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
     }
 
     private suspend fun setSucceed() {
-        _icon.value = Icons.Default.Done
+        _icon.value = Icons.Default.DoneAll
         _description.value = getStringResource("info.requirements.succeed")
         delay(DEFAULT_DELAY)
     }
