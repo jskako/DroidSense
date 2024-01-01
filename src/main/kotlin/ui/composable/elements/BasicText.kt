@@ -13,11 +13,13 @@ fun BasicText(
     value: String,
     color: Color = Color.Black,
     fontSize: TextUnit = 16.sp,
+    readOnly: Boolean = true,
     isBold: Boolean = false
 ) {
     val fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
     BasicTextField(
         value = value,
+        readOnly = readOnly,
         onValueChange = { },
         textStyle = TextStyle(
             color = color,

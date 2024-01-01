@@ -77,7 +77,7 @@ fun DeviceCard(
                     BasicText(
                         value = "${device.manufacturer?.capitalizeFirstChar()} ${device.model}",
                         fontSize = 20.sp,
-                        isBold = true
+                        isBold = true,
                     )
                 }
 
