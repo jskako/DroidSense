@@ -78,7 +78,10 @@ fun String.exportToFile(exportPath: String? = null): InfoManagerData {
 fun String.capitalizeFirstChar() = replaceFirstChar(Char::titlecase)
 
 fun String.runCommand(): String? = try {
-    Runtime.getRuntime().exec(this).inputStream.bufferedReader().use { it.readText() }
+    ProcessBuilder(this.split("\\s".toRegex()))
+        .redirectErrorStream(true)
+        .start()
+        .inputStream.bufferedReader().use { it.readText() }
 } catch (e: Exception) {
     null
 }

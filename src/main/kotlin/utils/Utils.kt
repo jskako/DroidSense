@@ -140,8 +140,11 @@ suspend fun installApplication(
                         duration = null
                     )
                 )
-                val command = "$adbPath -s $serialNumber install -r ${file.absolutePath}"
-                val process = Runtime.getRuntime().exec(command)
+
+                val command = listOf(adbPath, "-s", serialNumber, "install", "-r", file.absolutePath)
+                val process = ProcessBuilder(command).apply {
+                    redirectErrorStream(true)
+                }.start()
 
                 val exitCode = process.waitFor()
 
