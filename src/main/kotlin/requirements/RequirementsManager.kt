@@ -80,15 +80,16 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
                 _icon.value = icon
                 _description.value = description
                 delay(DEFAULT_DELAY)
-
-                if (!function()) {
-                    setFailure(descriptionError)
-                    return failure(Throwable(_description.value))
-                }
+                function().fold(
+                    onSuccess = {},
+                    onFailure = {
+                        setFailure(descriptionError)
+                        return failure(Throwable(_description.value))
+                    }
+                )
             }
         }
         setSucceed()
-
         return success(true)
     }
 
