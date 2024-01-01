@@ -4,20 +4,19 @@ import adb.DeviceManager
 import adb.DeviceOptions
 import adb.MonitorStatus
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,23 +38,23 @@ fun StatusSection(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
+            .padding(16.dp)
     ) {
         Row {
             Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .wrapContentSize()
-                    .clickable {
-                        deviceManager.manageListeningStatus(
-                            monitorStatus = if (deviceManager.isMonitoring()) MonitorStatus.STOP else MonitorStatus.START,
-                            scope = scope,
-                            onMessage = onMessage
-                        )
-                    }
+                    .weight(1f),
+                horizontalArrangement = Arrangement.Start
             ) {
                 Text(
+                    modifier = Modifier
+                        .clickable {
+                            deviceManager.manageListeningStatus(
+                                monitorStatus = if (deviceManager.isMonitoring()) MonitorStatus.STOP else MonitorStatus.START,
+                                scope = scope,
+                                onMessage = onMessage
+                            )
+                        },
                     text = "${getStringResource("info.status.general")}: ${deviceManager.monitoringStatus.value.status()}",
                     textAlign = TextAlign.Center,
                 )
