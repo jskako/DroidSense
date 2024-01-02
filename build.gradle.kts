@@ -21,6 +21,7 @@ dependencies {
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
     implementation("org.jetbrains.compose.material:material-icons-extended:1.5.11")
+    implementation("org.jetbrains.compose.material3:material3-desktop:1.5.11")
 }
 
 compose.desktop {
@@ -32,13 +33,13 @@ compose.desktop {
             packageName = "DroidSense"
             packageVersion = "1.0.0"
             macOS {
-                iconFile.set(project.file("icons/mac/icon.icns"))
+                iconFile.set(project.file("icon/mac/icon.icns"))
             }
             windows {
-                iconFile.set(project.file("icons/win/icon.ico"))
+                iconFile.set(project.file("icon/win/icon.ico"))
             }
             linux {
-                iconFile.set(project.file("icons/linux/icon.png"))
+                iconFile.set(project.file("icon/linux/icon.png"))
             }
         }
     }
