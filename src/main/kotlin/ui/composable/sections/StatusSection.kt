@@ -97,7 +97,8 @@ fun StatusSection(
                                     serialNumber = it.serialNumber
                                 )
                             }
-                        }
+                        },
+                        enabled = deviceManager.devices.isNotEmpty()
                     )
                 )
             )

@@ -51,7 +51,8 @@ fun ClickableIconMenu(
                         onClick = {
                             it.function()
                             isMenuVisible = false
-                        }
+                        },
+                        enabled = it.enabled
                     ) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
