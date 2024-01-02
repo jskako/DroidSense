@@ -2,12 +2,8 @@ package requirements
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Adb
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Checklist
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.DoneAll
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.ScreenShare
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.State

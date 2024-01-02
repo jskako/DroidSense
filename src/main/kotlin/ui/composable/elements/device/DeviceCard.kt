@@ -114,7 +114,7 @@ fun DeviceCard(
                 addSpaceHeight(16.dp)
 
                 Text(
-                    text = "${getStringResource("info.device.state")}: ${device.state}",
+                    text = "${getStringResource("info.device.state")}: ${device.state?.status()}",
                     color = Color.Gray
                 )
             }
