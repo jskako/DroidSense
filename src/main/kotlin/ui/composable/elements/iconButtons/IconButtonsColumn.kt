@@ -13,8 +13,10 @@ import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.PlainTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +38,7 @@ fun IconButtonsColumn(
         icons.forEach {
             val tooltipState = remember { PlainTooltipState() }
             val interactionSource = remember { MutableInteractionSource() }
+            var clicked by remember { mutableStateOf(false) }
 
             PlainTooltipBox(
                 modifier = Modifier.padding(start = 4.dp),
@@ -50,6 +53,7 @@ fun IconButtonsColumn(
             ) {
                 IconButton(
                     onClick = {
+                        clicked = true
                         it.function()
                     },
                     modifier = it.modifier,
@@ -67,12 +71,13 @@ fun IconButtonsColumn(
             when (hovered) {
                 true -> {
                     scope.launch {
-                        tooltipState.show()
+                        if (!clicked) tooltipState.show()
                     }
                 }
 
                 false -> {
                     scope.launch {
+                        clicked = false
                         tooltipState.dismiss()
                     }
                 }
