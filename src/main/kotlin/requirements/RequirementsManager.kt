@@ -14,13 +14,15 @@ import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
 import kotlinx.coroutines.delay
 import settitngs.GlobalVariables
+import utils.ADB_PACKAGE
 import utils.ADB_WINDOWS_PATH
 import utils.DEFAULT_DELAY
 import utils.OS
+import utils.SCRCPY_PACKAGE
 import utils.SCRCPY_WINDOWS_PATH
+import utils.findPath
 import utils.getStringResource
 import utils.getUserOS
-import utils.isSoftwareInstalled
 
 class RequirementsManager(private val globalVariables: GlobalVariables) {
 
@@ -28,14 +30,34 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
         RequirementsDetails(
             description = getStringResource("info.requirements.adb.general"),
             icon = Icons.Default.Adb,
-            function = { isSoftwareInstalled(globalVariables.adbPath.value) },
-            descriptionError = getStringResource("info.requirements.adb.error")
+            function = {
+                ADB_PACKAGE.findPath().let {
+                    if (it.isNotEmpty()) {
+                        globalVariables.setAdbPath(it)
+                        success(true)
+                    } else failure(
+                        exception = Throwable(
+                            message = getStringResource("info.requirements.adb.error")
+                        )
+                    )
+                }
+            }
         ),
         RequirementsDetails(
             description = getStringResource("info.requirements.scrcpy.general"),
             icon = Icons.Default.ScreenShare,
-            function = { isSoftwareInstalled(globalVariables.scrCpyPath.value) },
-            descriptionError = getStringResource("info.requirements.scrcpy.error")
+            function = {
+                SCRCPY_PACKAGE.findPath().let {
+                    if (it.isNotEmpty()) {
+                        globalVariables.setScrCpyPath(it)
+                        success(true)
+                    } else failure(
+                        exception = Throwable(
+                            message = getStringResource("info.requirements.scrcpy.error")
+                        )
+                    )
+                }
+            }
         )
     )
 
@@ -83,8 +105,8 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
                 function().fold(
                     onSuccess = {},
                     onFailure = {
-                        setFailure(descriptionError)
-                        return failure(Throwable(_description.value))
+                        setFailure(it.message)
+                        return failure(Throwable(it.message))
                     }
                 )
             }

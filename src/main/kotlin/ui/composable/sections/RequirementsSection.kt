@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import requirements.RequirementsManager
@@ -36,7 +37,11 @@ fun RequirementsSection(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Text(requirementsManager.description.value, fontSize = 24.sp)
+            Text(
+                textAlign = TextAlign.Center,
+                text = requirementsManager.description.value,
+                fontSize = 24.sp
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Icon(
                 imageVector = requirementsManager.icon.value,

@@ -32,6 +32,7 @@ import ui.composable.elements.window.DropdownTextItem
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import utils.DEVICE_PACKAGES
+import utils.EMPTY_STRING
 import utils.getDevicePropertyList
 import utils.getStringResource
 
@@ -50,7 +51,7 @@ fun LogStatusSection(
     var selectedPackage by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
     var isRunning by remember { mutableStateOf(false) }
     var selectedLogLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
-    var searchText by remember { mutableStateOf("") }
+    var searchText by remember { mutableStateOf(EMPTY_STRING) }
     var filterVisible by remember { mutableStateOf(false) }
 
     Box(

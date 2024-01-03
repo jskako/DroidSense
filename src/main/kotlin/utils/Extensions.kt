@@ -77,11 +77,11 @@ fun String.exportToFile(exportPath: String? = null): InfoManagerData {
 
 fun String.capitalizeFirstChar() = replaceFirstChar(Char::titlecase)
 
-fun String.runCommand(): String? = try {
+fun String.runCommand(): String? = runCatching {
     ProcessBuilder(this.split("\\s".toRegex()))
         .redirectErrorStream(true)
         .start()
-        .inputStream.bufferedReader().use { it.readText() }
-} catch (e: Exception) {
-    null
-}
+        .inputStream.bufferedReader().use { it.readText().trim() }
+}.getOrNull()
+
+fun String.findPath(): String = "which $this".runCommand()?.trim() ?: ""

@@ -14,13 +14,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import utils.Colors.darkBlue
+import utils.EMPTY_STRING
 
 @Composable
 fun IconClickableText(
     icon: ImageVector,
     iconColor: Color = darkBlue,
     text: String,
-    contentDescription: String = "",
+    contentDescription: String = EMPTY_STRING,
     function: () -> Unit
 ) {
     Row(

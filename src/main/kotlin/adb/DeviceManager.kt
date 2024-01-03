@@ -141,7 +141,7 @@ class DeviceManager(
         }
     }
 
-    private suspend fun handleDisconnectedDevices(
+    private fun handleDisconnectedDevices(
         currentDevices: Set<String>,
         onMessage: (InfoManagerData) -> Unit
     ) {

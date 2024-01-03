@@ -73,10 +73,6 @@ fun getUserOS(): String {
         ?.osName() ?: OS.UNSUPPORTED.osName()
 }
 
-fun isSoftwareInstalled(software: String): Result<Boolean> = runCatching {
-    ProcessBuilder("which", software).start().waitFor() == 0
-}
-
 fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }
 
 fun startScrCpy(

@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
 import utils.Colors.darkRed
+import utils.EMPTY_STRING
 import utils.LOG_TYPE_REGEX
 import utils.getStringResource
 import utils.getTimeStamp
@@ -68,7 +69,7 @@ class LogManager(
         onMessage: (InfoManagerData) -> Unit
     ) {
         withContext(Dispatchers.IO) {
-            var pid = ""
+            var pid = EMPTY_STRING
             if (!packageName.isNullOrEmpty()) {
                 pid = getPid(packageName)
 
@@ -110,7 +111,8 @@ class LogManager(
         }
     }
 
-    private fun getPid(packageName: String) = "$adbPath shell pidof -s $packageName".runCommand()?.trim() ?: ""
+    private fun getPid(packageName: String) =
+        "$adbPath shell pidof -s $packageName".runCommand()?.trim() ?: EMPTY_STRING
 
     private fun extractLogInfo(log: String): Pair<LogLevel, String>? {
         val logLevelsRegex = Regex("\\b[$LOG_TYPE_REGEX]\\b")

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import utils.Colors.darkBlue
+import utils.EMPTY_STRING
 import utils.getStringResource
 
 @Composable
@@ -33,7 +34,7 @@ fun DropdownItem(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(text) }
-    var searchText by remember { mutableStateOf("") }
+    var searchText by remember { mutableStateOf(EMPTY_STRING) }
 
     val color = if (enabled) darkBlue else Color.Gray
 

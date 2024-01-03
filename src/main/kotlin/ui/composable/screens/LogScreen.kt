@@ -39,6 +39,7 @@ import ui.composable.sections.LazySection
 import ui.composable.sections.LogStatusSection
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
+import utils.EMPTY_STRING
 import utils.LOG_MANAGER_NUMBER_OF_LINES
 import utils.getStringResource
 
@@ -51,13 +52,13 @@ fun LogScreen(
 ) {
 
     var logLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
-    var filteredText by remember { mutableStateOf("") }
+    var filteredText by remember { mutableStateOf(EMPTY_STRING) }
     var reverseLogs by remember { mutableStateOf(false) }
     var scrollToEnd by remember { mutableStateOf(true) }
     var saveToDatabase by remember { mutableStateOf(true) }
     var fontSize by remember { mutableStateOf(13.sp) }
     var isRunning by remember { mutableStateOf(false) }
-    var selectedPackage by remember { mutableStateOf("") }
+    var selectedPackage by remember { mutableStateOf(EMPTY_STRING) }
     val scope = rememberCoroutineScope()
 
     Column {

@@ -34,6 +34,7 @@ import ui.composable.elements.ClickableMenu
 import ui.composable.elements.OutlinedButton
 import ui.composable.screens.LogScreen
 import utils.DEFAULT_PHONE_IMAGE
+import utils.EMPTY_STRING
 import utils.IMAGES_DIRECTORY
 import utils.capitalizeFirstChar
 import utils.getImageBitmap
@@ -65,7 +66,7 @@ fun DeviceCard(
         ) {
             Image(
                 bitmap = getImageBitmap("$IMAGES_DIRECTORY/$DEFAULT_PHONE_IMAGE"),
-                contentDescription = "",
+                contentDescription = EMPTY_STRING,
                 modifier = Modifier.size(48.dp)
             )
 
@@ -100,15 +101,15 @@ fun DeviceCard(
                 BasicTextCaption(
                     text1 = getStringResource("info.display.resolution"),
                     text2 = "${
-                        (device.displayResolution?.split(": ")?.get(1) ?: "")
-                    } (${(device.displayDensity?.split(": ")?.get(1) ?: "")} ppi)"
+                        (device.displayResolution?.split(": ")?.get(1) ?: EMPTY_STRING)
+                    } (${(device.displayDensity?.split(": ")?.get(1) ?: EMPTY_STRING)} ppi)"
                 )
 
                 addSpaceHeight()
 
                 BasicTextCaption(
                     text1 = getStringResource("info.ip.address"),
-                    text2 = device.ipAddress ?: ""
+                    text2 = device.ipAddress ?: EMPTY_STRING
                 )
 
                 addSpaceHeight(16.dp)

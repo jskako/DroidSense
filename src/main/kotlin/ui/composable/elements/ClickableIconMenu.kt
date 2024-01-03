@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import utils.Colors
+import utils.EMPTY_STRING
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -36,7 +37,7 @@ fun ClickableIconMenu(
         Column {
             Icon(
                 imageVector = icon,
-                contentDescription = "",
+                contentDescription = EMPTY_STRING,
                 tint = Colors.darkBlue,
                 modifier = Modifier.clickable {
                     isMenuVisible = true

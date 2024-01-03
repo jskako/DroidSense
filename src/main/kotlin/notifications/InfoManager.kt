@@ -7,10 +7,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import notifications.interfaces.InfoManagerInterface
+import utils.EMPTY_STRING
 
 class InfoManager : InfoManagerInterface {
 
-    private var _InfoManagerData = mutableStateOf(InfoManagerData(message = ""))
+    private var _InfoManagerData = mutableStateOf(InfoManagerData(message = EMPTY_STRING))
     private var job: Job? = null
 
     val infoManagerData: State<InfoManagerData>
@@ -39,11 +40,11 @@ class InfoManager : InfoManagerInterface {
         job?.cancel()
         job = scope.launch {
             delay(duration)
-            _InfoManagerData.value = InfoManagerData(message = "")
+            _InfoManagerData.value = InfoManagerData(message = EMPTY_STRING)
         }
     }
 
     override fun clearInfoMessage() {
-        _InfoManagerData.value = InfoManagerData(message = "")
+        _InfoManagerData.value = InfoManagerData(message = EMPTY_STRING)
     }
 }
