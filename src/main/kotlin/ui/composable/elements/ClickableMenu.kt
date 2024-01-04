@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.Text
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClickableMenu(
     text: String,
@@ -30,7 +30,7 @@ fun ClickableMenu(
 
     ExposedDropdownMenuBox(
         expanded = isMenuVisible,
-        onExpandedChange = { isMenuVisible = !isMenuVisible }
+        onExpandedChange = { isMenuVisible = !isMenuVisible },
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -38,7 +38,8 @@ fun ClickableMenu(
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(48.dp)
+                    .menuAnchor(),
                 onClick = { isMenuVisible = true },
                 text = text
             )
@@ -52,14 +53,15 @@ fun ClickableMenu(
                         onClick = {
                             it.function()
                             isMenuVisible = false
+                        },
+                        text = {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = it.text,
+                                textAlign = TextAlign.Center
+                            )
                         }
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = it.text,
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                    )
                 }
             }
         }

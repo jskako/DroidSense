@@ -4,12 +4,12 @@ import adb.DeviceOptions
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +22,7 @@ import utils.Colors
 import utils.EMPTY_STRING
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClickableIconMenu(
     icon: ImageVector,
@@ -39,9 +39,11 @@ fun ClickableIconMenu(
                 imageVector = icon,
                 contentDescription = EMPTY_STRING,
                 tint = Colors.darkBlue,
-                modifier = Modifier.clickable {
-                    isMenuVisible = true
-                }
+                modifier = Modifier
+                    .clickable {
+                        isMenuVisible = true
+                    }
+                    .menuAnchor()
             )
             DropdownMenu(
                 expanded = isMenuVisible,
@@ -53,14 +55,15 @@ fun ClickableIconMenu(
                             it.function()
                             isMenuVisible = false
                         },
-                        enabled = it.enabled
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = it.text,
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                        enabled = it.enabled,
+                        text = {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = it.text,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    )
                 }
             }
         }
