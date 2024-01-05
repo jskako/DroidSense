@@ -1,10 +1,8 @@
 package requirements
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Adb
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.DoneAll
-import androidx.compose.material.icons.filled.ScreenShare
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -14,52 +12,14 @@ import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
 import kotlinx.coroutines.delay
 import settitngs.GlobalVariables
-import utils.ADB_PACKAGE
 import utils.ADB_WINDOWS_PATH
 import utils.DEFAULT_DELAY
 import utils.OS
-import utils.SCRCPY_PACKAGE
 import utils.SCRCPY_WINDOWS_PATH
-import utils.findPath
 import utils.getStringResource
 import utils.getUserOS
 
 class RequirementsManager(private val globalVariables: GlobalVariables) {
-
-    private val requirementsList = listOf(
-        RequirementsDetails(
-            description = getStringResource("info.requirements.adb.general"),
-            icon = Icons.Default.Adb,
-            function = {
-                ADB_PACKAGE.findPath().let {
-                    if (it.isNotEmpty()) {
-                        globalVariables.setAdbPath(it)
-                        success(true)
-                    } else failure(
-                        exception = Throwable(
-                            message = getStringResource("info.requirements.adb.error")
-                        )
-                    )
-                }
-            }
-        ),
-        RequirementsDetails(
-            description = getStringResource("info.requirements.scrcpy.general"),
-            icon = Icons.Default.ScreenShare,
-            function = {
-                SCRCPY_PACKAGE.findPath().let {
-                    if (it.isNotEmpty()) {
-                        globalVariables.setScrCpyPath(it)
-                        success(true)
-                    } else failure(
-                        exception = Throwable(
-                            message = getStringResource("info.requirements.scrcpy.error")
-                        )
-                    )
-                }
-            }
-        )
-    )
 
     private val defaultDescription = getStringResource("info.requirements.general")
     private val defaultError = getStringResource("info.requirements.error")
@@ -76,6 +36,7 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
     suspend fun executeRequirements(): Result<Boolean> {
         delay(DEFAULT_DELAY)
         return when (getUserOS()) {
+            // TODO - Remove globalVariables and use database
             OS.WINDOWS.osName() -> {
                 globalVariables.setAdbPath(File(ADB_WINDOWS_PATH).absolutePath)
                 globalVariables.setScrCpyPath(File(SCRCPY_WINDOWS_PATH).absolutePath)
@@ -84,35 +45,28 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
             }
 
             OS.MAC.osName(), OS.LINUX.osName() -> {
-                macLinuxRequirements()
+                // TODO - Check if exist in database, if yes continue to main, else error
+                return if (globalVariables.isValid) {
+                    setSucceed()
+                    success(true)
+                } else {
+                    setFailure(getStringResource("info.requirements.adb.error"))
+                    failure(
+                        exception = Throwable(
+                            message = getStringResource("info.requirements.adb.error")
+                        )
+                    )
+                }
             }
 
             else -> {
+                // TODO - FIx failure to go on proper place
                 getStringResource("info.requirements.os.error").let {
                     setFailure(it)
                     failure(Throwable(it))
                 }
             }
         }
-    }
-
-    private suspend fun macLinuxRequirements(): Result<Boolean> {
-        for (requirementsDetail in requirementsList) {
-            with(requirementsDetail) {
-                _icon.value = icon
-                _description.value = description
-                delay(DEFAULT_DELAY)
-                function().fold(
-                    onSuccess = {},
-                    onFailure = {
-                        setFailure(it.message)
-                        return failure(Throwable(it.message))
-                    }
-                )
-            }
-        }
-        setSucceed()
-        return success(true)
     }
 
     private suspend fun setSucceed() {

@@ -1,27 +1,20 @@
 package ui.composable.elements
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import utils.Colors.darkBlue
 import utils.getStringResource
 
 @Composable
-internal fun HintText(
+internal fun HintBox(
     modifier: Modifier = Modifier,
     text: String,
     icon: ImageVector = Icons.Default.Search,
@@ -34,7 +27,7 @@ internal fun HintText(
         onValueChange = {
             onValueChanged(it)
         },
-        label = { HintText(hintText) },
+        label = { HintBox(hintText) },
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
@@ -49,19 +42,4 @@ internal fun HintText(
         },
         modifier = modifier
     )
-}
-
-@Composable
-private fun HintText(text: String) {
-    Box(
-        modifier = Modifier
-            .padding(8.dp)
-            .alpha(0.5f)
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray
-        )
-    }
 }

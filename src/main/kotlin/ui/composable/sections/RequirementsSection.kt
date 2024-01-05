@@ -37,16 +37,16 @@ fun RequirementsSection(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                textAlign = TextAlign.Center,
-                text = requirementsManager.description.value,
-                fontSize = 24.sp
-            )
-            Spacer(modifier = Modifier.height(8.dp))
             Icon(
                 imageVector = requirementsManager.icon.value,
                 contentDescription = null,
                 modifier = Modifier.size(48.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                textAlign = TextAlign.Center,
+                text = requirementsManager.description.value,
+                fontSize = 20.sp
             )
         }
     }

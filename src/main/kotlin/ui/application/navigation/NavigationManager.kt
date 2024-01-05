@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 
 class NavigationManager : NavigationInterface {
 
-    private var _navRoute by mutableStateOf<NavRoute>(NavRoute.RequirementsScreen)
+    private var _navRoute by mutableStateOf<NavRoute>(NavRoute.CheckingRequirementsScreen)
     val navRoute: NavRoute by derivedStateOf { _navRoute }
 
     override fun navigateTo(navRoute: NavRoute) {

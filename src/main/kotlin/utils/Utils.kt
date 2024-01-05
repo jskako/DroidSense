@@ -58,8 +58,11 @@ fun pickDirectoryDialog(): String? {
     }
 }
 
-fun pickFile(allowedExtension: String? = null): File? {
-    val fileDialog = FileDialog(null as Frame?, "Choose File", FileDialog.LOAD)
+fun pickFile(
+    title: String = getStringResource("info.open.file.default"),
+    allowedExtension: String? = null
+): File? {
+    val fileDialog = FileDialog(null as Frame?, title, FileDialog.LOAD)
     fileDialog.isVisible = true
     fileDialog.isMultipleMode = false
 

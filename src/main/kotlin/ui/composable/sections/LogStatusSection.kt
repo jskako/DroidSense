@@ -26,7 +26,7 @@ import log.LogManager
 import notifications.InfoManagerData
 import ui.composable.elements.DropdownItem
 import ui.composable.elements.FilterText
-import ui.composable.elements.HintText
+import ui.composable.elements.HintBox
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.window.DropdownTextItem
 import utils.Colors.darkBlue
@@ -126,7 +126,7 @@ fun LogStatusSection(
             }
 
             if (filterVisible) {
-                HintText(
+                HintBox(
                     modifier = Modifier
                         .padding(top = 8.dp, bottom = 8.dp)
                         .fillMaxWidth(),

@@ -14,8 +14,9 @@ import ui.application.WindowState
 import ui.application.WindowStateManager
 import ui.application.navigation.NavRoute
 import ui.application.navigation.NavigationManager
+import ui.composable.screens.CheckingRequirementsScreen
 import ui.composable.screens.MainScreen
-import ui.composable.screens.RequirementsScreen
+import ui.composable.screens.VariablesScreen
 import ui.composable.utils.createMenu
 import utils.MIN_WINDOW_HEIGHT
 import utils.MIN_WINDOW_WIDTH
@@ -32,7 +33,7 @@ fun NavWindow(
     val globalVariables = remember { GlobalVariables() }
     val navigationManager = remember { NavigationManager() }
     window.minimumSize = Dimension(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
-    if (navigationManager.navRoute != NavRoute.RequirementsScreen) {
+    if (navigationManager.navRoute != NavRoute.CheckingRequirementsScreen) {
         createMenu(state)
     }
     MaterialTheme {
@@ -47,10 +48,18 @@ fun NavWindow(
                     )
                 }
 
-                is NavRoute.RequirementsScreen -> {
-                    RequirementsScreen(
+                is NavRoute.CheckingRequirementsScreen -> {
+                    CheckingRequirementsScreen(
                         globalVariables = globalVariables,
-                        navigateToMainScreen = { navigationManager.navigateTo(NavRoute.MainScreen) }
+                        navigateToMainScreen = { navigationManager.navigateTo(NavRoute.MainScreen) },
+                        navigateToSetVariablesScreen = { navigationManager.navigateTo(NavRoute.VariablesScreen) }
+                    )
+                }
+
+                is NavRoute.VariablesScreen -> {
+                    VariablesScreen(
+                        globalVariables = globalVariables,
+                        navigateToMainScreen = { navigationManager.navigateTo(NavRoute.MainScreen) },
                     )
                 }
             }
