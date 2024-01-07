@@ -12,10 +12,17 @@ import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
 import kotlinx.coroutines.delay
 import settitngs.GlobalVariables
-import utils.ADB_WINDOWS_PATH
+import utils.ADB_PACKAGE
+import utils.ADB_WINDOWS_32_PATH
+import utils.ADB_WINDOWS_64_PATH
+import utils.Arch
 import utils.DEFAULT_DELAY
 import utils.OS
-import utils.SCRCPY_WINDOWS_PATH
+import utils.SCRCPY_PACKAGE
+import utils.SCRCPY_WINDOWS_32_PATH
+import utils.SCRCPY_WINDOWS_64_PATH
+import utils.findPath
+import utils.getOSArch
 import utils.getStringResource
 import utils.getUserOS
 
@@ -36,16 +43,59 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
     suspend fun executeRequirements(): Result<Boolean> {
         delay(DEFAULT_DELAY)
         return when (getUserOS()) {
-            // TODO - Remove globalVariables and use database
-            OS.WINDOWS.osName() -> {
-                globalVariables.setAdbPath(File(ADB_WINDOWS_PATH).absolutePath)
-                globalVariables.setScrCpyPath(File(SCRCPY_WINDOWS_PATH).absolutePath)
+            OS.WINDOWS -> {
+                getOSArch().also {
+                    when (it) {
+                        Arch.BIT_32 -> {
+                            setPath(
+                                listOf(
+                                    Path(
+                                        pathName = PathName.ADB,
+                                        path = File(ADB_WINDOWS_32_PATH).absolutePath
+                                    ),
+                                    Path(
+                                        pathName = PathName.SCRCPY,
+                                        path = File(SCRCPY_WINDOWS_32_PATH).absolutePath
+                                    )
+                                )
+                            )
+                        }
+
+                        Arch.BIT_64 -> {
+                            setPath(
+                                listOf(
+                                    Path(
+                                        pathName = PathName.ADB,
+                                        path = File(ADB_WINDOWS_64_PATH).absolutePath
+                                    ),
+                                    Path(
+                                        pathName = PathName.SCRCPY,
+                                        path = File(SCRCPY_WINDOWS_64_PATH).absolutePath
+                                    )
+                                )
+                            )
+                        }
+
+                        Arch.UNSUPPORTED -> TODO()
+                    }
+                }
                 setSucceed()
                 success(true)
             }
 
-            OS.MAC.osName(), OS.LINUX.osName() -> {
-                // TODO - Check if exist in database, if yes continue to main, else error
+            OS.MAC, OS.LINUX -> {
+                setPath(
+                    listOf(
+                        Path(
+                            pathName = PathName.ADB,
+                            path = ADB_PACKAGE.findPath()
+                        ),
+                        Path(
+                            pathName = PathName.SCRCPY,
+                            path = SCRCPY_PACKAGE.findPath()
+                        )
+                    )
+                )
                 return if (globalVariables.isValid) {
                     setSucceed()
                     success(true)
@@ -69,6 +119,21 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
         }
     }
 
+    private fun setPath(path: List<Path>) {
+        // TODO - Remove globalVariables and use database
+        path.forEach {
+            when (it.pathName) {
+                PathName.ADB -> {
+                    globalVariables.setAdbPath(it.path)
+                }
+
+                PathName.SCRCPY -> {
+                    globalVariables.setScrCpyPath(it.path)
+                }
+            }
+        }
+    }
+
     private suspend fun setSucceed() {
         _icon.value = Icons.Default.DoneAll
         _description.value = getStringResource("info.requirements.succeed")
@@ -80,4 +145,14 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
         _description.value = error ?: defaultError
         delay(DEFAULT_DELAY)
     }
+}
+
+private data class Path(
+    val pathName: PathName,
+    val path: String
+)
+
+
+private enum class PathName {
+    ADB, SCRCPY
 }

@@ -14,8 +14,8 @@ import ui.application.WindowState
 import ui.application.WindowStateManager
 import ui.application.navigation.NavRoute
 import ui.application.navigation.NavigationManager
-import ui.composable.screens.CheckingRequirementsScreen
 import ui.composable.screens.MainScreen
+import ui.composable.screens.RequirementsScreen
 import ui.composable.screens.VariablesScreen
 import ui.composable.utils.createMenu
 import utils.MIN_WINDOW_HEIGHT
@@ -49,7 +49,7 @@ fun NavWindow(
                 }
 
                 is NavRoute.CheckingRequirementsScreen -> {
-                    CheckingRequirementsScreen(
+                    RequirementsScreen(
                         globalVariables = globalVariables,
                         navigateToMainScreen = { navigationManager.navigateTo(NavRoute.MainScreen) },
                         navigateToSetVariablesScreen = { navigationManager.navigateTo(NavRoute.VariablesScreen) }

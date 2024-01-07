@@ -70,10 +70,16 @@ fun pickFile(
     return selectedFile.takeIf { allowedExtension?.equals(it.extension, ignoreCase = true) != false }
 }
 
-fun getUserOS(): String {
+fun getUserOS(): OS {
     val osName = System.getProperty(SYSTEM_OS_PROPERTY).lowercase(Locale.getDefault())
     return OS.entries.firstOrNull { osName.contains(it.osName(), ignoreCase = true) }
-        ?.osName() ?: OS.UNSUPPORTED.osName()
+        ?: OS.UNSUPPORTED
+}
+
+fun getOSArch(): Arch {
+    val osArch = System.getProperty(SYSTEM_OS_ARCH)
+    return Arch.entries.firstOrNull { osArch.contains(it.archName(), ignoreCase = true) }
+        ?: Arch.UNSUPPORTED
 }
 
 fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }

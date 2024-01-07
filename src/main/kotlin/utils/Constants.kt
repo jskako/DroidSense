@@ -5,12 +5,15 @@ const val EXPORT_DATA_TIMESTAMP: String = "yyMMdd-HHmm-ss"
 const val LOG_EXTENSION: String = ".log"
 const val EMPTY_STRING: String = ""
 const val SYSTEM_OS_PROPERTY: String = "os.name"
+const val SYSTEM_OS_ARCH: String = "os.arch"
 const val ADB_POLLING_INTERVAL_MS = 1000L
 const val DEFAULT_DELAY = 1000L
 const val ADB_PACKAGE = "adb"
 const val SCRCPY_PACKAGE = "scrcpy"
-const val ADB_WINDOWS_PATH = "tools/scrcpy/windows/adb.exe"
-const val SCRCPY_WINDOWS_PATH = "tools/scrcpy/windows/scrcpy.exe"
+const val ADB_WINDOWS_64_PATH = "tools/scrcpy/windows/64/adb.exe"
+const val SCRCPY_WINDOWS_64_PATH = "tools/scrcpy/windows/64/scrcpy.exe"
+const val ADB_WINDOWS_32_PATH = "tools/scrcpy/windows/32/adb.exe"
+const val SCRCPY_WINDOWS_32_PATH = "tools/scrcpy/windows/32/scrcpy.exe"
 const val MIN_WINDOW_WIDTH = 800
 const val MIN_WINDOW_HEIGHT = 600
 

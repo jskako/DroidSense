@@ -83,3 +83,5 @@ fun String.runCommand(): String? = runCatching {
         .start()
         .inputStream.bufferedReader().use { it.readText().trim() }
 }.getOrNull()
+
+fun String.findPath(): String = "which $this".runCommand()?.trim() ?: ""

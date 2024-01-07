@@ -15,7 +15,8 @@ class GlobalVariables {
     val scrCpyPath: State<String>
         get() = _scrCpyPath
 
-    val isValid = _adbPath.value.isNotEmpty() && _scrCpyPath.value.isNotEmpty()
+    val isValid
+        get() = _adbPath.value.isNotEmpty() && _scrCpyPath.value.isNotEmpty()
 
     fun setAdbPath(adbPath: String) {
         _adbPath.value = adbPath
