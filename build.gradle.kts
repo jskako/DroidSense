@@ -1,8 +1,10 @@
+import com.mikepenz.aboutlibraries.plugin.AboutLibrariesTask
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
+    id("com.mikepenz.aboutlibraries.plugin") version "10.10.0"
 }
 
 group = "com.jskako"
@@ -22,6 +24,9 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation("org.jetbrains.compose.material:material-icons-extended:1.5.11")
     implementation("org.jetbrains.compose.material3:material3-desktop:1.5.11")
+    implementation("com.mikepenz:aboutlibraries-core:10.10.0")
+    implementation("com.mikepenz:aboutlibraries-compose-m3:10.10.0")
+
 }
 
 compose.desktop {
@@ -43,4 +48,9 @@ compose.desktop {
             }
         }
     }
+}
+
+aboutLibraries {
+    registerAndroidTasks = false
+    prettyPrint = true
 }
