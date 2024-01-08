@@ -15,6 +15,6 @@ data class DeviceDetails(
     var state: MonitoringStatus? = null,
 ) {
     override fun toString(): String {
-        return "${manufacturer?.capitalizeFirstChar()} $model"
+        return "${manufacturer?.capitalizeFirstChar()} $model ($serialNumber)"
     }
 }

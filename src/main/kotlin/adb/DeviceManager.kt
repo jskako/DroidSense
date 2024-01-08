@@ -114,7 +114,11 @@ class DeviceManager(
                                 currentDevices.add(serialNumber)
                                 if (!devices.any { it.serialNumber == serialNumber }) {
                                     addDevice(
-                                        adbPath = adbPath,
+                                        serialNumber = serialNumber,
+                                        onMessage = onMessage
+                                    )
+                                } else {
+                                    updateDevice(
                                         serialNumber = serialNumber,
                                         onMessage = onMessage
                                     )
@@ -162,59 +166,75 @@ class DeviceManager(
     }
 
     private fun addDevice(
-        adbPath: String,
         serialNumber: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
-        // TODO: Update details if changed
-        val newDevice = DeviceDetails(
-            serialNumber = serialNumber,
-            model = getDeviceProperty(
-                serialNumber = serialNumber,
-                property = DEVICE_MODEL_PROPERTY,
-                adbPath = adbPath
-            ),
-            manufacturer = getDeviceProperty(
-                serialNumber = serialNumber,
-                property = DEVICE_MANUFACTURER,
-                adbPath = adbPath
-            ),
-            brand = getDeviceProperty(
-                serialNumber = serialNumber,
-                property = DEVICE_BRAND,
-                adbPath = adbPath
-            ),
-            buildSDK = getDeviceProperty(
-                serialNumber = serialNumber,
-                property = DEVICE_BUILD_SDK,
-                adbPath = adbPath
-            ),
-            androidVersion = getDeviceProperty(
-                serialNumber = serialNumber,
-                property = DEVICE_ANDROID_VERSION,
-                adbPath = adbPath
-            ),
-            displayResolution = getDeviceProperty(
-                serialNumber = serialNumber,
-                property = DEVICE_DISPLAY_RESOLUTION,
-                adbPath = adbPath
-            ),
-            displayDensity = getDeviceProperty(
-                serialNumber = serialNumber,
-                property = DEVICE_DISPLAY_DENSITY,
-                adbPath = adbPath
-            ),
-            ipAddress = getDeviceProperty(
-                serialNumber = serialNumber,
-                property = DEVICE_IP_ADDRESS,
-                adbPath = adbPath
-            ).takeIf { it.isNotEmpty() }
-                ?: getStringResource("info.not.connected"),
-            state = MonitoringStatus.MONITORING
-        )
-        _devices.add(newDevice)
-        onMessage(InfoManagerData(message = "${getStringResource("info.add.device")}: $newDevice"))
+        getDeviceInfo(serialNumber).also {
+            _devices.add(it)
+            onMessage(InfoManagerData(message = "${getStringResource("info.add.device")}: $it"))
+        }
     }
+
+    private fun updateDevice(
+        serialNumber: String,
+        onMessage: (InfoManagerData) -> Unit
+    ) {
+        getDeviceInfo(serialNumber).also { deviceDetails ->
+            _devices.find { it.serialNumber == deviceDetails.serialNumber }.also { existingDevice ->
+                if (existingDevice != deviceDetails) {
+                    _devices.remove(existingDevice)
+                    _devices.add(deviceDetails)
+                    onMessage(InfoManagerData(message = "${getStringResource("info.update.device")}: $deviceDetails"))
+                }
+            }
+        }
+    }
+
+    private fun getDeviceInfo(serialNumber: String) = DeviceDetails(
+        serialNumber = serialNumber,
+        model = getDeviceProperty(
+            serialNumber = serialNumber,
+            property = DEVICE_MODEL_PROPERTY,
+            adbPath = adbPath
+        ),
+        manufacturer = getDeviceProperty(
+            serialNumber = serialNumber,
+            property = DEVICE_MANUFACTURER,
+            adbPath = adbPath
+        ),
+        brand = getDeviceProperty(
+            serialNumber = serialNumber,
+            property = DEVICE_BRAND,
+            adbPath = adbPath
+        ),
+        buildSDK = getDeviceProperty(
+            serialNumber = serialNumber,
+            property = DEVICE_BUILD_SDK,
+            adbPath = adbPath
+        ),
+        androidVersion = getDeviceProperty(
+            serialNumber = serialNumber,
+            property = DEVICE_ANDROID_VERSION,
+            adbPath = adbPath
+        ),
+        displayResolution = getDeviceProperty(
+            serialNumber = serialNumber,
+            property = DEVICE_DISPLAY_RESOLUTION,
+            adbPath = adbPath
+        ),
+        displayDensity = getDeviceProperty(
+            serialNumber = serialNumber,
+            property = DEVICE_DISPLAY_DENSITY,
+            adbPath = adbPath
+        ),
+        ipAddress = getDeviceProperty(
+            serialNumber = serialNumber,
+            property = DEVICE_IP_ADDRESS,
+            adbPath = adbPath
+        ).takeIf { it.isNotEmpty() }
+            ?: getStringResource("info.not.connected"),
+        state = MonitoringStatus.MONITORING
+    )
 
     private fun removeDevice(
         serialNumber: String,
