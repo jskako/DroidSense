@@ -180,10 +180,9 @@ class DeviceManager(
         onMessage: (InfoManagerData) -> Unit
     ) {
         getDeviceInfo(serialNumber).also { deviceDetails ->
-            _devices.find { it.serialNumber == deviceDetails.serialNumber }.also { existingDevice ->
-                if (existingDevice != deviceDetails) {
-                    _devices.remove(existingDevice)
-                    _devices.add(deviceDetails)
+            _devices.indexOfFirst { it.serialNumber == deviceDetails.serialNumber }.also { index ->
+                if (_devices[index] != deviceDetails) {
+                    _devices[index] = deviceDetails
                     onMessage(InfoManagerData(message = "${getStringResource("info.update.device")}: $deviceDetails"))
                 }
             }
