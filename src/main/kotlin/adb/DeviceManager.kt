@@ -48,7 +48,8 @@ class DeviceManager(
             _monitoringStatus.value = MonitoringStatus.MONITORING
             monitorAdbDevices(
                 adbPath = adbPath,
-                onMessage = onMessage
+                onMessage = onMessage,
+                scope = coroutineScope
             )
         }
     }
@@ -94,7 +95,8 @@ class DeviceManager(
 
     private suspend fun monitorAdbDevices(
         adbPath: String,
-        onMessage: (InfoManagerData) -> Unit
+        onMessage: (InfoManagerData) -> Unit,
+        scope: CoroutineScope
     ) {
         withContext(Default) {
             while (true) {
@@ -127,6 +129,9 @@ class DeviceManager(
                     )
 
                 }.getOrElse { exception ->
+                    stopListening(
+                        coroutineScope = scope
+                    )
                     onMessage(
                         InfoManagerData(
                             color = darkRed,

@@ -2,6 +2,7 @@ package ui.composable.screens
 
 import adb.DeviceManager
 import adb.MonitorStatus
+import adb.MonitoringStatus
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Divider
@@ -80,7 +81,7 @@ fun MainScreen(
         )
         CircularProgressBar(
             text = getStringResource("info.waiting.device"),
-            isVisible = deviceManager.devices.isEmpty()
+            isVisible = deviceManager.devices.isEmpty() && deviceManager.monitoringStatus.value == MonitoringStatus.MONITORING
         )
         LazySection(view = {
             DeviceView(
