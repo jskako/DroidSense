@@ -1,12 +1,16 @@
 [versions]
 about-libraries = "10.10.0"
 material = "1.5.11"
+sqldelight = "2.0.1"
 
 [libraries]
 material-icons = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "material" }
 material3 = { module = "org.jetbrains.compose.material3:material3-desktop", version.ref = "material" }
 about-libraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "about-libraries" }
 about-libraries-compose = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "about-libraries" }
+sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 
 [plugins]
 about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about-libraries" }
+sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }

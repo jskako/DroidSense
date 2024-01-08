@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
     alias(libs.plugins.about.libraries)
+    alias(libs.plugins.sqlDelight)
 }
 
 group = "com.jskako"
@@ -25,6 +26,8 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.about.libraries.core)
     implementation(libs.about.libraries.compose)
+    implementation(libs.sqldelight.coroutines)
+    implementation(libs.sqldelight.jvm)
 }
 
 compose.desktop {
@@ -51,4 +54,14 @@ compose.desktop {
 aboutLibraries {
     registerAndroidTasks = false
     prettyPrint = true
+}
+
+kotlin {
+    sqldelight {
+        databases {
+            create("DroidSenseDatabase") {
+                packageName = "com.jskako"
+            }
+        }
+    }
 }

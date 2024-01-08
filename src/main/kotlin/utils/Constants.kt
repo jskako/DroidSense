@@ -19,6 +19,7 @@ const val MIN_WINDOW_HEIGHT = 600
 
 private const val GET_PROPERTY: String = "getprop"
 const val DEVICE_MODEL_PROPERTY: String = "$GET_PROPERTY ro.product.model"
+const val DEVICE_SERIAL_NUMBER: String = "$GET_PROPERTY ro.serialno"
 const val DEVICE_MANUFACTURER: String = "$GET_PROPERTY ro.product.manufacturer"
 const val DEVICE_BRAND: String = "$GET_PROPERTY ro.product.brand"
 const val DEVICE_BUILD_SDK: String = "$GET_PROPERTY ro.build.version.sdk"
