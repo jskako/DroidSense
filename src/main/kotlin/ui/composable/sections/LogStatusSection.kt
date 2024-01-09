@@ -39,7 +39,7 @@ import utils.getStringResource
 @Composable
 fun LogStatusSection(
     adbPath: String,
-    serialNumber: String,
+    identifier: String,
     logManager: LogManager,
     onMessage: (InfoManagerData) -> Unit,
     onLogLevelSelected: (LogLevel) -> Unit,
@@ -81,7 +81,7 @@ fun LogStatusSection(
                                         logManager.startMonitoringLogs(
                                             coroutineScope = this,
                                             packageName = selectedPackage,
-                                            serialNumber = serialNumber,
+                                            identifier = identifier,
                                             onMessage = onMessage
                                         )
                                     }
@@ -103,7 +103,7 @@ fun LogStatusSection(
                 DropdownItem(
                     list = getDevicePropertyList(
                         adbPath = adbPath,
-                        serialNumber = serialNumber,
+                        identifier = identifier,
                         property = DEVICE_PACKAGES,
                         startingItem = getStringResource("info.log.starting.package")
                     ),

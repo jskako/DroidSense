@@ -92,11 +92,11 @@ fun startScrCpy(
 
 fun getDeviceProperty(
     adbPath: String,
-    serialNumber: String,
+    identifier: String,
     property: String
 ): String {
     return runCatching {
-        ProcessBuilder(adbPath, "-s", serialNumber, "shell", property).start().inputStream
+        ProcessBuilder(adbPath, "-s", identifier, "shell", property).start().inputStream
             .bufferedReader()
             .use { reader ->
                 reader.readLine()
@@ -106,12 +106,12 @@ fun getDeviceProperty(
 
 fun getDevicePropertyList(
     adbPath: String,
-    serialNumber: String,
+    identifier: String,
     property: String,
     startingItem: String? = null
 ): List<String> {
     return runCatching {
-        val process = ProcessBuilder(adbPath, "-s", serialNumber, "shell", property).start()
+        val process = ProcessBuilder(adbPath, "-s", identifier, "shell", property).start()
         val lines = process.inputStream
             .bufferedReader()
             .lineSequence()
@@ -133,7 +133,7 @@ fun getDevicePropertyList(
 
 suspend fun installApplication(
     adbPath: String,
-    serialNumber: String,
+    identifier: String,
     onMessage: (InfoManagerData) -> Unit
 ) {
     return withContext(Default) {
@@ -146,7 +146,7 @@ suspend fun installApplication(
                     )
                 )
 
-                val command = listOf(adbPath, "-s", serialNumber, "install", "-r", file.absolutePath)
+                val command = listOf(adbPath, "-s", identifier, "install", "-r", file.absolutePath)
                 val process = ProcessBuilder(command).apply {
                     redirectErrorStream(true)
                 }.start()
@@ -178,3 +178,5 @@ suspend fun installApplication(
         }
     }
 }
+
+fun isValidIpAddressWithPort(input: String) = ipPortRegex.matches(input)

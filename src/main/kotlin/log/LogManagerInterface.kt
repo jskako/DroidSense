@@ -7,7 +7,7 @@ interface LogManagerInterface {
     suspend fun startMonitoringLogs(
         coroutineScope: CoroutineScope,
         packageName: String,
-        serialNumber: String,
+        identifier: String,
         onMessage: (InfoManagerData) -> Unit
     )
 

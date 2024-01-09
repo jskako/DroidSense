@@ -64,7 +64,7 @@ fun LogScreen(
     Column {
         LogStatusSection(
             adbPath = adbPath,
-            serialNumber = device.serialNumber,
+            identifier = device.deviceIdentifier,
             logManager = logManager,
             onLogLevelSelected = {
                 logLevel = it

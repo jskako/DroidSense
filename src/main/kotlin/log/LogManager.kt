@@ -10,9 +10,9 @@ import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
 import utils.Colors.darkRed
 import utils.EMPTY_STRING
-import utils.LOG_TYPE_REGEX
 import utils.getStringResource
 import utils.getTimeStamp
+import utils.logLevelRegex
 import utils.runCommand
 
 class LogManager(
@@ -32,7 +32,7 @@ class LogManager(
     override suspend fun startMonitoringLogs(
         coroutineScope: CoroutineScope,
         packageName: String,
-        serialNumber: String,
+        identifier: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
         stopMonitoringLogs()
@@ -41,7 +41,7 @@ class LogManager(
             try {
                 monitorLogs(
                     packageName = if (packageName == getStringResource("info.log.starting.package")) null else packageName,
-                    serialNumber = serialNumber,
+                    identifier = identifier,
                     onMessage = onMessage
                 )
             } catch (e: Exception) {
@@ -65,24 +65,29 @@ class LogManager(
 
     private suspend fun monitorLogs(
         packageName: String?,
-        serialNumber: String,
+        identifier: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
         withContext(Dispatchers.IO) {
             var pid = EMPTY_STRING
             if (!packageName.isNullOrEmpty()) {
-                pid = getPid(packageName)
+                pid = getPid(
+                    identifier = identifier,
+                    packageName = packageName
+                )
 
                 if (pid.isEmpty()) {
                     while (pid.isEmpty()) {
                         delay(1000)
-                        pid = getPid(packageName)
+                        pid = getPid(
+                            identifier = identifier,
+                            packageName = packageName
+                        )
                     }
                     _logs.clear()
                 }
             }
-
-            val logcatProcess = ProcessBuilder(adbPath, "logcat").apply {
+            val logcatProcess = ProcessBuilder(adbPath, "-s", identifier, "logcat").apply {
                 if (pid.isNotEmpty()) {
                     command().add("--pid=$pid")
                 }
@@ -103,7 +108,7 @@ class LogManager(
             }.onFailure { exception ->
                 onMessage(
                     InfoManagerData(
-                        message = "${getStringResource("info.log.error")} $serialNumber: $exception",
+                        message = "${getStringResource("info.log.error")} $identifier: $exception",
                         color = darkRed
                     )
                 )
@@ -111,12 +116,14 @@ class LogManager(
         }
     }
 
-    private fun getPid(packageName: String) =
-        "$adbPath shell pidof -s $packageName".runCommand()?.trim() ?: EMPTY_STRING
+    private fun getPid(
+        identifier: String,
+        packageName: String
+    ) =
+        "$adbPath -s $identifier shell pidof -s $packageName".runCommand()?.trim() ?: EMPTY_STRING
 
     private fun extractLogInfo(log: String): Pair<LogLevel, String>? {
-        val logLevelsRegex = Regex("\\b[$LOG_TYPE_REGEX]\\b")
-        val matchResult = logLevelsRegex.find(log)
+        val matchResult = logLevelRegex.find(log)
 
         return matchResult?.let { result ->
             val logLevel = when (result.value[0]) {

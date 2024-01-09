@@ -1,5 +1,6 @@
 package ui.composable.elements.device
 
+import adb.ConnectionType
 import adb.DeviceDetails
 import adb.DeviceOptions
 import androidx.compose.foundation.Image
@@ -17,6 +18,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +45,7 @@ import utils.capitalizeFirstChar
 import utils.getImageBitmap
 import utils.getStringResource
 import utils.installApplication
+import utils.isValidIpAddressWithPort
 import utils.startScrCpy
 
 @Composable
@@ -118,8 +123,16 @@ fun DeviceCard(
 
                 addSpaceHeight(16.dp)
 
+                val connectionType by remember {
+                    mutableStateOf(
+                        isValidIpAddressWithPort(device.deviceIdentifier).let {
+                            if (it) ConnectionType.WIRELESS else ConnectionType.CABLE
+                        }.name
+                    )
+                }
+
                 Text(
-                    text = "${getStringResource("info.device.state")}: ${device.state?.status()}",
+                    text = "${getStringResource("info.device.connection.type")}: $connectionType",
                     color = Color.Gray
                 )
             }
@@ -191,7 +204,7 @@ fun DeviceCard(
                                 scope.launch {
                                     installApplication(
                                         adbPath = adbPath,
-                                        device.serialNumber,
+                                        device.deviceIdentifier,
                                         onMessage = onMessage
                                     )
                                 }

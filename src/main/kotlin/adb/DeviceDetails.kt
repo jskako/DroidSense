@@ -3,6 +3,7 @@ package adb
 import utils.capitalizeFirstChar
 
 data class DeviceDetails(
+    val deviceIdentifier: String,
     val serialNumber: String,
     val model: String? = null,
     val manufacturer: String? = null,

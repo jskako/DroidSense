@@ -12,6 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
+import utils.ADB_DEVICE_OFFLINE
 import utils.ADB_POLLING_INTERVAL_MS
 import utils.Colors.darkRed
 import utils.DEVICE_ANDROID_VERSION
@@ -22,6 +23,8 @@ import utils.DEVICE_DISPLAY_RESOLUTION
 import utils.DEVICE_IP_ADDRESS
 import utils.DEVICE_MANUFACTURER
 import utils.DEVICE_MODEL_PROPERTY
+import utils.DEVICE_SERIAL_NUMBER
+import utils.deviceRegex
 import utils.getDeviceProperty
 import utils.getStringResource
 
@@ -108,18 +111,25 @@ class DeviceManager(
 
                     reader.useLines { lines ->
                         lines.forEach { line ->
-                            if (line.matches(Regex(".*device\\s+.*"))) {
+                            if (line.matches(deviceRegex)) {
+
                                 val parts = line.split("\\s+".toRegex())
-                                val serialNumber = parts[0].trim()
-                                currentDevices.add(serialNumber)
-                                if (!devices.any { it.serialNumber == serialNumber }) {
+                                val identifier = parts.first().trim()
+                                val deviceExist = devices.any { it.deviceIdentifier == identifier }
+                                val deviceAvailable = parts.last().trim() != ADB_DEVICE_OFFLINE
+
+                                currentDevices.add(identifier)
+
+                                if (!deviceExist && deviceAvailable) {
                                     addDevice(
-                                        serialNumber = serialNumber,
+                                        identifier = identifier,
                                         onMessage = onMessage
                                     )
-                                } else {
+                                }
+
+                                if (deviceExist && deviceAvailable) {
                                     updateDevice(
-                                        serialNumber = serialNumber,
+                                        identifier = identifier,
                                         onMessage = onMessage
                                     )
                                 }
@@ -155,10 +165,10 @@ class DeviceManager(
         onMessage: (InfoManagerData) -> Unit
     ) {
         if (monitoringStatus.value == MonitoringStatus.MONITORING) {
-            val disconnectedSerialNumbers = devices.map { it.serialNumber } - currentDevices
-            for (serialNumber in disconnectedSerialNumbers) {
+            val disconnectedIdentifiers = devices.map { it.deviceIdentifier } - currentDevices
+            for (identifier in disconnectedIdentifiers) {
                 removeDevice(
-                    serialNumber = serialNumber,
+                    identifier = identifier,
                     onMessage = onMessage
                 )
             }
@@ -166,21 +176,25 @@ class DeviceManager(
     }
 
     private fun addDevice(
-        serialNumber: String,
+        identifier: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
-        getDeviceInfo(serialNumber).also {
+        getDeviceInfo(
+            identifier = identifier
+        ).also {
             _devices.add(it)
             onMessage(InfoManagerData(message = "${getStringResource("info.add.device")}: $it"))
         }
     }
 
     private fun updateDevice(
-        serialNumber: String,
+        identifier: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
-        getDeviceInfo(serialNumber).also { deviceDetails ->
-            _devices.indexOfFirst { it.serialNumber == deviceDetails.serialNumber }.also { index ->
+        getDeviceInfo(
+            identifier = identifier
+        ).also { deviceDetails ->
+            _devices.indexOfFirst { it.deviceIdentifier == deviceDetails.deviceIdentifier }.also { index ->
                 if (_devices[index] != deviceDetails) {
                     _devices[index] = deviceDetails
                     onMessage(InfoManagerData(message = "${getStringResource("info.update.device")}: $deviceDetails"))
@@ -189,45 +203,52 @@ class DeviceManager(
         }
     }
 
-    private fun getDeviceInfo(serialNumber: String) = DeviceDetails(
-        serialNumber = serialNumber,
+    private fun getDeviceInfo(
+        identifier: String
+    ) = DeviceDetails(
+        deviceIdentifier = identifier,
+        serialNumber = getDeviceProperty(
+            identifier = identifier,
+            property = DEVICE_SERIAL_NUMBER,
+            adbPath = adbPath
+        ),
         model = getDeviceProperty(
-            serialNumber = serialNumber,
+            identifier = identifier,
             property = DEVICE_MODEL_PROPERTY,
             adbPath = adbPath
         ),
         manufacturer = getDeviceProperty(
-            serialNumber = serialNumber,
+            identifier = identifier,
             property = DEVICE_MANUFACTURER,
             adbPath = adbPath
         ),
         brand = getDeviceProperty(
-            serialNumber = serialNumber,
+            identifier = identifier,
             property = DEVICE_BRAND,
             adbPath = adbPath
         ),
         buildSDK = getDeviceProperty(
-            serialNumber = serialNumber,
+            identifier = identifier,
             property = DEVICE_BUILD_SDK,
             adbPath = adbPath
         ),
         androidVersion = getDeviceProperty(
-            serialNumber = serialNumber,
+            identifier = identifier,
             property = DEVICE_ANDROID_VERSION,
             adbPath = adbPath
         ),
         displayResolution = getDeviceProperty(
-            serialNumber = serialNumber,
+            identifier = identifier,
             property = DEVICE_DISPLAY_RESOLUTION,
             adbPath = adbPath
         ),
         displayDensity = getDeviceProperty(
-            serialNumber = serialNumber,
+            identifier = identifier,
             property = DEVICE_DISPLAY_DENSITY,
             adbPath = adbPath
         ),
         ipAddress = getDeviceProperty(
-            serialNumber = serialNumber,
+            identifier = identifier,
             property = DEVICE_IP_ADDRESS,
             adbPath = adbPath
         ).takeIf { it.isNotEmpty() }
@@ -236,10 +257,10 @@ class DeviceManager(
     )
 
     private fun removeDevice(
-        serialNumber: String,
+        identifier: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
-        val deviceToRemove = _devices.firstOrNull { it.serialNumber == serialNumber }
+        val deviceToRemove = _devices.firstOrNull { it.deviceIdentifier == identifier }
         deviceToRemove?.let { device ->
             _devices.remove(device)
             onMessage(
