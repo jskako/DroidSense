@@ -181,7 +181,7 @@ fun DeviceCard(
                                                 logManager.stopMonitoringLogs()
                                                 onMessage(
                                                     InfoManagerData(
-                                                        message = "${getStringResource("info.log.closing")} $device - ${device.serialNumber}"
+                                                        message = "${getStringResource("info.log.closing")} $device"
                                                     )
                                                 )
                                             }
