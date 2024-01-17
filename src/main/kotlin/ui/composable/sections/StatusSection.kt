@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.RunCircle
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -128,6 +129,15 @@ fun StatusSection(
                             }
                         }
                     )
+                )
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            ClickableIconMenu(
+                icon = Icons.Default.Settings,
+                functions = listOf(
+
                 )
             )
         }
