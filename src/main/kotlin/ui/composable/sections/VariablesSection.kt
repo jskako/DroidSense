@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +24,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import settitngs.GlobalVariables
+import data.keys.SettingsKey
+import data.repository.SettingsSource
+import kotlinx.coroutines.launch
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.SelectableText
 import utils.Colors.darkBlue
@@ -34,11 +37,12 @@ fun VariablesSection(
     title: String,
     description: String,
     cancelButtonEnabled: Boolean,
-    globalVariables: GlobalVariables,
+    settingsSource: SettingsSource,
     navigateToMainScreen: () -> Unit,
 ) {
-    var adbPath by remember { mutableStateOf(globalVariables.adbPath.value) }
-    var scrcpyPath by remember { mutableStateOf(globalVariables.scrCpyPath.value) }
+    var adbPath by remember { mutableStateOf(settingsSource.get(SettingsKey.ADB.name)) }
+    var scrcpyPath by remember { mutableStateOf(settingsSource.get(SettingsKey.SCRCPY.name)) }
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -116,14 +120,22 @@ fun VariablesSection(
                     color = if (isValid) darkBlue else Color.Gray,
                     enabled = isValid,
                     onClick = {
-                        adbPath.trim().also {
-                            if (globalVariables.adbPath.value != it) {
-                                globalVariables.setAdbPath(it)
+                        scope.launch {
+                            adbPath.trim().also {
+                                if (settingsSource.get(SettingsKey.ADB.name) != it) {
+                                    settingsSource.update(
+                                        identifier = SettingsKey.ADB.name,
+                                        value = it
+                                    )
+                                }
                             }
-                        }
-                        scrcpyPath.trim().also {
-                            if (globalVariables.scrCpyPath.value != it) {
-                                globalVariables.setScrCpyPath(it)
+                            scrcpyPath.trim().also {
+                                if (settingsSource.get(SettingsKey.SCRCPY.name) != it) {
+                                    settingsSource.update(
+                                        identifier = SettingsKey.SCRCPY.name,
+                                        value = it
+                                    )
+                                }
                             }
                         }
                         navigateToMainScreen()

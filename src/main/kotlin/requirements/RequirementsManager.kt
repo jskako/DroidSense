@@ -1,17 +1,16 @@
 package requirements
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.Checklist
-import androidx.compose.material.icons.filled.DoneAll
+import androidx.compose.material.icons.filled.Hardware
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
-import java.io.File
-import kotlin.Result.Companion.failure
-import kotlin.Result.Companion.success
+import data.keys.SettingsKey
+import data.repository.SettingsSource
 import kotlinx.coroutines.delay
-import settitngs.GlobalVariables
 import utils.ADB_PACKAGE
 import utils.ADB_WINDOWS_32_PATH
 import utils.ADB_WINDOWS_64_PATH
@@ -25,14 +24,17 @@ import utils.findPath
 import utils.getOSArch
 import utils.getStringResource
 import utils.getUserOS
+import java.io.File
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
-class RequirementsManager(private val globalVariables: GlobalVariables) {
+class RequirementsManager(
+    private val settingsSource: SettingsSource,
+) {
 
-    private val defaultDescription = getStringResource("info.requirements.general")
     private val defaultError = getStringResource("info.requirements.error")
-    private val defaultIcon = Icons.Default.Checklist
-    private val _description = mutableStateOf(defaultDescription)
-    private val _icon = mutableStateOf(defaultIcon)
+    private val _description = mutableStateOf("")
+    private val _icon = mutableStateOf(Icons.Default.Android)
 
     val description: State<String>
         get() = _description
@@ -42,101 +44,115 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
 
     suspend fun executeRequirements(): Result<Boolean> {
         delay(DEFAULT_DELAY)
-        return when (getUserOS()) {
-            OS.WINDOWS -> {
-                getOSArch().also {
-                    when (it) {
-                        Arch.BIT_32 -> {
-                            setPath(
-                                listOf(
-                                    Path(
-                                        pathName = PathName.ADB,
-                                        path = File(ADB_WINDOWS_32_PATH).absolutePath
-                                    ),
-                                    Path(
-                                        pathName = PathName.SCRCPY,
-                                        path = File(SCRCPY_WINDOWS_32_PATH).absolutePath
+        return if (settingsSource.isValid()) {
+            setSucceed(message = getStringResource("info.requirements.welcome"))
+            success(true)
+        } else {
+            _icon.value = Icons.Default.Checklist
+            _description.value = getStringResource("info.requirements.general")
+            delay(DEFAULT_DELAY)
+            when (getUserOS()) {
+                OS.WINDOWS -> {
+                    getOSArch().also {
+                        when (it) {
+                            Arch.BIT_32 -> {
+                                setPath(
+                                    listOf(
+                                        Path(
+                                            pathName = SettingsKey.ADB,
+                                            path = File(ADB_WINDOWS_32_PATH).absolutePath
+                                        ),
+                                        Path(
+                                            pathName = SettingsKey.SCRCPY,
+                                            path = File(SCRCPY_WINDOWS_32_PATH).absolutePath
+                                        )
                                     )
                                 )
-                            )
-                        }
+                            }
 
-                        Arch.BIT_64 -> {
-                            setPath(
-                                listOf(
-                                    Path(
-                                        pathName = PathName.ADB,
-                                        path = File(ADB_WINDOWS_64_PATH).absolutePath
-                                    ),
-                                    Path(
-                                        pathName = PathName.SCRCPY,
-                                        path = File(SCRCPY_WINDOWS_64_PATH).absolutePath
+                            Arch.BIT_64 -> {
+                                setPath(
+                                    listOf(
+                                        Path(
+                                            pathName = SettingsKey.ADB,
+                                            path = File(ADB_WINDOWS_64_PATH).absolutePath
+                                        ),
+                                        Path(
+                                            pathName = SettingsKey.SCRCPY,
+                                            path = File(SCRCPY_WINDOWS_64_PATH).absolutePath
+                                        )
                                     )
                                 )
-                            )
-                        }
+                            }
 
-                        Arch.UNSUPPORTED -> TODO()
+                            Arch.UNSUPPORTED -> TODO()
+                        }
                     }
-                }
-                setSucceed()
-                success(true)
-            }
-
-            OS.MAC, OS.LINUX -> {
-                setPath(
-                    listOf(
-                        Path(
-                            pathName = PathName.ADB,
-                            path = ADB_PACKAGE.findPath()
-                        ),
-                        Path(
-                            pathName = PathName.SCRCPY,
-                            path = SCRCPY_PACKAGE.findPath()
-                        )
-                    )
-                )
-                return if (globalVariables.isValid) {
                     setSucceed()
                     success(true)
-                } else {
-                    setFailure(getStringResource("info.requirements.adb.error"))
-                    failure(
-                        exception = Throwable(
-                            message = getStringResource("info.requirements.adb.error")
+                }
+
+                OS.MAC, OS.LINUX -> {
+                    setPath(
+                        listOf(
+                            Path(
+                                pathName = SettingsKey.ADB,
+                                path = ADB_PACKAGE.findPath()
+                            ),
+                            Path(
+                                pathName = SettingsKey.SCRCPY,
+                                path = SCRCPY_PACKAGE.findPath()
+                            )
                         )
+                    )
+
+                    return if (settingsSource.isValid()) {
+                        setSucceed()
+                        success(true)
+                    } else {
+                        setFailure(getStringResource("info.requirements.adb.error"))
+                        failure(
+                            exception = Throwable(
+                                message = getStringResource("info.requirements.adb.error")
+                            )
+                        )
+                    }
+                }
+
+                else -> {
+                    // TODO - FIx failure to go on proper place
+                    getStringResource("info.requirements.os.error").let {
+                        setFailure(it)
+                        failure(Throwable(it))
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun setPath(path: List<Path>) {
+        path.forEach {
+            when (it.pathName) {
+                SettingsKey.ADB -> {
+                    settingsSource.add(
+                        identifier = SettingsKey.ADB.name,
+                        value = it.path
+                    )
+                }
+
+                SettingsKey.SCRCPY -> {
+                    settingsSource.add(
+                        identifier = SettingsKey.SCRCPY.name,
+                        value = it.path
                     )
                 }
             }
-
-            else -> {
-                // TODO - FIx failure to go on proper place
-                getStringResource("info.requirements.os.error").let {
-                    setFailure(it)
-                    failure(Throwable(it))
-                }
-            }
         }
     }
 
-    private fun setPath(path: List<Path>) {
-        // TODO - Remove globalVariables and use database
-        path.forEach {
-            when (it.pathName) {
-                PathName.ADB -> {
-                    globalVariables.setAdbPath(it.path)
-                }
-
-                PathName.SCRCPY -> {
-                    globalVariables.setScrCpyPath(it.path)
-                }
-            }
-        }
-    }
-
-    private suspend fun setSucceed() {
-        _icon.value = Icons.Default.DoneAll
-        _description.value = getStringResource("info.requirements.succeed")
+    private suspend fun setSucceed(message: String = getStringResource("info.requirements.succeed")) {
+        _icon.value = Icons.Default.Hardware
+        _description.value = message
         delay(DEFAULT_DELAY)
     }
 
@@ -148,11 +164,6 @@ class RequirementsManager(private val globalVariables: GlobalVariables) {
 }
 
 private data class Path(
-    val pathName: PathName,
+    val pathName: SettingsKey,
     val path: String
 )
-
-
-private enum class PathName {
-    ADB, SCRCPY
-}
