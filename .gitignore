@@ -35,3 +35,6 @@ build/
 /captures
 .externalNativeBuild
 .cxx
+
+# Database
+*.db
