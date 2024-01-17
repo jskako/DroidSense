@@ -1,13 +1,13 @@
 package ui.composable.screens
 
 import androidx.compose.runtime.Composable
-import settitngs.GlobalVariables
+import data.repository.SettingsSource
 import ui.composable.sections.VariablesSection
 import utils.getStringResource
 
 @Composable
 fun VariablesScreen(
-    globalVariables: GlobalVariables,
+    settingsSource: SettingsSource,
     navigateToMainScreen: () -> Unit,
     cancelButtonEnabled: Boolean = false
 ) {
@@ -15,7 +15,7 @@ fun VariablesScreen(
         title = getStringResource("info.variables.title"),
         description = getStringResource("info.variables.description"),
         cancelButtonEnabled = cancelButtonEnabled,
-        globalVariables = globalVariables,
+        settingsSource = settingsSource,
         navigateToMainScreen = navigateToMainScreen
     )
 }

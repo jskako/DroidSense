@@ -5,23 +5,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import data.repository.SettingsSource
 import kotlinx.coroutines.launch
 import requirements.RequirementsManager
-import settitngs.GlobalVariables
 import ui.composable.sections.RequirementsSection
 
 @Composable
 fun RequirementsScreen(
-    globalVariables: GlobalVariables,
     navigateToMainScreen: () -> Unit,
-    navigateToSetVariablesScreen: () -> Unit
+    navigateToSetVariablesScreen: () -> Unit,
+    settingsSource: SettingsSource
 ) {
+
+    val scope = rememberCoroutineScope()
+
     val requirementsManager = remember {
         RequirementsManager(
-            globalVariables = globalVariables
+            settingsSource = settingsSource
         )
     }
-    val scope = rememberCoroutineScope()
 
     Column {
         RequirementsSection(

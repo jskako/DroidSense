@@ -59,7 +59,7 @@ aboutLibraries {
 kotlin {
     sqldelight {
         databases {
-            create("DroidSenseDatabase") {
+            create("DSDatabase") {
                 packageName = "com.jskako"
             }
         }

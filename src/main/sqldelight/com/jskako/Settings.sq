@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS Settings (
+    identifier TEXT NOT NULL PRIMARY KEY,
+    value TEXT NOT NULL
+);
+
+insert:
+INSERT OR REPLACE INTO Settings(identifier, value)
+VALUES(?,?);
+
+update:
+UPDATE Settings
+SET value = :value
+WHERE identifier IS :identifier;
+
+delete:
+DELETE FROM Settings
+WHERE identifier IS :identifier;
+
+get:
+SELECT value
+FROM Settings
+WHERE identifier IS :identifier;
+
+isValid:
+SELECT (TRIM(value) != '') AS isValid
+FROM Settings
+WHERE identifier = :yourIdentifier;

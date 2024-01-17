@@ -3,8 +3,6 @@ package adb
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
@@ -27,6 +25,8 @@ import utils.DEVICE_SERIAL_NUMBER
 import utils.deviceRegex
 import utils.getDeviceProperty
 import utils.getStringResource
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 class DeviceManager(
     private val adbPath: String

@@ -8,14 +8,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import data.keys.SettingsKey
+import data.repository.SettingsSource
 import notifications.InfoManager
 import notifications.InfoManagerData
-import settitngs.GlobalVariables
 import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.device.DeviceView
@@ -27,12 +30,15 @@ import utils.getStringResource
 @Composable
 fun MainScreen(
     windowStateManager: WindowStateManager,
-    globalVariables: GlobalVariables
+    settingsSource: SettingsSource
 ) {
+
+    val adbPath by remember { mutableStateOf(settingsSource.get(SettingsKey.ADB.name)) }
+    val scrcpyPath by remember { mutableStateOf(settingsSource.get(SettingsKey.SCRCPY.name)) }
 
     val deviceManager = remember {
         DeviceManager(
-            adbPath = globalVariables.adbPath.value
+            adbPath = adbPath
         )
     }
     val infoManager = remember { InfoManager() }
@@ -64,7 +70,7 @@ fun MainScreen(
             color = infoManager.infoManagerData.value.color,
         )
         StatusSection(
-            scrCpyPath = globalVariables.scrCpyPath.value,
+            scrCpyPath = scrcpyPath,
             deviceManager = deviceManager,
             windowStateManager = windowStateManager,
             onMessage = {
@@ -93,8 +99,8 @@ fun MainScreen(
                         scope = scope
                     )
                 },
-                adbPath = globalVariables.adbPath.value,
-                scrCpyPath = globalVariables.scrCpyPath.value
+                adbPath = adbPath,
+                scrCpyPath = scrcpyPath
             )
         })
     }
