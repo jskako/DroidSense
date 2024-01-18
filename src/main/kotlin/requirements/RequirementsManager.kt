@@ -9,7 +9,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import data.keys.SettingsKey
-import data.repository.SettingsSource
+import data.repository.settings.SettingsSource
 import kotlinx.coroutines.delay
 import utils.ADB_PACKAGE
 import utils.ADB_WINDOWS_32_PATH

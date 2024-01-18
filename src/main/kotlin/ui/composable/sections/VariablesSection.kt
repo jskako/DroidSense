@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.keys.SettingsKey
-import data.repository.SettingsSource
+import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.SelectableText

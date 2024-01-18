@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import data.repository.SettingsSource
+import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import requirements.RequirementsManager
 import ui.composable.sections.RequirementsSection

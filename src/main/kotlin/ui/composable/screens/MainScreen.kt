@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import data.keys.SettingsKey
-import data.repository.SettingsSource
+import data.repository.settings.SettingsSource
 import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.application.WindowStateManager

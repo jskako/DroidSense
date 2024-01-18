@@ -1,7 +1,7 @@
 package ui.composable.screens
 
 import androidx.compose.runtime.Composable
-import data.repository.SettingsSource
+import data.repository.settings.SettingsSource
 import ui.composable.sections.VariablesSection
 import utils.getStringResource
 

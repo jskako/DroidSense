@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.window.Window
 import com.jskako.DSDatabase
 import data.createDriver
-import data.repository.SettingsSource
+import data.repository.settings.SettingsSource
 import ui.application.WindowState
 import ui.application.WindowStateManager
 import ui.application.navigation.NavRoute

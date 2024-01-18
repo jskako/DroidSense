@@ -111,6 +111,14 @@ fun StatusSection(
                         },
                         enabled = deviceManager.devices.isNotEmpty()
                     ),
+                )
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            ClickableIconMenu(
+                icon = Icons.Default.Settings,
+                functions = listOf(
                     DeviceOptions(
                         text = getStringResource("info.log.licenses"),
                         function = {
@@ -129,15 +137,6 @@ fun StatusSection(
                             }
                         }
                     )
-                )
-            )
-
-            Spacer(modifier = Modifier.width(4.dp))
-
-            ClickableIconMenu(
-                icon = Icons.Default.Settings,
-                functions = listOf(
-
                 )
             )
         }

@@ -1,4 +1,4 @@
-package data.repository
+package data.repository.settings
 
 import com.jskako.SettingsQueries
 import data.keys.SettingsKey
