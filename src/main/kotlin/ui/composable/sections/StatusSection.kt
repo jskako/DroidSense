@@ -105,7 +105,7 @@ fun StatusSection(
                             deviceManager.devices.forEach {
                                 startScrCpy(
                                     scrCpyPath = scrCpyPath,
-                                    serialNumber = it.serialNumber
+                                    identifier = it.deviceIdentifier
                                 )
                             }
                         },

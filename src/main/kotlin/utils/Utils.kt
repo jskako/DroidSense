@@ -86,9 +86,8 @@ fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }
 
 fun startScrCpy(
     scrCpyPath: String,
-    serialNumber: String
-): Process =
-    ProcessBuilder(scrCpyPath, "-s", serialNumber).start()
+    identifier: String
+) = ProcessBuilder(scrCpyPath, "-s", identifier).start()
 
 fun getDeviceProperty(
     adbPath: String,

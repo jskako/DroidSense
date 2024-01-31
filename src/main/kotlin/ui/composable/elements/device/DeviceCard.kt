@@ -145,7 +145,7 @@ fun DeviceCard(
                     onClick = {
                         startScrCpy(
                             scrCpyPath = scrCpyPath,
-                            serialNumber = device.serialNumber
+                            identifier = device.deviceIdentifier
                         )
                     },
                     modifier = Modifier
