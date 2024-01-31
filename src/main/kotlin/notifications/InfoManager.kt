@@ -11,17 +11,17 @@ import utils.EMPTY_STRING
 
 class InfoManager : InfoManagerInterface {
 
-    private var _InfoManagerData = mutableStateOf(InfoManagerData(message = EMPTY_STRING))
+    private var _infoManagerData = mutableStateOf(InfoManagerData(message = EMPTY_STRING))
     private var job: Job? = null
 
     val infoManagerData: State<InfoManagerData>
-        get() = _InfoManagerData
+        get() = _infoManagerData
 
     override fun showMessage(
         infoManagerData: InfoManagerData,
         scope: CoroutineScope
     ) {
-        _InfoManagerData.value = InfoManagerData(
+        _infoManagerData.value = InfoManagerData(
             message = infoManagerData.message,
             color = infoManagerData.color
         )
@@ -40,11 +40,11 @@ class InfoManager : InfoManagerInterface {
         job?.cancel()
         job = scope.launch {
             delay(duration)
-            _InfoManagerData.value = InfoManagerData(message = EMPTY_STRING)
+            _infoManagerData.value = InfoManagerData(message = EMPTY_STRING)
         }
     }
 
     override fun clearInfoMessage() {
-        _InfoManagerData.value = InfoManagerData(message = EMPTY_STRING)
+        _infoManagerData.value = InfoManagerData(message = EMPTY_STRING)
     }
 }

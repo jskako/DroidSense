@@ -1,9 +1,13 @@
 # Welcome to DroidSense!
 
 ## Note
-DroidSense, built on Compose Multiplatform, boasts native compatibility across Windows, Linux, and Mac platforms. While the executable is not yet publicly available, users can access the code by pulling it from GitHub and building it themselves.
 
-Between the relentless demands of a full-time job and a lively kid, any assistance is as precious as a hidden treasure chest!
+DroidSense, built on Compose Multiplatform, boasts native compatibility across Windows, Linux, and Mac platforms. While
+the executable is not yet publicly available, users can access the code by pulling it from GitHub and building it
+themselves.
+
+Between the relentless demands of a full-time job and a lively kid, any assistance is as precious as a hidden treasure
+chest!
 
 ## Final goal
 
@@ -20,9 +24,12 @@ In the near future, you'll be able to manage all ADB functions through user-frie
 - Share device screen or share all screens
 
 ## Currently working on?
-Database implementation to store all logging sessions. Easily revisit and review errors or specific logs whenever needed, export or share logs effortlessly.
+
+Database implementation to store all logging sessions. Easily revisit and review errors or specific logs whenever
+needed, export or share logs effortlessly.
 
 ## Feature?
+
 - Manage all ADB functions through user-friendly interface
 - Automate release builds (CI/CD)
 - And much more
@@ -39,6 +46,7 @@ I'm [@jskako](https://github.com/jskako), the author and maintainer of _DroidSen
 
 If you appreciate this application, you can [support my open source
 work][donate]:
+
 - [PayPal](https://paypal.me/jskako)
 
 ## Licence
