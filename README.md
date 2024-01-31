@@ -26,3 +26,33 @@ Database implementation to store all logging sessions. Easily revisit and review
 - Manage all ADB functions through user-friendly interface
 - Automate release builds (CI/CD)
 - And much more
+
+## Contact
+
+For general questions or discussions, you can contact me on:
+
+- Mail: `jskako@gmail.com`
+
+## Donate
+
+I'm [@jskako](https://github.com/jskako), the author and maintainer of _DroidSense_.
+
+If you appreciate this application, you can [support my open source
+work][donate]:
+- [PayPal](https://paypal.me/jskako)
+
+## Licence
+
+    Copyright (C) 2024 Josip Skako
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
