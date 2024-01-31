@@ -63,7 +63,6 @@ class DeviceManager(
         coroutineScope.launch {
             monitorJob?.cancel()
             _monitoringStatus.value = MonitoringStatus.NOT_MONITORING
-            updateDevicesStatus(MonitoringStatus.NOT_MONITORING)
         }
     }
 
@@ -274,12 +273,6 @@ class DeviceManager(
 
     private fun clearDevices() {
         _devices.clear()
-    }
-
-    private fun updateDevicesStatus(status: MonitoringStatus) {
-        _devices.forEachIndexed { index, device ->
-            _devices[index] = device.copy(state = status)
-        }
     }
 }
 
