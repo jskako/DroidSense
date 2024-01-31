@@ -1,5 +1,7 @@
 # Welcome to DroidSense!
 
+https://github.com/jskako/DroidSense/assets/35076900/93575154-1a81-4009-a8af-8cbb4350cb38
+
 ## Note
 
 After what feels like a million cups of coffee and endless debugging sessions, I'm beyond excited to unveil my very first open-source creation - DroidSense!
