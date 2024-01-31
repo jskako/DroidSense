@@ -51,8 +51,8 @@ For general questions or discussions, you can contact me on:
 
 I'm [@jskako](https://github.com/jskako), the author and maintainer of _DroidSense_.
 
-If you appreciate this application, you can [support my open source
-work][donate]:
+If you appreciate this application, you can support my open source
+work:
 
 - [PayPal](https://paypal.me/jskako)
 
