@@ -10,6 +10,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import data.keys.SettingsKey
 import data.repository.settings.SettingsSource
+import java.io.File
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 import kotlinx.coroutines.delay
 import utils.ADB_PACKAGE
 import utils.ADB_WINDOWS_32_PATH
@@ -24,9 +27,6 @@ import utils.findPath
 import utils.getOSArch
 import utils.getStringResource
 import utils.getUserOS
-import java.io.File
-import kotlin.Result.Companion.failure
-import kotlin.Result.Companion.success
 
 class RequirementsManager(
     private val settingsSource: SettingsSource,

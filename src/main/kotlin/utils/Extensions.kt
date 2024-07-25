@@ -1,12 +1,12 @@
 package utils
 
-import notifications.InfoManagerData
-import utils.Colors.darkRed
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
 import java.io.File
 import java.io.FileWriter
+import notifications.InfoManagerData
+import utils.Colors.darkRed
 
 fun String.copyToClipboard(): InfoManagerData {
     if (this.trim().isEmpty()) {

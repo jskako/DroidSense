@@ -2,8 +2,8 @@ package data.model
 
 import com.jskako.GetUUIDs
 import com.jskako.LogHistory
-import log.LogLevel
 import java.util.UUID
+import log.LogLevel
 
 fun GetUUIDs.toUuidItem(): UuidItem {
     return UuidItem(

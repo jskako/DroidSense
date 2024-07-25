@@ -1,7 +1,7 @@
 package data.model
 
-import log.LogLevel
 import java.util.UUID
+import log.LogLevel
 
 data class LogItem(
     val uuid: UUID,
