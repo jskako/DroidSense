@@ -2,6 +2,8 @@
 about-libraries = "10.10.0"
 material = "1.5.12"
 sqldelight = "2.0.1"
+kotlin = "2.0.0"
+compose-plugin = "1.6.11"
 
 [libraries]
 material-icons = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "material" }
@@ -14,3 +16,5 @@ sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", 
 [plugins]
 about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about-libraries" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
