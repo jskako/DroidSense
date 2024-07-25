@@ -1,7 +1,7 @@
 [versions]
-about-libraries = "10.10.0"
-material = "1.5.12"
-sqldelight = "2.0.1"
+about-libraries = "11.2.2"
+material = "1.6.11"
+sqldelight = "2.0.2"
 kotlin = "2.0.0"
 compose-plugin = "1.6.11"
 
