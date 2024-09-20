@@ -5,6 +5,7 @@ import androidx.compose.ui.res.useResource
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
+import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import java.awt.Desktop
 import java.awt.FileDialog
@@ -137,56 +138,60 @@ suspend fun installApplication(
     identifier: String,
     onMessage: (InfoManagerData) -> Unit,
     isPrivateSpace: Boolean = false
-) {
-    return withContext(Default) {
-        runCatching {
-            pickFile(allowedExtension = APK_EXTENSION)?.let { file ->
-                onMessage(
-                    InfoManagerData(
-                        message = "${getStringResource("info.file.install")}: ${file.name}",
-                        duration = null
-                    )
-                )
+) = withContext(Default) {
+    runCatching {
+        pickFile(allowedExtension = APK_EXTENSION)?.let { file ->
+            onMessage(InfoManagerData(
+                message = "${getStringResource("info.file.install")}: ${file.name}",
+                duration = null
+            ))
 
-                val command = mutableListOf(adbPath, "-s", identifier, "install")
+            val command = buildAdbInstallCommand(adbPath, identifier, file.absolutePath, isPrivateSpace)
 
-                if (isPrivateSpace) {
-                    getPrivateSpaceId(adbPath = adbPath)?.let {
-                        command.add("--user")
-                        command.add(it)
-                    }
-                }
-                command.addAll(listOf("-r", file.absolutePath))
-                val process = ProcessBuilder(command).apply {
-                    redirectErrorStream(true)
-                }.start()
-                println("Command: $command")
-                val exitCode = process.waitFor()
+            val process = ProcessBuilder(command).apply { redirectErrorStream(true) }.start()
 
-                if (exitCode == 0) {
-                    onMessage(
-                        InfoManagerData(
-                            message = "${getStringResource("success.file.install")}: ${file.canonicalPath}"
-                        )
-                    )
-                } else {
-                    onMessage(
-                        InfoManagerData(
-                            message = "${getStringResource("error.file.install")}: ${file.canonicalPath}",
-                            color = darkRed
-                        )
-                    )
-                }
+            val exitCode = process.waitFor()
+
+            val message = if (exitCode == 0) {
+                getStringResource("success.file.install")
+            } else {
+                getStringResource("error.file.install")
             }
-        }.getOrElse {
+
             onMessage(
                 InfoManagerData(
-                    message = getStringResource("error.file.install"),
-                    color = darkRed
+                    message = "$message: ${file.canonicalPath}",
+                    color = if (exitCode == 0) darkBlue else darkRed
                 )
             )
         }
+    }.getOrElse {
+        onMessage(
+            InfoManagerData(
+                message = getStringResource("error.file.install"),
+                color = darkRed
+            )
+        )
     }
+}
+
+private suspend fun buildAdbInstallCommand(
+    adbPath: String,
+    identifier: String,
+    filePath: String,
+    isPrivateSpace: Boolean
+): MutableList<String> {
+    val command = mutableListOf(adbPath, "-s", identifier, "install")
+
+    if (isPrivateSpace) {
+        getPrivateSpaceId(adbPath)?.let { userId ->
+            command.add("--user")
+            command.add(userId)
+        }
+    }
+
+    command.addAll(listOf("-r", filePath))
+    return command
 }
 
 private suspend fun getPrivateSpaceId(adbPath: String): String? = withContext(Default) {
