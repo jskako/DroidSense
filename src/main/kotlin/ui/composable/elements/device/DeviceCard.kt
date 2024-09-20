@@ -210,6 +210,19 @@ fun DeviceCard(
                                 }
                             }
                         ),
+                        DeviceOptions(
+                            text = getStringResource("info.install.private.apk"),
+                            function = {
+                                scope.launch {
+                                    installApplication(
+                                        adbPath = adbPath,
+                                        device.deviceIdentifier,
+                                        onMessage = onMessage,
+                                        isPrivateSpace = true
+                                    )
+                                }
+                            }
+                        ),
                     )
                 )
             }

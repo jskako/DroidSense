@@ -2,6 +2,10 @@ package utils
 
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.withContext
+import notifications.InfoManagerData
+import utils.Colors.darkRed
 import java.awt.Desktop
 import java.awt.FileDialog
 import java.awt.Frame
@@ -11,10 +15,6 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.ResourceBundle
-import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.withContext
-import notifications.InfoManagerData
-import utils.Colors.darkRed
 
 fun getResourceBundle(baseName: String): ResourceBundle = ResourceBundle.getBundle(baseName)
 fun getStringResource(resourceName: String) =
@@ -135,7 +135,8 @@ fun getDevicePropertyList(
 suspend fun installApplication(
     adbPath: String,
     identifier: String,
-    onMessage: (InfoManagerData) -> Unit
+    onMessage: (InfoManagerData) -> Unit,
+    isPrivateSpace: Boolean = false
 ) {
     return withContext(Default) {
         runCatching {
@@ -147,11 +148,19 @@ suspend fun installApplication(
                     )
                 )
 
-                val command = listOf(adbPath, "-s", identifier, "install", "-r", file.absolutePath)
+                val command = mutableListOf(adbPath, "-s", identifier, "install")
+
+                if (isPrivateSpace) {
+                    getPrivateSpaceId(adbPath = adbPath)?.let {
+                        command.add("--user")
+                        command.add(it)
+                    }
+                }
+                command.addAll(listOf("-r", file.absolutePath))
                 val process = ProcessBuilder(command).apply {
                     redirectErrorStream(true)
                 }.start()
-
+                println("Command: $command")
                 val exitCode = process.waitFor()
 
                 if (exitCode == 0) {
@@ -178,6 +187,21 @@ suspend fun installApplication(
             )
         }
     }
+}
+
+private suspend fun getPrivateSpaceId(adbPath: String): String? = withContext(Default) {
+    runCatching {
+        ProcessBuilder(adbPath, "shell", "dumpsys", "user")
+            .redirectErrorStream(true)
+            .start()
+            .inputStream
+            .bufferedReader()
+            .use { it.readText() }
+            .lineSequence()
+            .firstOrNull { it.contains("Private space") }
+            ?.substringAfter("UserInfo{")
+            ?.substringBefore(":")
+    }.getOrNull()
 }
 
 fun isValidIpAddressWithPort(input: String) = ipPortRegex.matches(input)
