@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,7 +21,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.rememberCursorPositionProvider
 import kotlinx.coroutines.launch
 import utils.Colors.darkBlue
@@ -43,10 +47,19 @@ fun IconButtonsColumn(
             BasicTooltipBox(
                 modifier = Modifier.padding(start = 4.dp),
                 tooltip = {
-                    Text(
-                        text = it.contentDescription,
-                        color = darkBlue
-                    )
+                    Popup(alignment = Alignment.Center) {
+                        Surface(
+                            color = darkBlue,
+                            shape = MaterialTheme.shapes.small
+                        ) {
+                            Text(
+                                text = it.contentDescription,
+                                modifier = Modifier
+                                    .padding(8.dp),
+                                color = Color.White
+                            )
+                        }
+                    }
                 },
                 state = tooltipState,
                 positionProvider = rememberCursorPositionProvider()
@@ -68,15 +81,14 @@ fun IconButtonsColumn(
             }
 
             val hovered by interactionSource.collectIsHoveredAsState()
-            when (hovered) {
-                true -> {
-                    scope.launch {
+            
+            scope.launch {
+                when (hovered) {
+                    true -> {
                         if (!clicked) tooltipState.show()
                     }
-                }
 
-                false -> {
-                    scope.launch {
+                    false -> {
                         clicked = false
                         tooltipState.dismiss()
                     }
