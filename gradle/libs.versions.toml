@@ -1,8 +1,8 @@
 [versions]
-about-libraries = "11.2.2"
+about-libraries = "11.2.3"
 material = "1.6.11"
 sqldelight = "2.0.2"
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 compose-plugin = "1.6.11"
 
 [libraries]
