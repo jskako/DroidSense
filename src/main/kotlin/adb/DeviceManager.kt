@@ -24,6 +24,7 @@ import utils.DEVICE_MODEL_PROPERTY
 import utils.DEVICE_SERIAL_NUMBER
 import utils.deviceRegex
 import utils.getDeviceProperty
+import utils.getPrivateSpaceId
 import utils.getStringResource
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -252,7 +253,8 @@ class DeviceManager(
             adbPath = adbPath
         ).takeIf { it.isNotEmpty() }
             ?: getStringResource("info.not.connected"),
-        state = MonitoringStatus.MONITORING
+        state = MonitoringStatus.MONITORING,
+        privateSpaceIdentifier = getPrivateSpaceId(adbPath = adbPath)
     )
 
     private fun removeDevice(

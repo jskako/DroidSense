@@ -141,10 +141,12 @@ suspend fun installApplication(
 ) = withContext(Default) {
     runCatching {
         pickFile(allowedExtension = APK_EXTENSION)?.let { file ->
-            onMessage(InfoManagerData(
-                message = "${getStringResource("info.file.install")}: ${file.name}",
-                duration = null
-            ))
+            onMessage(
+                InfoManagerData(
+                    message = "${getStringResource("info.file.install")}: ${file.name}",
+                    duration = null
+                )
+            )
 
             val command = buildAdbInstallCommand(adbPath, identifier, file.absolutePath, isPrivateSpace)
 
@@ -175,7 +177,7 @@ suspend fun installApplication(
     }
 }
 
-private suspend fun buildAdbInstallCommand(
+private fun buildAdbInstallCommand(
     adbPath: String,
     identifier: String,
     filePath: String,
@@ -194,8 +196,8 @@ private suspend fun buildAdbInstallCommand(
     return command
 }
 
-private suspend fun getPrivateSpaceId(adbPath: String): String? = withContext(Default) {
-    runCatching {
+fun getPrivateSpaceId(adbPath: String): String? {
+    return runCatching {
         ProcessBuilder(adbPath, "shell", "dumpsys", "user")
             .redirectErrorStream(true)
             .start()

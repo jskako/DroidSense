@@ -13,7 +13,8 @@ data class DeviceDetails(
     val displayResolution: String? = null,
     val displayDensity: String? = null,
     val ipAddress: String? = null,
-    var state: MonitoringStatus? = null,
+    val state: MonitoringStatus? = null,
+    val privateSpaceIdentifier: String? = null
 ) {
     override fun toString(): String {
         return "${manufacturer?.capitalizeFirstChar()} $model ($serialNumber)"

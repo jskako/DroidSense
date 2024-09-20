@@ -121,6 +121,13 @@ fun DeviceCard(
                     text2 = device.ipAddress ?: EMPTY_STRING
                 )
 
+                addSpaceHeight()
+
+                BasicTextCaption(
+                    text1 = getStringResource("info.private.space.info"),
+                    text2 = device.privateSpaceIdentifier ?: getStringResource("info.window.no").uppercase()
+                )
+
                 addSpaceHeight(16.dp)
 
                 val connectionType by remember {
