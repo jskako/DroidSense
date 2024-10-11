@@ -143,7 +143,10 @@ fun LogScreen(
             }
             if (logManager.logs.isEmpty() && isRunning) {
                 CircularProgressBar(
-                    text = "${getStringResource("info.waiting.application.logs")}\n$selectedPackage",
+                    text = buildString {
+                        appendLine(getStringResource("info.waiting.application.logs"))
+                        appendLine(selectedPackage)
+                    },
                     isVisible = true
                 )
             } else {

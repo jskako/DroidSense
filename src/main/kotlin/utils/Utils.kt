@@ -40,7 +40,10 @@ fun openFile(path: String): InfoManagerData {
         )
     } else {
         InfoManagerData(
-            message = "${getStringResource("error.openfile.cannot.open")} $path\n${result.exceptionOrNull()}"
+            message = buildString {
+                appendLine("${getStringResource("error.openfile.cannot.open")} $path")
+                appendLine(result.exceptionOrNull())
+            }
         )
     }
 }
