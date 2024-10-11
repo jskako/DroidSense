@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -35,7 +34,6 @@ import ui.composable.elements.DividerColored
 import ui.composable.elements.iconButtons.IconButtonsColumn
 import ui.composable.elements.iconButtons.IconButtonsData
 import ui.composable.elements.log.LogView
-import ui.composable.sections.LazySection
 import ui.composable.sections.LogStatusSection
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
@@ -149,20 +147,15 @@ fun LogScreen(
                     isVisible = true
                 )
             } else {
-                LazySection(
-                    modifier = Modifier.fillMaxWidth(),
-                    view = {
-                        LogView(
-                            logs = logManager.logs.takeLast(
-                                LOG_MANAGER_NUMBER_OF_LINES
-                            ),
-                            logLevel = logLevel,
-                            filteredText = filteredText,
-                            reversedLogs = reverseLogs,
-                            scrollToEnd = scrollToEnd,
-                            fontSize = fontSize
-                        )
-                    }
+                LogView(
+                    logs = logManager.logs.takeLast(
+                        LOG_MANAGER_NUMBER_OF_LINES
+                    ),
+                    logLevel = logLevel,
+                    filteredText = filteredText,
+                    reversedLogs = reverseLogs,
+                    scrollToEnd = scrollToEnd,
+                    fontSize = fontSize
                 )
             }
         }

@@ -5,7 +5,6 @@ import adb.MonitorStatus
 import adb.MonitoringStatus
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,7 +23,6 @@ import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.device.DeviceView
 import ui.composable.sections.InfoSection
-import ui.composable.sections.LazySection
 import ui.composable.sections.StatusSection
 import utils.getStringResource
 
@@ -90,19 +88,17 @@ fun MainScreen(
             text = getStringResource("info.waiting.device"),
             isVisible = deviceManager.devices.isEmpty() && deviceManager.monitoringStatus.value == MonitoringStatus.MONITORING
         )
-        LazySection(view = {
-            DeviceView(
-                devices = deviceManager.devices,
-                windowStateManager = windowStateManager,
-                onMessage = {
-                    infoManager.showMessage(
-                        infoManagerData = it,
-                        scope = scope
-                    )
-                },
-                adbPath = adbPath,
-                scrCpyPath = scrcpyPath
-            )
-        })
+        DeviceView(
+            devices = deviceManager.devices,
+            windowStateManager = windowStateManager,
+            onMessage = {
+                infoManager.showMessage(
+                    infoManagerData = it,
+                    scope = scope
+                )
+            },
+            adbPath = adbPath,
+            scrCpyPath = scrcpyPath
+        )
     }
 }
