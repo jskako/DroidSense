@@ -40,7 +40,7 @@ class LogManager(
         monitorJob = coroutineScope.launch {
             try {
                 monitorLogs(
-                    packageName = if (packageName == getStringResource("info.log.starting.package")) null else packageName,
+                    packageName = packageName.takeUnless { it == getStringResource("info.log.starting.package") },
                     identifier = identifier,
                     onMessage = onMessage
                 )
