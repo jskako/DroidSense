@@ -1,5 +1,7 @@
 package ui.composable.elements.log
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,16 +18,22 @@ import androidx.compose.ui.unit.dp
 import log.LogData
 import ui.composable.elements.BasicText
 import ui.composable.elements.TextBox
+import utils.Colors.lightGray
 
 @Composable
 fun LogCard(
     item: LogData,
-    fontSize: TextUnit
+    fontSize: TextUnit,
+    onClicked: () -> Unit
 ) {
 
-    val (backgroundColor, textColor) = item.level.getLogColor()
+    val (levelBackgroundColor, levelTextColor) = item.level.getLogColor()
 
-    Column {
+    Column(
+        modifier = Modifier
+            .background(color = if (item.isSelected) lightGray else Color.Transparent)
+            .clickable { onClicked() }
+    ) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
@@ -33,6 +41,7 @@ fun LogCard(
             TextBox(
                 startPadding = 0.dp,
                 text = item.time,
+                backgroundColor = Color.Transparent,
                 fontSize = fontSize,
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -40,8 +49,8 @@ fun LogCard(
                 startPadding = 0.dp,
                 text = item.level.toString(),
                 fontSize = fontSize,
-                backgroundColor = backgroundColor,
-                textColor = textColor,
+                backgroundColor = levelBackgroundColor,
+                textColor = levelTextColor,
             )
         }
         BasicText(

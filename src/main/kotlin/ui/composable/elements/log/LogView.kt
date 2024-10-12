@@ -13,6 +13,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
@@ -38,9 +42,13 @@ fun LogView(
         }
     }
 
-    val filteredLogs = logs.filter { log ->
-        log.level.ordinal <= logLevel.ordinal &&
-                (filteredText.isEmpty() || log.log.contains(filteredText, ignoreCase = true))
+    var filteredLogs by remember(logs) {
+        mutableStateOf(
+            logs.filter { log ->
+                log.level.ordinal <= logLevel.ordinal &&
+                        (filteredText.isEmpty() || log.log.contains(filteredText, ignoreCase = true))
+            }
+        )
     }
 
     Box(
@@ -56,7 +64,15 @@ fun LogView(
             ) { item ->
                 LogCard(
                     item = item,
-                    fontSize = fontSize
+                    fontSize = fontSize,
+                    onClicked = {
+                        val index = filteredLogs.indexOfFirst { it.uuid == item.uuid }
+
+                        filteredLogs = filteredLogs.toMutableList().apply {
+                            val logToUpdate = getOrElse(index) { return@apply }
+                            this[index] = logToUpdate.copy(isSelected = !logToUpdate.isSelected)
+                        }
+                    }
                 )
             }
         }
