@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import log.LogData
 import log.LogLevel
+import java.util.UUID
 
 
 @Composable
@@ -32,7 +33,8 @@ fun LogView(
     filteredText: String,
     scrollToEnd: Boolean,
     reversedLogs: Boolean,
-    fontSize: TextUnit
+    fontSize: TextUnit,
+    onLogSelected: (UUID) -> Unit,
 ) {
     val listState = rememberLazyListState()
 
@@ -66,12 +68,7 @@ fun LogView(
                     item = item,
                     fontSize = fontSize,
                     onClicked = {
-                        val index = filteredLogs.indexOfFirst { it.uuid == item.uuid }
-
-                        filteredLogs = filteredLogs.toMutableList().apply {
-                            val logToUpdate = getOrElse(index) { return@apply }
-                            this[index] = logToUpdate.copy(isSelected = !logToUpdate.isSelected)
-                        }
+                        onLogSelected(item.uuid)
                     }
                 )
             }

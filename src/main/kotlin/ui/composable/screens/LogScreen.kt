@@ -57,6 +57,7 @@ fun LogScreen(
     var fontSize by remember { mutableStateOf(13.sp) }
     var isRunning by remember { mutableStateOf(false) }
     var selectedPackage by remember { mutableStateOf(EMPTY_STRING) }
+    val logs by remember { mutableStateOf(logManager.logs) }
     val scope = rememberCoroutineScope()
 
     Column {
@@ -141,7 +142,7 @@ fun LogScreen(
                     )
                 )
             }
-            if (logManager.logs.isEmpty() && isRunning) {
+            if (logs.isEmpty() && isRunning) {
                 CircularProgressBar(
                     text = buildString {
                         appendLine(getStringResource("info.waiting.application.logs"))
@@ -151,14 +152,17 @@ fun LogScreen(
                 )
             } else {
                 LogView(
-                    logs = logManager.logs.takeLast(
+                    logs = logs.takeLast(
                         LOG_MANAGER_NUMBER_OF_LINES
                     ),
                     logLevel = logLevel,
                     filteredText = filteredText,
                     reversedLogs = reverseLogs,
                     scrollToEnd = scrollToEnd,
-                    fontSize = fontSize
+                    fontSize = fontSize,
+                    onLogSelected = { uuid ->
+                        logManager.updateLogSelection(uuid = uuid)
+                    }
                 )
             }
         }

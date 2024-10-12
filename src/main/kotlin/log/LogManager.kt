@@ -14,6 +14,7 @@ import utils.getStringResource
 import utils.getTimeStamp
 import utils.logLevelRegex
 import utils.runCommand
+import java.util.UUID
 
 class LogManager(
     private val adbPath: String
@@ -28,6 +29,16 @@ class LogManager(
 
     val isActive: Boolean
         get() = monitorJob?.isActive == true
+
+    fun updateLogSelection(uuid: UUID) {
+        runCatching {
+            val logData = _logs.find { it.uuid == uuid } ?: throw NoSuchElementException("Log entry not found")
+            val index = _logs.indexOf(logData)
+            _logs[index] = logData.copy(isSelected = !logData.isSelected)
+        }.onFailure { exception ->
+            println("Failed to update log selection for UUID $uuid: ${exception.message}")
+        }
+    }
 
     override suspend fun startMonitoringLogs(
         coroutineScope: CoroutineScope,
