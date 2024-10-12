@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowOutward
@@ -88,9 +89,15 @@ fun LogScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(2.dp)
             ) {
+
+                val iconSize by remember {
+                    mutableStateOf(36.dp)
+                }
+
                 IconButtonsColumn(
                     listOf(
                         IconButtonsData(
+                            modifier = Modifier.size(iconSize),
                             icon = Icons.Default.Delete,
                             contentDescription = getStringResource("info.clear.logs"),
                             function = {
@@ -100,40 +107,48 @@ fun LogScreen(
                             }
                         ),
                         IconButtonsData(
-                            modifier = Modifier.background(
-                                color = if (scrollToEnd) darkBlue else Color.Transparent,
-                                shape = CircleShape
-                            ),
+                            modifier = Modifier
+                                .background(
+                                    color = if (scrollToEnd) darkBlue else Color.Transparent,
+                                    shape = CircleShape
+                                )
+                                .size(iconSize),
                             icon = Icons.Default.MoveDown,
                             contentDescription = getStringResource("info.scroll.end"),
                             tint = if (scrollToEnd) Color.White else darkBlue,
                             function = { scrollToEnd = !scrollToEnd }
                         ),
                         IconButtonsData(
-                            modifier = Modifier.background(
-                                color = if (reverseLogs) darkBlue else Color.Transparent,
-                                shape = CircleShape
-                            ),
+                            modifier = Modifier
+                                .background(
+                                    color = if (reverseLogs) darkBlue else Color.Transparent,
+                                    shape = CircleShape
+                                )
+                                .size(iconSize),
                             icon = Icons.Default.ArrowOutward,
                             contentDescription = getStringResource("info.reversed"),
                             tint = if (reverseLogs) Color.White else darkBlue,
                             function = { reverseLogs = !reverseLogs }
                         ),
                         IconButtonsData(
+                            modifier = Modifier.size(iconSize),
                             icon = Icons.Default.TextIncrease,
                             contentDescription = getStringResource("info.font.size.increase"),
                             function = { fontSize *= 1.1f }
                         ),
                         IconButtonsData(
+                            modifier = Modifier.size(iconSize),
                             icon = Icons.Default.TextDecrease,
                             contentDescription = getStringResource("info.font.size.decrease"),
                             function = { fontSize /= 1.1f }
                         ),
                         IconButtonsData(
-                            modifier = Modifier.background(
-                                color = if (saveToDatabase) darkRed else Color.Transparent,
-                                shape = CircleShape
-                            ),
+                            modifier = Modifier
+                                .background(
+                                    color = if (saveToDatabase) darkRed else Color.Transparent,
+                                    shape = CircleShape
+                                )
+                                .size(iconSize),
                             icon = Icons.Default.Save,
                             contentDescription = getStringResource("info.save.database"),
                             tint = if (saveToDatabase) Color.White else darkRed,
