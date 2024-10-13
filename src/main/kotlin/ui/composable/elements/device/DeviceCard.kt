@@ -110,8 +110,8 @@ fun DeviceCard(
                 BasicTextCaption(
                     text1 = getStringResource("info.display.resolution"),
                     text2 = "${
-                        (device.displayResolution?.split(": ")?.get(1) ?: EMPTY_STRING)
-                    } (${(device.displayDensity?.split(": ")?.get(1) ?: EMPTY_STRING)} ppi)"
+                        (device.displayResolution?.split(": ")?.getOrNull(1) ?: EMPTY_STRING)
+                    } (${(device.displayDensity?.split(": ")?.getOrNull(1) ?: EMPTY_STRING)} ppi)"
                 )
 
                 addSpaceHeight()

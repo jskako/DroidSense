@@ -47,6 +47,8 @@ fun LogScreen(
     var selectedPackage by remember { mutableStateOf(EMPTY_STRING) }
     val logs by remember { mutableStateOf(logManager.logs) }
     val scope = rememberCoroutineScope()
+    val selectedCount = logs.count { it.isSelected }
+    val hasSelectedLogs = selectedCount > 0
 
     Column {
         LogStatusSection(
@@ -101,6 +103,10 @@ fun LogScreen(
                         saveToDatabase = it
                     }
                 )
+
+                if (hasSelectedLogs) {
+
+                }
             }
             if (logs.isEmpty() && isRunning) {
                 CircularProgressBar(
