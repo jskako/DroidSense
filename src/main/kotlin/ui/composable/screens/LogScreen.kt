@@ -101,6 +101,11 @@ fun LogScreen(
                     saveToDatabase = saveToDatabase,
                     onSaveToDatabase = {
                         saveToDatabase = it
+                    },
+                    onExportLogs = {
+                        scope.launch {
+                            logManager.exportLogs()
+                        }
                     }
                 )
 
@@ -127,7 +132,7 @@ fun LogScreen(
                     scrollToEnd = scrollToEnd,
                     fontSize = fontSize,
                     onLogSelected = { uuid ->
-                        logManager.updateLogSelection(uuid = uuid)
+                        logManager.setIsSelected(uuid = uuid)
                     }
                 )
             }

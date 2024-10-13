@@ -1,12 +1,12 @@
 package utils
 
+import notifications.InfoManagerData
+import utils.Colors.darkRed
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
 import java.io.File
 import java.io.FileWriter
-import notifications.InfoManagerData
-import utils.Colors.darkRed
 
 fun String.copyToClipboard(): InfoManagerData {
     if (this.trim().isEmpty()) {
@@ -35,7 +35,9 @@ private fun copyToClipboard(text: String): Boolean {
     }.isSuccess
 }
 
-fun String.exportToFile(exportPath: String? = null): InfoManagerData {
+fun String.exportToFile(
+    exportPath: String? = null
+): InfoManagerData {
     if (this.isBlank()) {
         return InfoManagerData(
             message = getStringResource("error.export.empty.data"),
@@ -51,11 +53,8 @@ fun String.exportToFile(exportPath: String? = null): InfoManagerData {
         )
     }
 
-    val timestamp = getTimeStamp(EXPORT_DATA_TIMESTAMP)
-    val filePath = exportPath?.takeIf { it.isNotEmpty() } ?: "$path-$timestamp$LOG_EXTENSION"
-
     val result = runCatching {
-        val file = File(filePath)
+        val file = File(path)
         file.parentFile?.mkdirs()
         FileWriter(file, false).use { writer ->
             writer.write(this)
@@ -69,7 +68,7 @@ fun String.exportToFile(exportPath: String? = null): InfoManagerData {
         )
     } else {
         InfoManagerData(
-            message = getStringResource("${getStringResource("success.export.general")}: $filePath"),
+            message = "${getStringResource("success.export.general")}: $path",
             duration = null
         )
     }

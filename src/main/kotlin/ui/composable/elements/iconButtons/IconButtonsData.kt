@@ -11,5 +11,6 @@ data class IconButtonsData(
     val icon: ImageVector,
     val contentDescription: String,
     val tint: Color = Colors.darkBlue,
-    val function: () -> Unit
+    val function: () -> Unit,
+    val isEnabled: Boolean = true
 )

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowOutward
+import androidx.compose.material.icons.filled.Dataset
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoveDown
 import androidx.compose.material.icons.filled.Save
@@ -26,6 +27,7 @@ import utils.getStringResource
 @Composable
 fun MainButtonsSection(
     onClearLogs: () -> Unit,
+    onExportLogs: () -> Unit,
     scrollToEnd: Boolean,
     onScrollToEnd: (Boolean) -> Unit,
     reverseLogs: Boolean,
@@ -89,10 +91,16 @@ fun MainButtonsSection(
                         shape = CircleShape
                     )
                     .size(iconSize),
-                icon = Icons.Default.Save,
+                icon = Icons.Default.Dataset,
                 contentDescription = getStringResource("info.save.database"),
                 tint = if (saveToDatabase) Color.White else darkRed,
                 function = { onSaveToDatabase(!saveToDatabase) }
+            ),
+            IconButtonsData(
+                modifier = Modifier.size(iconSize),
+                icon = Icons.Default.Save,
+                contentDescription = getStringResource("info.export.logs"),
+                function = onExportLogs
             ),
         )
     )

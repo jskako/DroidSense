@@ -10,6 +10,8 @@ import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
 import utils.Colors.darkRed
 import utils.EMPTY_STRING
+import utils.LOG_MANAGER_NUMBER_OF_LINES
+import utils.exportToFile
 import utils.getStringResource
 import utils.getTimeStamp
 import utils.logLevelRegex
@@ -30,7 +32,18 @@ class LogManager(
     val isActive: Boolean
         get() = monitorJob?.isActive == true
 
-    fun updateLogSelection(uuid: UUID) {
+    suspend fun exportLogs() {
+        withContext(Dispatchers.IO) {
+            buildString {
+                logs.takeLast(LOG_MANAGER_NUMBER_OF_LINES).forEach { log ->
+                    appendLine("${log.level} - ${log.time}")
+                    appendLine(log.log)
+                }
+            }.exportToFile()
+        }
+    }
+
+    fun setIsSelected(uuid: UUID) {
         runCatching {
             val logData = _logs.find { it.uuid == uuid } ?: throw NoSuchElementException("Log entry not found")
             val index = _logs.indexOf(logData)
