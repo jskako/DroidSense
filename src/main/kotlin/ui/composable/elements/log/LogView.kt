@@ -44,7 +44,7 @@ fun LogView(
         }
     }
 
-    var filteredLogs by remember(logs) {
+    val filteredLogs by remember(logs) {
         mutableStateOf(
             logs.filter { log ->
                 log.level.ordinal <= logLevel.ordinal &&

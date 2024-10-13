@@ -1,20 +1,10 @@
 package ui.composable.screens
 
 import adb.DeviceDetails
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowOutward
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.MoveDown
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.TextDecrease
-import androidx.compose.material.icons.filled.TextIncrease
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +13,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
@@ -32,12 +21,10 @@ import log.LogManager
 import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
-import ui.composable.elements.iconButtons.IconButtonsColumn
-import ui.composable.elements.iconButtons.IconButtonsData
 import ui.composable.elements.log.LogView
-import ui.composable.sections.LogStatusSection
-import utils.Colors.darkBlue
-import utils.Colors.darkRed
+import ui.composable.sections.log.FontSize
+import ui.composable.sections.log.LogStatusSection
+import ui.composable.sections.log.MainButtonsSection
 import utils.EMPTY_STRING
 import utils.LOG_MANAGER_NUMBER_OF_LINES
 import utils.getStringResource
@@ -89,72 +76,30 @@ fun LogScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(2.dp)
             ) {
-
-                val iconSize by remember {
-                    mutableStateOf(36.dp)
-                }
-
-                IconButtonsColumn(
-                    listOf(
-                        IconButtonsData(
-                            modifier = Modifier.size(iconSize),
-                            icon = Icons.Default.Delete,
-                            contentDescription = getStringResource("info.clear.logs"),
-                            function = {
-                                scope.launch {
-                                    logManager.clearLogs()
-                                }
-                            }
-                        ),
-                        IconButtonsData(
-                            modifier = Modifier
-                                .background(
-                                    color = if (scrollToEnd) darkBlue else Color.Transparent,
-                                    shape = CircleShape
-                                )
-                                .size(iconSize),
-                            icon = Icons.Default.MoveDown,
-                            contentDescription = getStringResource("info.scroll.end"),
-                            tint = if (scrollToEnd) Color.White else darkBlue,
-                            function = { scrollToEnd = !scrollToEnd }
-                        ),
-                        IconButtonsData(
-                            modifier = Modifier
-                                .background(
-                                    color = if (reverseLogs) darkBlue else Color.Transparent,
-                                    shape = CircleShape
-                                )
-                                .size(iconSize),
-                            icon = Icons.Default.ArrowOutward,
-                            contentDescription = getStringResource("info.reversed"),
-                            tint = if (reverseLogs) Color.White else darkBlue,
-                            function = { reverseLogs = !reverseLogs }
-                        ),
-                        IconButtonsData(
-                            modifier = Modifier.size(iconSize),
-                            icon = Icons.Default.TextIncrease,
-                            contentDescription = getStringResource("info.font.size.increase"),
-                            function = { fontSize *= 1.1f }
-                        ),
-                        IconButtonsData(
-                            modifier = Modifier.size(iconSize),
-                            icon = Icons.Default.TextDecrease,
-                            contentDescription = getStringResource("info.font.size.decrease"),
-                            function = { fontSize /= 1.1f }
-                        ),
-                        IconButtonsData(
-                            modifier = Modifier
-                                .background(
-                                    color = if (saveToDatabase) darkRed else Color.Transparent,
-                                    shape = CircleShape
-                                )
-                                .size(iconSize),
-                            icon = Icons.Default.Save,
-                            contentDescription = getStringResource("info.save.database"),
-                            tint = if (saveToDatabase) Color.White else darkRed,
-                            function = { saveToDatabase = !saveToDatabase }
-                        ),
-                    )
+                MainButtonsSection(
+                    onClearLogs = {
+                        scope.launch {
+                            logManager.clearLogs()
+                        }
+                    },
+                    scrollToEnd = scrollToEnd,
+                    onScrollToEnd = {
+                        scrollToEnd = it
+                    },
+                    reverseLogs = reverseLogs,
+                    onReverseLogs = {
+                        reverseLogs = it
+                    },
+                    onFontSize = {
+                        when (it) {
+                            FontSize.INCREASE -> fontSize *= 1.1f
+                            FontSize.DECREASE -> fontSize /= 1.1f
+                        }
+                    },
+                    saveToDatabase = saveToDatabase,
+                    onSaveToDatabase = {
+                        saveToDatabase = it
+                    }
                 )
             }
             if (logs.isEmpty() && isRunning) {
@@ -183,3 +128,4 @@ fun LogScreen(
         }
     }
 }
+

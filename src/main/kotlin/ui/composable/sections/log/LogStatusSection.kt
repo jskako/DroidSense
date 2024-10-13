@@ -1,4 +1,4 @@
-package ui.composable.sections
+package ui.composable.sections.log
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

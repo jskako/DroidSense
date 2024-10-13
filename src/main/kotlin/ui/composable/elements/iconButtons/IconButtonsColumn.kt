@@ -42,7 +42,7 @@ fun IconButtonsColumn(
         icons.forEach {
             val tooltipState = remember { BasicTooltipState() }
             val interactionSource = remember { MutableInteractionSource() }
-            var clicked by remember { mutableStateOf(false) }
+            var tooltipVisible by remember { mutableStateOf(false) }
 
             BasicTooltipBox(
                 modifier = Modifier.padding(start = 4.dp),
@@ -66,7 +66,7 @@ fun IconButtonsColumn(
             ) {
                 IconButton(
                     onClick = {
-                        clicked = true
+                        tooltipVisible = true
                         it.function()
                     },
                     modifier = it.modifier,
@@ -81,17 +81,17 @@ fun IconButtonsColumn(
             }
 
             val hovered by interactionSource.collectIsHoveredAsState()
-            
-            scope.launch {
-                when (hovered) {
-                    true -> {
-                        if (!clicked) tooltipState.show()
-                    }
 
-                    false -> {
-                        clicked = false
-                        tooltipState.dismiss()
+            when (hovered) {
+                true -> {
+                    scope.launch {
+                        if (!tooltipVisible) tooltipState.show()
                     }
+                }
+
+                false -> {
+                    tooltipVisible = false
+                    tooltipState.dismiss()
                 }
             }
         }
