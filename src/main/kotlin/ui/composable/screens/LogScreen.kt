@@ -46,6 +46,7 @@ fun LogScreen(
     var saveToDatabase by remember { mutableStateOf(true) }
     var fontSize by remember { mutableStateOf(13.sp) }
     var isRunning by remember { mutableStateOf(false) }
+    var exportInProgress by remember { mutableStateOf(false) }
     var selectedPackage by remember { mutableStateOf(EMPTY_STRING) }
     val logs by remember { mutableStateOf(logManager.logs) }
     val scope = rememberCoroutineScope()
@@ -108,10 +109,16 @@ fun LogScreen(
                         saveToDatabase = it
                     },
                     onExportLogs = {
+                        exportInProgress = true
                         scope.launch {
-                            logManager.exportLogs()
+                            logManager.exportLogs(
+                                onExportDone = {
+                                    exportInProgress = false
+                                }
+                            )
                         }
-                    }
+                    },
+                    isExportEnabled = (!exportInProgress && logs.isNotEmpty())
                 )
 
                 if (hasSelectedLogs) {

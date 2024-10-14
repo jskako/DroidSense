@@ -32,7 +32,9 @@ class LogManager(
     val isActive: Boolean
         get() = monitorJob?.isActive == true
 
-    suspend fun exportLogs() {
+    suspend fun exportLogs(
+        onExportDone: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             buildString {
                 logs.takeLast(LOG_MANAGER_NUMBER_OF_LINES).forEach { log ->
@@ -40,6 +42,7 @@ class LogManager(
                     appendLine(log.log)
                 }
             }.exportToFile()
+            onExportDone()
         }
     }
 
