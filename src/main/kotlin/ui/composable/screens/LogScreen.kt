@@ -25,6 +25,7 @@ import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
 import ui.composable.elements.log.LogView
 import ui.composable.sections.log.FontSize
+import ui.composable.sections.log.LogSelectedButtonSection
 import ui.composable.sections.log.LogStatusSection
 import ui.composable.sections.log.MainButtonsSection
 import utils.EMPTY_STRING
@@ -122,7 +123,15 @@ fun LogScreen(
                 )
 
                 if (hasSelectedLogs) {
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+                    HorizontalDivider(modifier = Modifier.padding(8.dp))
+
+                    LogSelectedButtonSection(
+                        onExportLogs = {
+
+                        },
+                        isExportEnabled = true,
+                        selectedLogsSize = selectedCount
+                    )
                 }
             }
 

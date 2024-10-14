@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowOutward
+import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Dataset
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoveDown
@@ -92,9 +93,10 @@ fun MainButtonsSection(
                     shape = CircleShape
                 )
                 .size(iconSize),
-            icon = Icons.Default.Dataset,
+            isEnabled = false,
+            icon = Icons.Default.Backup,
             tooltip = getStringResource("info.save.database"),
-            tint = if (saveToDatabase) Color.White else darkRed,
+            tint = lightGray,
             function = { onSaveToDatabase(!saveToDatabase) }
         )
         TooltipIconButton(
