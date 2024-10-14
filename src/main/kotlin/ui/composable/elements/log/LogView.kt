@@ -55,7 +55,6 @@ fun LogView(
 
     Box(
         modifier = Modifier.fillMaxSize()
-            .padding(start = 15.dp)
     ) {
         LazyColumn(
             modifier = Modifier.padding(end = 15.dp),

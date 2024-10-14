@@ -4,7 +4,9 @@ import adb.DeviceDetails
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,11 +74,14 @@ fun LogScreen(
 
         DividerColored()
 
-        Row {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(2.dp)
+                modifier = Modifier
+                    .weight(0.1f)
             ) {
                 MainButtonsSection(
                     onClearLogs = {
@@ -110,31 +115,37 @@ fun LogScreen(
                 )
 
                 if (hasSelectedLogs) {
-
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
                 }
             }
-            if (logs.isEmpty() && isRunning) {
-                CircularProgressBar(
-                    text = buildString {
-                        appendLine(getStringResource("info.waiting.application.logs"))
-                        appendLine(selectedPackage)
-                    },
-                    isVisible = true
-                )
-            } else {
-                LogView(
-                    logs = logs.takeLast(
-                        LOG_MANAGER_NUMBER_OF_LINES
-                    ),
-                    logLevel = logLevel,
-                    filteredText = filteredText,
-                    reversedLogs = reverseLogs,
-                    scrollToEnd = scrollToEnd,
-                    fontSize = fontSize,
-                    onLogSelected = { uuid ->
-                        logManager.setIsSelected(uuid = uuid)
-                    }
-                )
+
+            Column(
+                modifier = Modifier
+                    .weight(0.9f)
+            ) {
+                if (logs.isEmpty() && isRunning) {
+                    CircularProgressBar(
+                        text = buildString {
+                            appendLine(getStringResource("info.waiting.application.logs"))
+                            appendLine(selectedPackage)
+                        },
+                        isVisible = true
+                    )
+                } else {
+                    LogView(
+                        logs = logs.takeLast(
+                            LOG_MANAGER_NUMBER_OF_LINES
+                        ),
+                        logLevel = logLevel,
+                        filteredText = filteredText,
+                        reversedLogs = reverseLogs,
+                        scrollToEnd = scrollToEnd,
+                        fontSize = fontSize,
+                        onLogSelected = { uuid ->
+                            logManager.setIsSelected(uuid = uuid)
+                        }
+                    )
+                }
             }
         }
     }

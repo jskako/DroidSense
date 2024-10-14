@@ -35,8 +35,7 @@ fun IconButtonsColumn(
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(2.dp)
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val scope = rememberCoroutineScope()
         icons.forEach {
