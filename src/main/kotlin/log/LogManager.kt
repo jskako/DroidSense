@@ -24,6 +24,7 @@ class LogManager(
 ) : LogManagerInterface {
 
     private var monitorJob: Job? = null
+    // TODO - Keep only last N logs
     private val _logs = mutableStateListOf<LogData>()
     private var currentProcess: Process? = null
 

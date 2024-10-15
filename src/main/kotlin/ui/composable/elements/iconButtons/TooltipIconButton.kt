@@ -5,7 +5,6 @@ import androidx.compose.foundation.BasicTooltipState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,81 +35,69 @@ import utils.Colors.darkBlue
 fun TooltipIconButton(
     modifier: Modifier = Modifier,
     iconSize: Dp = 36.dp,
-    text: String? = null,
-    icon: ImageVector? = null,
+    icon: ImageVector,
     tooltip: String,
     tint: Color = darkBlue,
     function: () -> Unit,
     isEnabled: Boolean = true
 ) {
-    if (icon != null || text != null) {
-        val scope = rememberCoroutineScope()
-        val tooltipState = remember { BasicTooltipState() }
-        val interactionSource = remember { MutableInteractionSource() }
-        var tooltipVisible by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val tooltipState = remember { BasicTooltipState() }
+    val interactionSource = remember { MutableInteractionSource() }
+    var tooltipVisible by remember { mutableStateOf(false) }
 
-        BasicTooltipBox(
-            tooltip = {
-                Popup(
-                    alignment = Alignment.Center
-                ) {
-                    Surface(
-                        modifier = Modifier.padding(start = 4.dp),
-                        color = darkBlue,
-                        shape = MaterialTheme.shapes.small
-                    ) {
-                        Text(
-                            text = tooltip,
-                            modifier = Modifier
-                                .padding(8.dp),
-                            color = Color.White
-                        )
-                    }
-                }
-            },
-            state = tooltipState,
-            positionProvider = rememberPlainTooltipPositionProvider(25.dp)
-        ) {
-            IconButton(
-                enabled = isEnabled,
-                onClick = {
-                    tooltipVisible = true
-                    function()
-                },
-                modifier = modifier
-                    .then(Modifier.size(iconSize)),
-                interactionSource = interactionSource
+    BasicTooltipBox(
+        tooltip = {
+            Popup(
+                alignment = Alignment.Center
             ) {
-                Column {
-                    text?.let {
-                        Text(
-                            text = it,
-                        )
-                    }
-                    icon?.let {
-                        Icon(
-                            imageVector = it,
-                            contentDescription = tooltip,
-                            tint = tint
-                        )
-                    }
+                Surface(
+                    modifier = Modifier.padding(start = 4.dp),
+                    color = darkBlue,
+                    shape = MaterialTheme.shapes.small
+                ) {
+                    Text(
+                        text = tooltip,
+                        modifier = Modifier
+                            .padding(8.dp),
+                        color = Color.White
+                    )
                 }
+            }
+        },
+        state = tooltipState,
+        positionProvider = rememberPlainTooltipPositionProvider(25.dp)
+    ) {
+        IconButton(
+            enabled = isEnabled,
+            onClick = {
+                tooltipVisible = true
+                function()
+            },
+            modifier = modifier
+                .then(Modifier.size(iconSize)),
+            interactionSource = interactionSource
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = tooltip,
+                tint = tint
+            )
+        }
+    }
+
+    val hovered by interactionSource.collectIsHoveredAsState()
+
+    when (hovered) {
+        true -> {
+            scope.launch {
+                if (!tooltipVisible) tooltipState.show()
             }
         }
 
-        val hovered by interactionSource.collectIsHoveredAsState()
-
-        when (hovered) {
-            true -> {
-                scope.launch {
-                    if (!tooltipVisible) tooltipState.show()
-                }
-            }
-
-            false -> {
-                tooltipVisible = false
-                tooltipState.dismiss()
-            }
+        false -> {
+            tooltipVisible = false
+            tooltipState.dismiss()
         }
     }
 }
