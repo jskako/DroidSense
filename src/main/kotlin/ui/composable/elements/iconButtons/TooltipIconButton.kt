@@ -8,11 +8,13 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipDefaults.rememberPlainTooltipPositionProvider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,11 +28,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.rememberCursorPositionProvider
 import kotlinx.coroutines.launch
 import utils.Colors.darkBlue
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun TooltipIconButton(
     modifier: Modifier = Modifier,
@@ -49,9 +50,10 @@ fun TooltipIconButton(
         var tooltipVisible by remember { mutableStateOf(false) }
 
         BasicTooltipBox(
-            modifier = Modifier.padding(start = 4.dp),
             tooltip = {
-                Popup(alignment = Alignment.Center) {
+                Popup(
+                    alignment = Alignment.Center
+                ) {
                     Surface(
                         color = darkBlue,
                         shape = MaterialTheme.shapes.small
@@ -66,7 +68,7 @@ fun TooltipIconButton(
                 }
             },
             state = tooltipState,
-            positionProvider = rememberCursorPositionProvider()
+            positionProvider = rememberPlainTooltipPositionProvider(25.dp)
         ) {
             IconButton(
                 enabled = isEnabled,
