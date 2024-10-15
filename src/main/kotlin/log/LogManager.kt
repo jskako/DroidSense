@@ -33,11 +33,15 @@ class LogManager(
         get() = monitorJob?.isActive == true
 
     suspend fun exportLogs(
+        exportOption: ExportOption = ExportOption.ALL,
         onExportDone: () -> Unit
     ) {
         withContext(Dispatchers.IO) {
             buildString {
-                logs.takeLast(LOG_MANAGER_NUMBER_OF_LINES).forEach { log ->
+                when (exportOption) {
+                    ExportOption.ALL -> logs
+                    ExportOption.SELECTED -> getSelectedLogs()
+                }.takeLast(LOG_MANAGER_NUMBER_OF_LINES).forEach { log ->
                     appendLine("${log.level} - ${log.time}")
                     appendLine(log.log)
                 }
@@ -45,6 +49,8 @@ class LogManager(
             onExportDone()
         }
     }
+
+    private fun getSelectedLogs() = logs.filter { it.isSelected }
 
     fun setIsSelected(uuid: UUID) {
         runCatching {

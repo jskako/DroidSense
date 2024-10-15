@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import log.ExportOption
 import log.LogLevel
 import log.LogManager
 import notifications.InfoManagerData
@@ -127,7 +128,15 @@ fun LogScreen(
 
                     LogSelectedButtonSection(
                         onExportLogs = {
-
+                            exportInProgress = true
+                            scope.launch {
+                                logManager.exportLogs(
+                                    exportOption = ExportOption.SELECTED,
+                                    onExportDone = {
+                                        exportInProgress = false
+                                    }
+                                )
+                            }
                         },
                         isExportEnabled = true,
                         selectedLogsSize = selectedCount
