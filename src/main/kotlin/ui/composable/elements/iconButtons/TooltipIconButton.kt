@@ -55,6 +55,7 @@ fun TooltipIconButton(
                     alignment = Alignment.Center
                 ) {
                     Surface(
+                        modifier = Modifier.padding(start = 4.dp),
                         color = darkBlue,
                         shape = MaterialTheme.shapes.small
                     ) {
