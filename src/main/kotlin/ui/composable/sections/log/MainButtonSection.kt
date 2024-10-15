@@ -5,17 +5,23 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowOutward
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Deselect
+import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.MoveDown
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.SaveAlt
+import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.TextDecrease
 import androidx.compose.material.icons.filled.TextIncrease
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import log.SelectOption
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
@@ -33,7 +39,9 @@ fun MainButtonsSection(
     onFontSize: (FontSize) -> Unit,
     saveToDatabase: Boolean,
     onSaveToDatabase: (Boolean) -> Unit,
-    isExportEnabled: Boolean
+    isExportEnabled: Boolean,
+    isSelectEnabled: Boolean,
+    onSelect: (SelectOption) -> Unit
 ) {
 
     Column(
@@ -84,7 +92,7 @@ fun MainButtonsSection(
                     shape = CircleShape
                 ),
             isEnabled = false,
-            icon = Icons.Default.Backup,
+            icon = Icons.Default.Save,
             tooltip = getStringResource("info.save.database"),
             tint = lightGray,
             function = { onSaveToDatabase(!saveToDatabase) }
@@ -92,9 +100,27 @@ fun MainButtonsSection(
         TooltipIconButton(
             isEnabled = isExportEnabled,
             tint = if (isExportEnabled) darkBlue else lightGray,
-            icon = Icons.Default.Save,
+            icon = Icons.Default.FileDownload,
             tooltip = getStringResource("info.export.logs"),
             function = onExportLogs
+        )
+        TooltipIconButton(
+            isEnabled = isSelectEnabled,
+            tint = if (isSelectEnabled) darkBlue else lightGray,
+            icon = Icons.Default.SelectAll,
+            tooltip = getStringResource("info.select.logs"),
+            function = {
+                onSelect(SelectOption.SELECT)
+            }
+        )
+        TooltipIconButton(
+            isEnabled = isSelectEnabled,
+            tint = if (isSelectEnabled) darkBlue else lightGray,
+            icon = Icons.Default.Deselect,
+            tooltip = getStringResource("info.deselect.logs"),
+            function = {
+                onSelect(SelectOption.DESELECT)
+            }
         )
     }
 }

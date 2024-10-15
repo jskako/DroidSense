@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.QuestionAnswer
-import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import ui.composable.elements.iconButtons.TooltipIconButton
@@ -36,7 +36,7 @@ fun LogSelectedButtonSection(
         TooltipIconButton(
             isEnabled = isExportEnabled,
             tint = if (isExportEnabled) darkBlue else lightGray,
-            icon = Icons.Default.SaveAlt,
+            icon = Icons.Default.FileDownload,
             tooltip = getStringResource("info.export.selected.logs"),
             function = onExportLogs
         )
@@ -53,6 +53,5 @@ fun LogSelectedButtonSection(
             tooltip = getStringResource("info.ask.ai"),
             function = {}
         )
-        // TODO - add select all and unselect all buttons
     }
 }

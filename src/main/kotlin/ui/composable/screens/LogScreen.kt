@@ -54,6 +54,7 @@ fun LogScreen(
     val scope = rememberCoroutineScope()
     val selectedCount = logs.count { it.isSelected }
     val hasSelectedLogs = selectedCount > 0
+    var selectionInProgress by remember { mutableStateOf(false) }
 
     Column {
         LogStatusSection(
@@ -89,7 +90,7 @@ fun LogScreen(
                 MainButtonsSection(
                     onClearLogs = {
                         scope.launch {
-                            logManager.clearLogs()
+                            logManager.clear()
                         }
                     },
                     scrollToEnd = scrollToEnd,
@@ -113,14 +114,26 @@ fun LogScreen(
                     onExportLogs = {
                         exportInProgress = true
                         scope.launch {
-                            logManager.exportLogs(
+                            logManager.export(
                                 onExportDone = {
                                     exportInProgress = false
                                 }
                             )
                         }
                     },
-                    isExportEnabled = (!exportInProgress && logs.isNotEmpty())
+                    isExportEnabled = (!exportInProgress && logs.isNotEmpty()),
+                    isSelectEnabled = !isRunning && !selectionInProgress && logs.isNotEmpty(),
+                    onSelect = {
+                        selectionInProgress = true
+                        scope.launch {
+                            logManager.isSelected(
+                                selectOption = it,
+                                onSelectDone = {
+                                    selectionInProgress = false
+                                }
+                            )
+                        }
+                    }
                 )
 
                 if (hasSelectedLogs) {
@@ -130,7 +143,7 @@ fun LogScreen(
                         onExportLogs = {
                             exportInProgress = true
                             scope.launch {
-                                logManager.exportLogs(
+                                logManager.export(
                                     exportOption = ExportOption.SELECTED,
                                     onExportDone = {
                                         exportInProgress = false
@@ -140,7 +153,7 @@ fun LogScreen(
                         },
                         onCopyLogs = {
                             scope.launch {
-                                logManager.copyLogs(
+                                logManager.copy(
                                     exportOption = ExportOption.SELECTED
                                 )
                             }
@@ -174,7 +187,9 @@ fun LogScreen(
                         scrollToEnd = scrollToEnd,
                         fontSize = fontSize,
                         onLogSelected = { uuid ->
-                            logManager.setIsSelected(uuid = uuid)
+                            if (!selectionInProgress) {
+                                logManager.isSelected(uuid = uuid)
+                            }
                         }
                     )
                 }

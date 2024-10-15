@@ -185,7 +185,7 @@ fun DeviceCard(
                                     onClose = {
                                         scope.launch {
                                             if (logManager.isActive) {
-                                                logManager.stopMonitoringLogs()
+                                                logManager.stopMonitoring()
                                                 onMessage(
                                                     InfoManagerData(
                                                         message = "${getStringResource("info.log.closing")} $device"

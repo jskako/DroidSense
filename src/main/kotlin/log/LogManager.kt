@@ -33,29 +33,48 @@ class LogManager(
     val isActive: Boolean
         get() = monitorJob?.isActive == true
 
-    suspend fun exportLogs(
+    suspend fun export(
         exportOption: ExportOption = ExportOption.ALL,
         onExportDone: () -> Unit
     ) {
         withContext(Dispatchers.IO) {
-            buildLogString(exportOption).exportToFile()
+            buildString(exportOption).exportToFile()
             onExportDone()
         }
     }
 
-    suspend fun copyLogs(
+    suspend fun copy(
         exportOption: ExportOption = ExportOption.ALL
     ) {
-        withContext(Dispatchers.IO) {
-            buildLogString(exportOption).copyToClipboard()
+        withContext(Dispatchers.Default) {
+            buildString(exportOption).copyToClipboard()
         }
     }
 
-    private fun buildLogString(exportOption: ExportOption): String {
+    suspend fun isSelected(
+        selectOption: SelectOption,
+        onSelectDone: () -> Unit
+    ) {
+        val isSelectedValue = when (selectOption) {
+            SelectOption.SELECT -> true
+            SelectOption.DESELECT -> false
+        }
+
+        withContext(Dispatchers.Default) {
+            _logs.forEachIndexed { index, log ->
+                if (log.isSelected != isSelectedValue) {
+                    _logs[index] = log.copy(isSelected = isSelectedValue)
+                }
+            }
+            onSelectDone()
+        }
+    }
+
+    private fun buildString(exportOption: ExportOption): String {
         return buildString {
             val logsToExport = when (exportOption) {
                 ExportOption.ALL -> logs
-                ExportOption.SELECTED -> getSelectedLogs()
+                ExportOption.SELECTED -> getSelected()
             }
 
             logsToExport.takeLast(LOG_MANAGER_NUMBER_OF_LINES).forEach { log ->
@@ -64,9 +83,9 @@ class LogManager(
         }
     }
 
-    private fun getSelectedLogs() = logs.filter { it.isSelected }
+    private fun getSelected() = logs.filter { it.isSelected }
 
-    fun setIsSelected(uuid: UUID) {
+    fun isSelected(uuid: UUID) {
         runCatching {
             val logData = _logs.find { it.uuid == uuid } ?: throw NoSuchElementException("Log entry not found")
             val index = _logs.indexOf(logData)
@@ -76,17 +95,17 @@ class LogManager(
         }
     }
 
-    override suspend fun startMonitoringLogs(
+    override suspend fun startMonitoring(
         coroutineScope: CoroutineScope,
         packageName: String,
         identifier: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
-        stopMonitoringLogs()
+        stopMonitoring()
         _logs.clear()
         monitorJob = coroutineScope.launch {
             try {
-                monitorLogs(
+                monitor(
                     packageName = packageName.takeUnless { it == getStringResource("info.log.starting.package") },
                     identifier = identifier,
                     onMessage = onMessage
@@ -101,16 +120,16 @@ class LogManager(
         }
     }
 
-    override suspend fun stopMonitoringLogs() {
+    override suspend fun stopMonitoring() {
         monitorJob?.cancel()
         currentProcess?.destroy()
     }
 
-    override suspend fun clearLogs() {
+    override suspend fun clear() {
         _logs.clear()
     }
 
-    private suspend fun monitorLogs(
+    private suspend fun monitor(
         packageName: String?,
         identifier: String,
         onMessage: (InfoManagerData) -> Unit
@@ -147,7 +166,7 @@ class LogManager(
                     lines.forEach { line ->
                         if (line.isNotEmpty()) {
                             val time = line.split(" ")[1].trim()
-                            val (logType, text) = extractLogInfo(line) ?: (LogLevel.NONE to "")
+                            val (logType, text) = extractInfo(line) ?: (LogLevel.NONE to "")
                             _logs.add(LogData(time = time, log = text, level = logType))
                         }
                     }
@@ -169,7 +188,7 @@ class LogManager(
     ) =
         "$adbPath -s $identifier shell pidof -s $packageName".runCommand()?.trim() ?: EMPTY_STRING
 
-    private fun extractLogInfo(log: String): Pair<LogLevel, String>? {
+    private fun extractInfo(log: String): Pair<LogLevel, String>? {
         val matchResult = logLevelRegex.find(log)
 
         return matchResult?.let { result ->

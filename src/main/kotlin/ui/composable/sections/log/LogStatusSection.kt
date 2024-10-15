@@ -78,7 +78,7 @@ fun LogStatusSection(
                             withContext(Default) {
                                 when (isRunning) {
                                     false -> {
-                                        logManager.startMonitoringLogs(
+                                        logManager.startMonitoring(
                                             coroutineScope = this,
                                             packageName = selectedPackage,
                                             identifier = identifier,
@@ -87,7 +87,7 @@ fun LogStatusSection(
                                     }
 
                                     true -> {
-                                        logManager.stopMonitoringLogs()
+                                        logManager.stopMonitoring()
                                     }
                                 }
                                 isRunning = !isRunning
