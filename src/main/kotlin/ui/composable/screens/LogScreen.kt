@@ -138,6 +138,13 @@ fun LogScreen(
                                 )
                             }
                         },
+                        onCopyLogs = {
+                            scope.launch {
+                                logManager.copyLogs(
+                                    exportOption = ExportOption.SELECTED
+                                )
+                            }
+                        },
                         isExportEnabled = true,
                         selectedLogsSize = selectedCount
                     )

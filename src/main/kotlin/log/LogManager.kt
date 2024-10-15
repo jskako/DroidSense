@@ -11,6 +11,7 @@ import notifications.InfoManagerData
 import utils.Colors.darkRed
 import utils.EMPTY_STRING
 import utils.LOG_MANAGER_NUMBER_OF_LINES
+import utils.copyToClipboard
 import utils.exportToFile
 import utils.getStringResource
 import utils.getTimeStamp
@@ -37,16 +38,29 @@ class LogManager(
         onExportDone: () -> Unit
     ) {
         withContext(Dispatchers.IO) {
-            buildString {
-                when (exportOption) {
-                    ExportOption.ALL -> logs
-                    ExportOption.SELECTED -> getSelectedLogs()
-                }.takeLast(LOG_MANAGER_NUMBER_OF_LINES).forEach { log ->
-                    appendLine("${log.level} - ${log.time}")
-                    appendLine(log.log)
-                }
-            }.exportToFile()
+            buildLogString(exportOption).exportToFile()
             onExportDone()
+        }
+    }
+
+    suspend fun copyLogs(
+        exportOption: ExportOption = ExportOption.ALL
+    ) {
+        withContext(Dispatchers.IO) {
+            buildLogString(exportOption).copyToClipboard()
+        }
+    }
+
+    private fun buildLogString(exportOption: ExportOption): String {
+        return buildString {
+            val logsToExport = when (exportOption) {
+                ExportOption.ALL -> logs
+                ExportOption.SELECTED -> getSelectedLogs()
+            }
+
+            logsToExport.takeLast(LOG_MANAGER_NUMBER_OF_LINES).forEach { log ->
+                appendLine(log.toString())
+            }
         }
     }
 

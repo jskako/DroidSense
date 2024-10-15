@@ -18,6 +18,7 @@ import utils.getStringResource
 fun LogSelectedButtonSection(
     selectedLogsSize: Int,
     onExportLogs: () -> Unit,
+    onCopyLogs: () -> Unit,
     isExportEnabled: Boolean
 ) {
 
@@ -43,7 +44,7 @@ fun LogSelectedButtonSection(
             tint = darkBlue,
             icon = Icons.Default.ContentCopy,
             tooltip = getStringResource("info.copy.selected.logs"),
-            function = {}
+            function = onCopyLogs
         )
         TooltipIconButton(
             isEnabled = false,

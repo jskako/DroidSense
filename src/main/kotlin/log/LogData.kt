@@ -8,4 +8,11 @@ data class LogData(
     val log: String,
     val level: LogLevel,
     val isSelected: Boolean = false
-)
+) {
+    override fun toString(): String {
+        return buildString {
+            appendLine("$level - $time")
+            appendLine(log)
+        }
+    }
+}
