@@ -24,7 +24,6 @@ class LogManager(
 ) : LogManagerInterface {
 
     private var monitorJob: Job? = null
-    // TODO - Keep only last N logs
     private val _logs = mutableStateListOf<LogData>()
     private var currentProcess: Process? = null
 
@@ -78,7 +77,7 @@ class LogManager(
                 ExportOption.SELECTED -> getSelected()
             }
 
-            logsToExport.takeLast(LOG_MANAGER_NUMBER_OF_LINES).forEach { log ->
+            logsToExport.forEach { log ->
                 appendLine(log.toString())
             }
         }
@@ -103,7 +102,7 @@ class LogManager(
         onMessage: (InfoManagerData) -> Unit
     ) {
         stopMonitoring()
-        _logs.clear()
+        clear()
         monitorJob = coroutineScope.launch {
             try {
                 monitor(
@@ -127,6 +126,7 @@ class LogManager(
     }
 
     override suspend fun clear() {
+        clearAdbCache()
         _logs.clear()
     }
 
@@ -151,7 +151,7 @@ class LogManager(
                             packageName = packageName
                         )
                     }
-                    _logs.clear()
+                    clear()
                 }
             }
             val logcatProcess = ProcessBuilder(adbPath, "-s", identifier, "logcat").apply {
@@ -170,6 +170,10 @@ class LogManager(
                             val (logType, text) = extractInfo(line) ?: (LogLevel.NONE to "")
                             _logs.add(LogData(time = time, log = text, level = logType))
                         }
+
+                        if (_logs.size > LOG_MANAGER_NUMBER_OF_LINES) {
+                            _logs.removeFirst()
+                        }
                     }
                 }
             }.onFailure { exception ->
@@ -183,6 +187,10 @@ class LogManager(
         }
     }
 
+    private fun clearAdbCache() {
+        "$adbPath logcat -c".runCommand()
+    }
+
     private fun getPid(
         identifier: String,
         packageName: String
@@ -193,7 +201,7 @@ class LogManager(
         val matchResult = logLevelRegex.find(log)
 
         return matchResult?.let { result ->
-            val logLevel = when (result.value[0]) {
+            val logLevel = when (result.value.first()) {
                 LogLevel.INFO.simplified() -> LogLevel.INFO
                 LogLevel.ERROR.simplified() -> LogLevel.ERROR
                 LogLevel.WARN.simplified() -> LogLevel.WARN
