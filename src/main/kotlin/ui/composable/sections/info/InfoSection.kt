@@ -1,4 +1,4 @@
-package ui.composable.sections
+package ui.composable.sections.info
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +25,9 @@ import androidx.compose.ui.unit.sp
 fun InfoSection(
     message: String,
     color: Color,
-    onCloseClicked: () -> Unit
+    onExtraClicked: FunctionIconData? = null,
+    onCloseClicked: () -> Unit,
+    onDone: () -> Unit
 ) {
     if (message.isNotEmpty()) {
         Surface(
@@ -60,6 +62,24 @@ fun InfoSection(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
+                onExtraClicked?.let {
+                    IconButton(
+                        onClick = {
+                            it.function()
+                            onCloseClicked()
+                        },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = it.icon,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
                 IconButton(
                     onClick = { onCloseClicked() },
                     modifier = Modifier.size(24.dp)
@@ -72,5 +92,7 @@ fun InfoSection(
                 }
             }
         }
+    } else {
+        onDone()
     }
 }

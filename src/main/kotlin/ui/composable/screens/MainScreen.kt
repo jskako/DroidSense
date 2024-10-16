@@ -22,8 +22,8 @@ import notifications.InfoManagerData
 import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.device.DeviceView
-import ui.composable.sections.InfoSection
 import ui.composable.sections.StatusSection
+import ui.composable.sections.info.InfoSection
 import utils.getStringResource
 
 @Composable
@@ -67,6 +67,7 @@ fun MainScreen(
             onCloseClicked = { infoManager.clearInfoMessage() },
             message = infoManager.infoManagerData.value.message,
             color = infoManager.infoManagerData.value.color,
+            onDone = {}
         )
         StatusSection(
             scrCpyPath = scrcpyPath,

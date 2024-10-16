@@ -7,6 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import notifications.ExportData
 import notifications.InfoManagerData
 import utils.Colors.darkRed
 import utils.EMPTY_STRING
@@ -35,7 +36,7 @@ class LogManager(
 
     suspend fun export(
         exportOption: ExportOption = ExportOption.ALL,
-        onExportDone: (infoManagerData: InfoManagerData) -> Unit
+        onExportDone: (exportData: ExportData) -> Unit
     ) {
         withContext(Dispatchers.IO) {
             onExportDone(buildString(exportOption).exportToFile())

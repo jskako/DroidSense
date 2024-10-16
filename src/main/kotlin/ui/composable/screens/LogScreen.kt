@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,7 +28,8 @@ import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
 import ui.composable.elements.log.LogView
-import ui.composable.sections.InfoSection
+import ui.composable.sections.info.FunctionIconData
+import ui.composable.sections.info.InfoSection
 import ui.composable.sections.log.FontSize
 import ui.composable.sections.log.LogSelectedButtonSection
 import ui.composable.sections.log.LogStatusSection
@@ -34,6 +37,7 @@ import ui.composable.sections.log.MainButtonsSection
 import utils.EMPTY_STRING
 import utils.LOG_MANAGER_NUMBER_OF_LINES
 import utils.getStringResource
+import utils.openFolderAtPath
 
 @Composable
 fun LogScreen(
@@ -57,6 +61,7 @@ fun LogScreen(
     val hasSelectedLogs = selectedCount > 0
     var selectionInProgress by remember { mutableStateOf(false) }
     val infoManager = remember { InfoManager() }
+    var exportPath by remember { mutableStateOf<String?>(null) }
 
     fun showMessage(message: String) {
         infoManager.showMessage(
@@ -77,9 +82,22 @@ fun LogScreen(
     Column {
 
         InfoSection(
-            onCloseClicked = { infoManager.clearInfoMessage() },
+            onCloseClicked = {
+                infoManager.clearInfoMessage()
+            },
             message = infoManager.infoManagerData.value.message,
             color = infoManager.infoManagerData.value.color,
+            onExtraClicked = exportPath?.let {
+                FunctionIconData(
+                    function = {
+                        showMessage(infoManagerData = openFolderAtPath(path = it))
+                    },
+                    icon = Icons.Default.FolderOpen
+                )
+            },
+            onDone = {
+                exportPath = null
+            }
         )
 
         LogStatusSection(
@@ -126,8 +144,8 @@ fun LogScreen(
                     },
                     reverseLogs = reverseLogs,
                     onReverseLogs = {
+                        scrollToEnd = false
                         reverseLogs = it
-                        showMessage(getStringResource("The logs have been cleared"))
                     },
                     onFontSize = {
                         when (it) {
@@ -143,12 +161,10 @@ fun LogScreen(
                         exportInProgress = true
                         scope.launch {
                             logManager.export(
-                                onExportDone = { infoManagerData ->
+                                onExportDone = { exportData ->
                                     exportInProgress = false
-                                    infoManager.showMessage(
-                                        scope = scope,
-                                        infoManagerData = infoManagerData
-                                    )
+                                    exportPath = exportData.path
+                                    showMessage(infoManagerData = exportData.infoManagerData)
                                 }
                             )
                         }
@@ -166,9 +182,8 @@ fun LogScreen(
                             )
                         }
                     },
-                    onInfoMessage = {
-                        showMessage(infoManagerData = it)
-                    }
+                    isClearLogsEnabled = logs.isNotEmpty(),
+                    scrollToEndEnabled = !reverseLogs
                 )
 
                 if (hasSelectedLogs) {
@@ -180,8 +195,10 @@ fun LogScreen(
                             scope.launch {
                                 logManager.export(
                                     exportOption = ExportOption.SELECTED,
-                                    onExportDone = {
+                                    onExportDone = { exportData ->
                                         exportInProgress = false
+                                        exportPath = exportData.path
+                                        showMessage(infoManagerData = exportData.infoManagerData)
                                     }
                                 )
                             }

@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import log.SelectOption
-import notifications.InfoManagerData
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
@@ -29,9 +28,11 @@ import utils.getStringResource
 @Composable
 fun MainButtonsSection(
     onClearLogs: () -> Unit,
+    isClearLogsEnabled: Boolean,
     onExportLogs: () -> Unit,
     scrollToEnd: Boolean,
     onScrollToEnd: (Boolean) -> Unit,
+    scrollToEndEnabled: Boolean,
     reverseLogs: Boolean,
     onReverseLogs: (Boolean) -> Unit,
     onFontSize: (FontSize) -> Unit,
@@ -39,8 +40,7 @@ fun MainButtonsSection(
     onSaveToDatabase: (Boolean) -> Unit,
     isExportEnabled: Boolean,
     isSelectEnabled: Boolean,
-    onSelect: (SelectOption) -> Unit,
-    onInfoMessage: (InfoManagerData) -> Unit
+    onSelect: (SelectOption) -> Unit
 ) {
 
     Column(
@@ -50,17 +50,24 @@ fun MainButtonsSection(
         TooltipIconButton(
             icon = Icons.Default.Delete,
             tooltip = getStringResource("info.clear.logs"),
-            function = onClearLogs
+            function = onClearLogs,
+            tint = if (isClearLogsEnabled) darkBlue else lightGray,
+            isEnabled = isClearLogsEnabled
         )
         TooltipIconButton(
             modifier = Modifier
                 .background(
-                    color = if (scrollToEnd) darkBlue else Color.Transparent,
+                    color = if (scrollToEnd && scrollToEndEnabled) darkBlue else Color.Transparent,
                     shape = CircleShape
                 ),
             icon = Icons.Default.MoveDown,
             tooltip = getStringResource("info.scroll.end"),
-            tint = if (scrollToEnd) Color.White else darkBlue,
+            isEnabled = scrollToEndEnabled,
+            tint = when {
+                !scrollToEndEnabled -> lightGray
+                scrollToEnd -> Color.White
+                else -> darkBlue
+            },
             function = { onScrollToEnd(!scrollToEnd) }
         )
         TooltipIconButton(

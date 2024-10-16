@@ -1,7 +1,9 @@
 package utils
 
+import notifications.ExportData
 import notifications.InfoManagerData
 import utils.Colors.darkRed
+import java.awt.Desktop
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
@@ -37,19 +39,24 @@ private fun copyToClipboard(text: String): Boolean {
 
 fun String.exportToFile(
     exportPath: String? = null
-): InfoManagerData {
+): ExportData {
+
     if (this.isBlank()) {
-        return InfoManagerData(
-            message = getStringResource("error.export.empty.data"),
-            color = darkRed
+        return ExportData(
+            infoManagerData = InfoManagerData(
+                message = getStringResource("error.export.empty.data"),
+                color = darkRed
+            )
         )
     }
 
     val path = exportPath ?: pickDirectoryDialog()
     if (path.isNullOrBlank()) {
-        return InfoManagerData(
-            message = getStringResource("error.export.empty.path"),
-            color = darkRed
+        return ExportData(
+            infoManagerData = InfoManagerData(
+                message = getStringResource("error.export.empty.path"),
+                color = darkRed
+            )
         )
     }
 
@@ -62,14 +69,42 @@ fun String.exportToFile(
     }
 
     return if (result.isFailure) {
+        ExportData(
+            infoManagerData = InfoManagerData(
+                message = getStringResource("error.export.general"),
+                color = darkRed
+            )
+        )
+
+    } else {
+        ExportData(
+            infoManagerData = InfoManagerData(
+                message = "${getStringResource("success.export.general")}: $path",
+                duration = null
+            ),
+            path = path
+        )
+    }
+}
+
+fun openFolderAtPath(path: String): InfoManagerData {
+    val result = runCatching {
+        val file = File(path)
+        if (file.exists() && Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().open(file)
+        } else {
+            throw IllegalArgumentException("${getStringResource("error.folder.not.found")} - $path")
+        }
+    }
+
+    return if (result.isFailure) {
         InfoManagerData(
-            message = getStringResource("error.export.general"),
+            message = result.exceptionOrNull()?.message ?: "",
             color = darkRed
         )
     } else {
         InfoManagerData(
-            message = "${getStringResource("success.export.general")}: $path",
-            duration = null
+            message = "${getStringResource("success.open.success")}: $path"
         )
     }
 }
