@@ -167,7 +167,7 @@ fun LogScreen(
                             )
                         }
                     },
-                    isExportEnabled = (!exportInProgress && logs.isNotEmpty()),
+                    isExportEnabled = (!exportInProgress && logs.isNotEmpty() && !isRunning),
                     isSelectEnabled = !isRunning && !selectionInProgress && logs.isNotEmpty(),
                     onSelect = {
                         selectionInProgress = true
@@ -208,7 +208,7 @@ fun LogScreen(
                                 )
                             }
                         },
-                        isExportEnabled = true,
+                        isExportEnabled = (!exportInProgress && !isRunning),
                         selectedLogsSize = selectedCount,
                         onInfoMessage = {
                             showMessage(infoManagerData = it)
