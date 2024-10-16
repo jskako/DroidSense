@@ -5,15 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowOutward
-import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Deselect
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.MoveDown
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.TextDecrease
 import androidx.compose.material.icons.filled.TextIncrease
@@ -22,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import log.SelectOption
+import notifications.InfoManagerData
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
@@ -41,7 +39,8 @@ fun MainButtonsSection(
     onSaveToDatabase: (Boolean) -> Unit,
     isExportEnabled: Boolean,
     isSelectEnabled: Boolean,
-    onSelect: (SelectOption) -> Unit
+    onSelect: (SelectOption) -> Unit,
+    onInfoMessage: (InfoManagerData) -> Unit
 ) {
 
     Column(

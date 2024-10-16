@@ -35,11 +35,10 @@ class LogManager(
 
     suspend fun export(
         exportOption: ExportOption = ExportOption.ALL,
-        onExportDone: () -> Unit
+        onExportDone: (infoManagerData: InfoManagerData) -> Unit
     ) {
         withContext(Dispatchers.IO) {
-            buildString(exportOption).exportToFile()
-            onExportDone()
+            onExportDone(buildString(exportOption).exportToFile())
         }
     }
 

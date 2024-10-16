@@ -178,8 +178,7 @@ fun DeviceCard(
                                         LogScreen(
                                             adbPath = adbPath,
                                             device = device,
-                                            logManager = logManager,
-                                            onMessage = onMessage
+                                            logManager = logManager
                                         )
                                     },
                                     onClose = {

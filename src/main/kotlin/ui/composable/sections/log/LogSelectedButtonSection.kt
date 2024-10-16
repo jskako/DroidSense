@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import notifications.InfoManagerData
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
@@ -24,7 +25,8 @@ fun LogSelectedButtonSection(
     selectedLogsSize: Int,
     onExportLogs: () -> Unit,
     onCopyLogs: () -> Unit,
-    isExportEnabled: Boolean
+    isExportEnabled: Boolean,
+    onInfoMessage: (InfoManagerData) -> Unit
 ) {
 
     Column(

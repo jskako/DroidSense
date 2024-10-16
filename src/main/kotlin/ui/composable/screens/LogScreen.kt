@@ -21,10 +21,12 @@ import kotlinx.coroutines.launch
 import log.ExportOption
 import log.LogLevel
 import log.LogManager
+import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
 import ui.composable.elements.log.LogView
+import ui.composable.sections.InfoSection
 import ui.composable.sections.log.FontSize
 import ui.composable.sections.log.LogSelectedButtonSection
 import ui.composable.sections.log.LogStatusSection
@@ -37,7 +39,6 @@ import utils.getStringResource
 fun LogScreen(
     adbPath: String,
     logManager: LogManager,
-    onMessage: (InfoManagerData) -> Unit,
     device: DeviceDetails
 ) {
 
@@ -55,8 +56,32 @@ fun LogScreen(
     val selectedCount = logs.count { it.isSelected }
     val hasSelectedLogs = selectedCount > 0
     var selectionInProgress by remember { mutableStateOf(false) }
+    val infoManager = remember { InfoManager() }
+
+    fun showMessage(message: String) {
+        infoManager.showMessage(
+            infoManagerData = InfoManagerData(
+                message = message
+            ),
+            scope = scope
+        )
+    }
+
+    fun showMessage(infoManagerData: InfoManagerData) {
+        infoManager.showMessage(
+            infoManagerData = infoManagerData,
+            scope = scope
+        )
+    }
 
     Column {
+
+        InfoSection(
+            onCloseClicked = { infoManager.clearInfoMessage() },
+            message = infoManager.infoManagerData.value.message,
+            color = infoManager.infoManagerData.value.color,
+        )
+
         LogStatusSection(
             adbPath = adbPath,
             identifier = device.deviceIdentifier,
@@ -73,8 +98,9 @@ fun LogScreen(
             onPackageSelected = {
                 selectedPackage = it
             },
-            onMessage = onMessage
-        )
+            onMessage = {
+                showMessage(infoManagerData = it)
+            })
 
         DividerColored()
 
@@ -91,6 +117,7 @@ fun LogScreen(
                     onClearLogs = {
                         scope.launch {
                             logManager.clear()
+                            showMessage(getStringResource("info.logs.cleared"))
                         }
                     },
                     scrollToEnd = scrollToEnd,
@@ -100,6 +127,7 @@ fun LogScreen(
                     reverseLogs = reverseLogs,
                     onReverseLogs = {
                         reverseLogs = it
+                        showMessage(getStringResource("The logs have been cleared"))
                     },
                     onFontSize = {
                         when (it) {
@@ -115,8 +143,12 @@ fun LogScreen(
                         exportInProgress = true
                         scope.launch {
                             logManager.export(
-                                onExportDone = {
+                                onExportDone = { infoManagerData ->
                                     exportInProgress = false
+                                    infoManager.showMessage(
+                                        scope = scope,
+                                        infoManagerData = infoManagerData
+                                    )
                                 }
                             )
                         }
@@ -133,6 +165,9 @@ fun LogScreen(
                                 }
                             )
                         }
+                    },
+                    onInfoMessage = {
+                        showMessage(infoManagerData = it)
                     }
                 )
 
@@ -159,7 +194,10 @@ fun LogScreen(
                             }
                         },
                         isExportEnabled = true,
-                        selectedLogsSize = selectedCount
+                        selectedLogsSize = selectedCount,
+                        onInfoMessage = {
+                            showMessage(infoManagerData = it)
+                        }
                     )
                 }
             }
