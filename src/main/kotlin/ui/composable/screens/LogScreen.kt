@@ -95,9 +95,7 @@ fun LogScreen(
                     icon = Icons.Default.FolderOpen
                 )
             },
-            onDone = {
-                exportPath = null
-            }
+            extraVisible = infoManager.infoManagerData.value.extraVisible
         )
 
         LogStatusSection(

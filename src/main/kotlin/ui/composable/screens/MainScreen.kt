@@ -66,8 +66,7 @@ fun MainScreen(
         InfoSection(
             onCloseClicked = { infoManager.clearInfoMessage() },
             message = infoManager.infoManagerData.value.message,
-            color = infoManager.infoManagerData.value.color,
-            onDone = {}
+            color = infoManager.infoManagerData.value.color
         )
         StatusSection(
             scrCpyPath = scrcpyPath,

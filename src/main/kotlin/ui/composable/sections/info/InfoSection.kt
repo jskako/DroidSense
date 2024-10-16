@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.sp
 fun InfoSection(
     message: String,
     color: Color,
+    extraVisible: Boolean = false,
     onExtraClicked: FunctionIconData? = null,
-    onCloseClicked: () -> Unit,
-    onDone: () -> Unit
+    onCloseClicked: () -> Unit
 ) {
     if (message.isNotEmpty()) {
         Surface(
@@ -62,19 +62,21 @@ fun InfoSection(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                onExtraClicked?.let {
-                    IconButton(
-                        onClick = {
-                            it.function()
-                            onCloseClicked()
-                        },
-                        modifier = Modifier.size(24.dp)
-                    ) {
-                        Icon(
-                            imageVector = it.icon,
-                            contentDescription = null,
-                            tint = Color.White
-                        )
+                if (extraVisible) {
+                    onExtraClicked?.let {
+                        IconButton(
+                            onClick = {
+                                it.function()
+                                onCloseClicked()
+                            },
+                            modifier = Modifier.size(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = it.icon,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
 
@@ -92,7 +94,5 @@ fun InfoSection(
                 }
             }
         }
-    } else {
-        onDone()
     }
 }
