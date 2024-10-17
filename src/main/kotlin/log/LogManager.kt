@@ -21,7 +21,6 @@ import utils.runCommand
 import java.util.UUID
 
 // TODO - LogManager to flow and emit
-// TODO - LogManager filters not working when stopped
 
 class LogManager(
     private val adbPath: String
