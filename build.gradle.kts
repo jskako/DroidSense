@@ -25,6 +25,7 @@ dependencies {
     implementation(libs.about.libraries.compose)
     implementation(libs.sqldelight.coroutines)
     implementation(libs.sqldelight.jvm)
+    implementation(libs.sl4j)
 }
 
 compose.desktop {

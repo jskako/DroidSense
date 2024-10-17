@@ -4,6 +4,7 @@ material = "1.6.11"
 sqldelight = "2.0.2"
 kotlin = "2.0.20"
 compose-plugin = "1.6.11"
+sl4j = "2.0.16"
 
 [libraries]
 material-icons = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "material" }
@@ -12,6 +13,7 @@ about-libraries-core = { module = "com.mikepenz:aboutlibraries-core", version.re
 about-libraries-compose = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "about-libraries" }
 sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+sl4j = { module = "org.slf4j:slf4j-reload4j", version.ref = "sl4j" }
 
 [plugins]
 about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about-libraries" }
