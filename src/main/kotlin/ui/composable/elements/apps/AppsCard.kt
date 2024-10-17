@@ -1,6 +1,7 @@
 package ui.composable.elements.apps
 
 import adb.ApplicationType
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +20,7 @@ import log.AppData
 import notifications.InfoManagerData
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.OutlinedButton
+import utils.Colors.darkRed
 import utils.getStringResource
 
 @Composable
@@ -27,7 +28,6 @@ fun AppsCard(
     app: AppData,
     onMessage: (InfoManagerData) -> Unit
 ) {
-    val scope = rememberCoroutineScope()
 
     Card(
         modifier = Modifier
@@ -64,17 +64,35 @@ fun AppsCard(
                     text2 = app.appSize ?: ""
                 )
 
-                if (app.applicationType == ApplicationType.USER) {
-                    addSpaceHeight(height = 10.dp)
+                addSpaceHeight(height = 10.dp)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        space = 10.dp,
+                        alignment = Alignment.End
+                    )
+                ) {
+                    OutlinedButton(
+                        text = getStringResource("info.app.clear.cache"),
+                        onClick = {}
+                    )
 
                     OutlinedButton(
-                        text = getStringResource("info.app.package.delete"),
-                        onClick = {
+                        text = getStringResource("info.app.clear.data"),
+                        onClick = {}
+                    )
 
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp)
+                    OutlinedButton(
+                        text = getStringResource(
+                            when (app.applicationType) {
+                                ApplicationType.SYSTEM -> "info.app.package.force.delete"
+                                ApplicationType.USER -> "info.app.package.delete"
+                            }
+                        ),
+                        color = darkRed,
+                        onClick = {}
                     )
                 }
             }
