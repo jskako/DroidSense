@@ -1,6 +1,5 @@
 package ui.composable.screens
 
-import adb.DeviceDetails
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,7 +42,7 @@ import utils.openFolderAtPath
 fun LogScreen(
     adbPath: String,
     logManager: LogManager,
-    device: DeviceDetails
+    deviceIdentifier: String
 ) {
 
     var logLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
@@ -100,7 +99,7 @@ fun LogScreen(
 
         LogStatusSection(
             adbPath = adbPath,
-            identifier = device.deviceIdentifier,
+            identifier = deviceIdentifier,
             logManager = logManager,
             onLogLevelSelected = {
                 logLevel = it

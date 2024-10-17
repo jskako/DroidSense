@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,6 +37,7 @@ import ui.application.navigation.WindowData
 import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.OutlinedButton
+import ui.composable.screens.ApplicationScreen
 import ui.composable.screens.LogScreen
 import utils.DEFAULT_PHONE_IMAGE
 import utils.EMPTY_STRING
@@ -176,7 +178,7 @@ fun DeviceCard(
                                         screen = {
                                             LogScreen(
                                                 adbPath = adbPath,
-                                                device = device,
+                                                deviceIdentifier = device.deviceIdentifier,
                                                 logManager = logManager
                                             )
                                         },
@@ -207,7 +209,24 @@ fun DeviceCard(
                         .height(48.dp),
                     text = getStringResource("info.application.manager"),
                     onClick = {
-
+                        windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                            newWindow(
+                                WindowData(
+                                    title = "${device.model} (${device.serialNumber})",
+                                    icon = Icons.Default.Apps,
+                                    windowExtra = WindowExtra(
+                                        screen = {
+                                            ApplicationScreen(
+                                                identifier = device.deviceIdentifier,
+                                                adbPath = adbPath
+                                            )
+                                        },
+                                        onClose = {
+                                        }
+                                    )
+                                )
+                            )
+                        }
                     }
                 )
             }
