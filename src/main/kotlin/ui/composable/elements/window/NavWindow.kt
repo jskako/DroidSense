@@ -13,7 +13,6 @@ import androidx.compose.ui.window.Window
 import com.jskako.DSDatabase
 import data.createDriver
 import data.repository.settings.SettingsSource
-import java.awt.Dimension
 import ui.application.WindowState
 import ui.application.WindowStateManager
 import ui.application.navigation.NavRoute
@@ -24,6 +23,7 @@ import ui.composable.screens.VariablesScreen
 import ui.composable.utils.createMenu
 import utils.MIN_WINDOW_HEIGHT
 import utils.MIN_WINDOW_WIDTH
+import java.awt.Dimension
 
 @Composable
 fun NavWindow(

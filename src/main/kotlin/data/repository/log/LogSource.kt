@@ -8,10 +8,10 @@ import data.model.LogItem
 import data.model.UuidItem
 import data.model.toLogItem
 import data.model.toUuidItem
-import java.util.UUID
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.UUID
+import kotlin.coroutines.CoroutineContext
 
 class LogDataSource(
     private val logDao: LogHistoryQueries,

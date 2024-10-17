@@ -9,11 +9,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.launch
 import log.AppData
 import log.ApplicationManager
 import notifications.InfoManager
 import notifications.InfoManagerData
+import ui.composable.elements.CircularProgressBar
+import ui.composable.elements.apps.AppsView
+import utils.getStringResource
 
 @Composable
 fun ApplicationScreen(
@@ -46,8 +48,28 @@ fun ApplicationScreen(
         )
     }
 
-    Column {
+    CircularProgressBar(
+        text = getStringResource("info.getting.application"),
+        isVisible = userApps.value.isEmpty() && systemApps.value.isEmpty()
+    )
 
+    if(userApps.value.isNotEmpty() || systemApps.value.isNotEmpty()) {
+        DeviceGroup(
+            apps = userApps.value + systemApps.value,
+        )
+    }
+}
+
+@Composable
+fun DeviceGroup(
+    apps: List<AppData>,
+) {
+    Column {
+        AppsView(
+            apps = apps,
+            onMessage = {
+            }
+        )
     }
 }
 

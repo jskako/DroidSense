@@ -2,8 +2,8 @@ package data.repository.log
 
 import data.model.LogItem
 import data.model.UuidItem
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
+import java.util.UUID
 
 interface LogRepository {
 
