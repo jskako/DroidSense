@@ -13,9 +13,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
@@ -43,13 +40,9 @@ fun LogView(
         }
     }
 
-    val filteredLogs by remember(logs) {
-        mutableStateOf(
-            logs.filter { log ->
-                log.level.ordinal <= logLevel.ordinal &&
-                        (filteredText.isEmpty() || log.log.contains(filteredText, ignoreCase = true))
-            }
-        )
+    val filteredLogs = logs.filter { log ->
+        log.level.ordinal <= logLevel.ordinal &&
+                (filteredText.isEmpty() || log.log.contains(filteredText, ignoreCase = true))
     }
 
     Box(
