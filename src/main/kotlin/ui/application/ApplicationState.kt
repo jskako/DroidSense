@@ -1,22 +1,27 @@
 package ui.application
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.graphics.vector.ImageVector
+import ui.application.navigation.WindowData
 import utils.getStringResource
 
-data class ApplicationState(
-    val title: String = getStringResource("app.name"),
-    val icon: ImageVector? = null
-) {
+class ApplicationState {
 
     val windows = mutableStateListOf<WindowState>()
 
     init {
-        windows += createWindowState(title, icon, WindowExtra())
+        windows += createWindowState(
+            WindowData(
+                title = getStringResource("app.name"),
+                icon = null,
+                windowExtra = WindowExtra()
+            )
+        )
     }
 
-    fun openNewWindow(title: String, icon: ImageVector?, extra: WindowExtra) {
-        windows += createWindowState(title, icon, extra)
+    fun openNewWindow(windowData: WindowData) {
+        windows += createWindowState(
+            windowData = windowData
+        )
     }
 
     private fun exit() {
@@ -24,18 +29,16 @@ data class ApplicationState(
     }
 
     private fun createWindowState(
-        title: String,
-        icon: ImageVector?,
-        extra: WindowExtra
+        windowData: WindowData
     ): WindowState {
         return WindowState(
-            title = title,
-            icon = icon,
-            extra = extra,
+            title = windowData.title,
+            icon = windowData.icon,
+            extra = windowData.windowExtra,
             openNewWindow = ::openNewWindow,
             exit = ::exit,
             close = { window ->
-                extra.onClose?.let {
+                windowData.windowExtra.onClose?.let {
                     it()
                 }
                 windows.remove(window)

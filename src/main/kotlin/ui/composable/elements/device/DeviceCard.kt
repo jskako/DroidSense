@@ -2,7 +2,6 @@ package ui.composable.elements.device
 
 import adb.ConnectionType
 import adb.DeviceDetails
-import adb.DeviceOptions
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,9 +32,9 @@ import log.LogManager
 import notifications.InfoManagerData
 import ui.application.WindowExtra
 import ui.application.WindowStateManager
+import ui.application.navigation.WindowData
 import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
-import ui.composable.elements.ClickableMenu
 import ui.composable.elements.OutlinedButton
 import ui.composable.screens.LogScreen
 import utils.DEFAULT_PHONE_IMAGE
@@ -44,7 +43,6 @@ import utils.IMAGES_DIRECTORY
 import utils.capitalizeFirstChar
 import utils.getImageBitmap
 import utils.getStringResource
-import utils.installApplication
 import utils.isValidIpAddressWithPort
 import utils.startScrCpy
 
@@ -169,30 +167,32 @@ fun DeviceCard(
                     text = getStringResource("info.log.manager"),
                     onClick = {
                         val logManager = LogManager(adbPath = adbPath)
-                        windowStateManager.windowState?.openNewWindow?.let {
-                            it(
-                                "${device.model} (${device.serialNumber})",
-                                Icons.Default.Info,
-                                WindowExtra(
-                                    screen = {
-                                        LogScreen(
-                                            adbPath = adbPath,
-                                            device = device,
-                                            logManager = logManager
-                                        )
-                                    },
-                                    onClose = {
-                                        scope.launch {
-                                            if (logManager.isActive) {
-                                                logManager.stopMonitoring()
-                                                onMessage(
-                                                    InfoManagerData(
-                                                        message = "${getStringResource("info.log.closing")} $device"
+                        windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                            newWindow(
+                                WindowData(
+                                    title = "${device.model} (${device.serialNumber})",
+                                    icon = Icons.Default.Info,
+                                    windowExtra = WindowExtra(
+                                        screen = {
+                                            LogScreen(
+                                                adbPath = adbPath,
+                                                device = device,
+                                                logManager = logManager
+                                            )
+                                        },
+                                        onClose = {
+                                            scope.launch {
+                                                if (logManager.isActive) {
+                                                    logManager.stopMonitoring()
+                                                    onMessage(
+                                                        InfoManagerData(
+                                                            message = "${getStringResource("info.log.closing")} $device"
+                                                        )
                                                     )
-                                                )
+                                                }
                                             }
                                         }
-                                    }
+                                    )
                                 )
                             )
                         }
@@ -201,35 +201,14 @@ fun DeviceCard(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                ClickableMenu(
-                    text = getStringResource("info.log.options"),
-                    functions = listOf(
-                        DeviceOptions(
-                            text = getStringResource("info.install.apk"),
-                            function = {
-                                scope.launch {
-                                    installApplication(
-                                        adbPath = adbPath,
-                                        device.deviceIdentifier,
-                                        onMessage = onMessage
-                                    )
-                                }
-                            }
-                        ),
-                        DeviceOptions(
-                            text = getStringResource("info.install.private.apk"),
-                            function = {
-                                scope.launch {
-                                    installApplication(
-                                        adbPath = adbPath,
-                                        device.deviceIdentifier,
-                                        onMessage = onMessage,
-                                        isPrivateSpace = true
-                                    )
-                                }
-                            }
-                        ),
-                    )
+                OutlinedButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    text = getStringResource("info.application.manager"),
+                    onClick = {
+
+                    }
                 )
             }
         }

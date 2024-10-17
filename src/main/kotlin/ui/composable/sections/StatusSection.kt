@@ -29,6 +29,7 @@ import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import notifications.InfoManagerData
 import ui.application.WindowExtra
 import ui.application.WindowStateManager
+import ui.application.navigation.WindowData
 import ui.composable.elements.ClickableIconMenu
 import ui.composable.elements.iconButtons.IconClickableText
 import utils.ABOUT_LIBRARIES_JSON_NAME
@@ -86,14 +87,12 @@ fun StatusSection(
                     DeviceOptions(
                         text = getStringResource("info.log.history"),
                         function = {
-                            windowStateManager.windowState?.openNewWindow?.let {
-                                it(
-                                    getStringResource("info.log.history"),
-                                    Icons.Default.History,
-                                    WindowExtra(
-                                        screen = {
-
-                                        }
+                            windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                                newWindow(
+                                    WindowData(
+                                        title = getStringResource("info.log.history"),
+                                        icon = Icons.Default.History,
+                                        WindowExtra()
                                     )
                                 )
                             }
@@ -122,16 +121,18 @@ fun StatusSection(
                     DeviceOptions(
                         text = getStringResource("info.log.licenses"),
                         function = {
-                            windowStateManager.windowState?.openNewWindow?.let {
-                                it(
-                                    getStringResource("info.log.licenses"),
-                                    Icons.Default.Policy,
-                                    WindowExtra(
-                                        screen = {
-                                            LibrariesContainer(useResource(ABOUT_LIBRARIES_JSON_NAME) {
-                                                it.bufferedReader().readText()
-                                            }, Modifier.fillMaxSize())
-                                        }
+                            windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                                newWindow(
+                                    WindowData(
+                                        title = getStringResource("info.log.licenses"),
+                                        icon = Icons.Default.Policy,
+                                        windowExtra = WindowExtra(
+                                            screen = {
+                                                LibrariesContainer(useResource(ABOUT_LIBRARIES_JSON_NAME) {
+                                                    it.bufferedReader().readText()
+                                                }, Modifier.fillMaxSize())
+                                            }
+                                        )
                                     )
                                 )
                             }

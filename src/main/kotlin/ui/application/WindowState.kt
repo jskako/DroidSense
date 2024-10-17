@@ -1,12 +1,13 @@
 package ui.application
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import ui.application.navigation.WindowData
 
 data class WindowState(
     val title: String,
     val icon: ImageVector?,
     val extra: WindowExtra,
-    val openNewWindow: (String, ImageVector?, WindowExtra) -> Unit,
+    val openNewWindow: (WindowData) -> Unit,
     val exit: () -> Unit,
     private val close: (WindowState) -> Unit
 ) {
