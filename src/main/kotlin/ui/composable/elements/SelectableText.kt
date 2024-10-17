@@ -42,7 +42,7 @@ internal fun SelectableText(
         onValueChange = {
             onValueChanged(it)
         },
-        label = { HintBox(hintText) },
+        label = { HintText(hintText) },
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
