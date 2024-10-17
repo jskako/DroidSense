@@ -1,7 +1,6 @@
 package ui.composable.screens
 
 import adb.ApplicationType
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -53,7 +52,7 @@ fun ApplicationScreen(
         isVisible = userApps.value.isEmpty() && systemApps.value.isEmpty()
     )
 
-    if(userApps.value.isNotEmpty() || systemApps.value.isNotEmpty()) {
+    if (userApps.value.isNotEmpty() || systemApps.value.isNotEmpty()) {
         DeviceGroup(
             apps = userApps.value + systemApps.value,
         )
@@ -64,13 +63,11 @@ fun ApplicationScreen(
 fun DeviceGroup(
     apps: List<AppData>,
 ) {
-    Column {
-        AppsView(
-            apps = apps,
-            onMessage = {
-            }
-        )
-    }
+    AppsView(
+        apps = apps,
+        onMessage = {
+        }
+    )
 }
 
 @Composable
