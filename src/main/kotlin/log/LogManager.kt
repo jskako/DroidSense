@@ -20,7 +20,6 @@ import utils.logLevelRegex
 import utils.runCommand
 import java.util.UUID
 
-// TODO - LogManager to flow and emit
 
 class LogManager(
     private val adbPath: String
