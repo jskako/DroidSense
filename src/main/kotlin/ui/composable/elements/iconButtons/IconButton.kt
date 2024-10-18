@@ -22,6 +22,7 @@ import utils.Colors
 
 @Composable
 internal fun IconButton(
+    modifier: Modifier = Modifier,
     text: String,
     icon: ImageVector,
     onClick: () -> Unit
@@ -29,6 +30,7 @@ internal fun IconButton(
 
     if (text.isNotEmpty()) {
         Surface(
+            modifier = modifier,
             color = Colors.darkBlue
         ) {
             Row(
