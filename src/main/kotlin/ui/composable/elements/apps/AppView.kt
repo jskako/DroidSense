@@ -56,6 +56,7 @@ fun AppsView(
     var selectedApplicationType by remember { mutableStateOf(ApplicationType.USER) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
     var showInstallDialog by remember { mutableStateOf(false) }
+    var buttonsEnabled by remember { mutableStateOf(true) }
 
     if(showInstallDialog) {
         SelectionDialog(
@@ -75,15 +76,17 @@ fun AppsView(
 
     Scaffold(
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = {
-                    showInstallDialog = true
-                },
-                containerColor = darkBlue,
-                contentColor = Color.White,
-                icon = { Icon(Icons.Filled.Add, "Search Icon") },
-                text = { Text(text = getStringResource("info.install.app")) },
-            )
+            if(buttonsEnabled) {
+                ExtendedFloatingActionButton(
+                    onClick = {
+                        showInstallDialog = true
+                    },
+                    containerColor = darkBlue,
+                    contentColor = Color.White,
+                    icon = { Icon(Icons.Filled.Add, "Search Icon") },
+                    text = { Text(text = getStringResource("info.install.app")) },
+                )
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
@@ -157,10 +160,12 @@ fun AppsView(
                         modifier = Modifier.padding(top = 8.dp),
                     ) {
                         items(filteredApps) { app ->
-                            AppsCard(
+                            AppCard(
                                 adbPath = adbPath,
                                 app = app,
-                                onMessage = onMessage
+                                onMessage = onMessage,
+                                buttonsEnabled = buttonsEnabled,
+                                onButtonEnabled = { buttonsEnabled = it },
                             )
                         }
                     }

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import log.AppData
+import log.clearAppCache
 import log.uninstallApp
 import notifications.InfoManagerData
 import ui.composable.elements.BasicTextCaption
@@ -32,21 +33,30 @@ import utils.Colors.darkRed
 import utils.getStringResource
 
 @Composable
-fun AppsCard(
+fun AppCard(
     adbPath: String,
     app: AppData,
-    onMessage: (InfoManagerData) -> Unit
+    buttonsEnabled: Boolean,
+    onMessage: (InfoManagerData) -> Unit,
+    onButtonEnabled: (Boolean) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
+    var dialogTitle by remember { mutableStateOf("") }
+    var dialogDescription by remember { mutableStateOf("") }
+    var onDialogConfirm by remember { mutableStateOf({}) }
 
     if (showDialog) {
         TextDialog(
-            title = "What do you want from me?",
-            description = "Hey, this is just an test",
-            onConfirmRequest = { showDialog = true },
+            title = dialogTitle,
+            description = dialogDescription,
+            onConfirmRequest = {
+                showDialog = false
+                onDialogConfirm()
+            },
             onDismissRequest = {
+                onButtonEnabled(true)
                 showDialog = false
             }
         )
@@ -99,25 +109,33 @@ fun AppsCard(
                 ) {
                     OutlinedButton(
                         text = getStringResource("info.app.clear.data"),
+                        enabled = buttonsEnabled,
                         onClick = {
+                            onButtonEnabled(false)
+                            dialogTitle = getStringResource("info.clear.cache.title")
+                            dialogDescription = getStringResource("info.clear.cache.description")
+                            onDialogConfirm = {
+                                scope.launch {
+                                    clearAppCache(
+                                        adbPath = adbPath,
+                                        packageName = app.packageId
+                                    )
+                                }
+                                onButtonEnabled(true)
+                            }
                             showDialog = true
-                            /*scope.launch {
-                                clearAppCache(
-                                    adbPath = adbPath,
-                                    packageName = app.packageId
-                                )
-                            }*/
                         }
                     )
 
                     OutlinedButton(
+                        enabled = buttonsEnabled,
                         text = getStringResource(
                             when (app.applicationType) {
                                 ApplicationType.SYSTEM -> "info.app.package.force.delete"
                                 ApplicationType.USER -> "info.app.package.delete"
                             }
                         ),
-                        color = darkRed,
+                        contentColor = darkRed,
                         onClick = {
                             scope.launch {
                                 when (app.applicationType) {

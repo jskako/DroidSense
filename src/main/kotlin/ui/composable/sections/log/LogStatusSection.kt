@@ -69,7 +69,7 @@ fun LogStatusSection(
                         false -> getStringResource("info.start.log.manager")
                         true -> getStringResource("info.stop.log.manager")
                     },
-                    color = when (isRunning) {
+                    contentColor = when (isRunning) {
                         false -> darkBlue
                         true -> darkRed
                     },

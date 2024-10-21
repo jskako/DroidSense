@@ -47,7 +47,7 @@ fun DropdownItem(
                 text = buttonText,
                 onClick = { expanded = enabled },
                 modifier = Modifier.wrapContentSize(),
-                color = color
+                contentColor = color
             )
 
             DropdownMenu(

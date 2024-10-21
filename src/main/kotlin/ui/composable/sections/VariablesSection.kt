@@ -103,7 +103,6 @@ fun VariablesSection(
                 if (cancelButtonEnabled) {
                     OutlinedButton(
                         text = getStringResource("info.cancel"),
-                        color = darkBlue,
                         onClick = {
 
                         },
@@ -117,7 +116,6 @@ fun VariablesSection(
 
                 OutlinedButton(
                     text = getStringResource("info.next"),
-                    color = if (isValid) darkBlue else Color.Gray,
                     enabled = isValid,
                     onClick = {
                         scope.launch {
