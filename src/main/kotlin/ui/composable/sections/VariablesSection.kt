@@ -19,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,7 +28,6 @@ import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.SelectableText
-import utils.Colors.darkBlue
 import utils.getStringResource
 
 @Composable

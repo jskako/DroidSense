@@ -120,34 +120,41 @@ fun AppCard(
                                         adbPath = adbPath,
                                         packageName = app.packageId
                                     )
+                                    onButtonEnabled(true)
                                 }
-                                onButtonEnabled(true)
                             }
                             showDialog = true
                         }
                     )
 
                     OutlinedButton(
-                        enabled = buttonsEnabled,
                         text = getStringResource(
                             when (app.applicationType) {
                                 ApplicationType.SYSTEM -> "info.app.package.force.delete"
                                 ApplicationType.USER -> "info.app.package.delete"
                             }
                         ),
+                        enabled = buttonsEnabled,
                         contentColor = darkRed,
                         onClick = {
-                            scope.launch {
-                                when (app.applicationType) {
-                                    ApplicationType.SYSTEM -> Unit
-                                    ApplicationType.USER -> {
-                                        uninstallApp(
-                                            adbPath = adbPath,
-                                            packageName = app.packageId
-                                        )
+                            onButtonEnabled(false)
+                            dialogTitle = getStringResource("info.delete.app.title")
+                            dialogDescription = getStringResource("info.delete.app.description")
+                            onDialogConfirm = {
+                                scope.launch {
+                                    when (app.applicationType) {
+                                        ApplicationType.SYSTEM -> Unit
+                                        ApplicationType.USER -> {
+                                            uninstallApp(
+                                                adbPath = adbPath,
+                                                packageName = app.packageId
+                                            )
+                                        }
                                     }
+                                    onButtonEnabled(true)
                                 }
                             }
+                            showDialog = true
                         }
                     )
                 }

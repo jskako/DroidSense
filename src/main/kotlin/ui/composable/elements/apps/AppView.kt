@@ -83,7 +83,7 @@ fun AppsView(
                     },
                     containerColor = darkBlue,
                     contentColor = Color.White,
-                    icon = { Icon(Icons.Filled.Add, "Search Icon") },
+                    icon = { Icon(Icons.Filled.Add, getStringResource("info.install.app")) },
                     text = { Text(text = getStringResource("info.install.app")) },
                 )
             }
