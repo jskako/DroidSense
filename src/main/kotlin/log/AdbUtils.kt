@@ -1,84 +1,43 @@
 package log
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.withContext
-import notifications.InfoManagerData
-import utils.APK_EXTENSION
-import utils.Colors.darkBlue
-import utils.Colors.darkRed
 import utils.EMPTY_STRING
-import utils.getStringResource
-import utils.pickFile
 
 suspend fun uninstallApp(
     adbPath: String,
     packageName: String
-): Boolean = withContext(Dispatchers.IO) {
-    val process = ProcessBuilder(adbPath, "shell", "pm", "uninstall", packageName).start()
-
-    return@withContext runCatching {
-        process.inputStream.bufferedReader().useLines { lines ->
+): Result<Unit> = withContext(Dispatchers.IO) {
+    runCatching {
+        val process = ProcessBuilder(adbPath, "shell", "pm", "uninstall", packageName).start()
+        val isSuccess = process.inputStream.bufferedReader().useLines { lines ->
             lines.any { it.contains("Success") }
         }
-    }.getOrElse { false }
+
+        if (isSuccess) {
+            Result.success(Unit)
+        } else {
+            Result.failure(Exception("Failed to uninstall the app"))
+        }
+    }.getOrElse { Result.failure(it) }
 }
 
 suspend fun clearAppCache(
     adbPath: String,
     packageName: String
-): Boolean = withContext(Dispatchers.IO) {
-    val process = ProcessBuilder(adbPath, "shell", "pm", "clear", packageName).start()
-
-    return@withContext runCatching {
-        process.inputStream.bufferedReader().useLines { lines ->
+): Result<Unit> = withContext(Dispatchers.IO) {
+    runCatching {
+        val process = ProcessBuilder(adbPath, "shell", "pm", "clear", packageName).start()
+        val isSuccess = process.inputStream.bufferedReader().useLines { lines ->
             lines.any { it.contains("Success") }
         }
-    }.getOrElse { false }
-}
 
-suspend fun installApplication(
-    adbPath: String,
-    identifier: String,
-    onMessage: (InfoManagerData) -> Unit,
-    isPrivateSpace: Boolean = false
-) = withContext(Default) {
-    runCatching {
-        pickFile(allowedExtension = APK_EXTENSION)?.let { file ->
-            onMessage(
-                InfoManagerData(
-                    message = "${getStringResource("info.file.install")}: ${file.name}",
-                    duration = null
-                )
-            )
-
-            val command = buildAdbInstallCommand(adbPath, identifier, file.absolutePath, isPrivateSpace)
-
-            val process = ProcessBuilder(command).apply { redirectErrorStream(true) }.start()
-
-            val exitCode = process.waitFor()
-
-            val message = if (exitCode == 0) {
-                getStringResource("success.file.install")
-            } else {
-                getStringResource("error.file.install")
-            }
-
-            onMessage(
-                InfoManagerData(
-                    message = "$message: ${file.canonicalPath}",
-                    color = if (exitCode == 0) darkBlue else darkRed
-                )
-            )
+        if (isSuccess) {
+            Result.success(Unit)
+        } else {
+            Result.failure(Exception("Failed to clear the app cache"))
         }
-    }.getOrElse {
-        onMessage(
-            InfoManagerData(
-                message = getStringResource("error.file.install"),
-                color = darkRed
-            )
-        )
-    }
+    }.getOrElse { Result.failure(it) }
 }
 
 private fun buildAdbInstallCommand(

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 fun InfoSection(
     message: String,
     color: Color,
-    extraVisible: Boolean = false,
+    buttonVisible: Boolean = false,
     onExtraClicked: FunctionIconData? = null,
     onCloseClicked: () -> Unit
 ) {
@@ -62,7 +62,7 @@ fun InfoSection(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                if (extraVisible) {
+                if (buttonVisible) {
                     onExtraClicked?.let {
                         IconButton(
                             onClick = {

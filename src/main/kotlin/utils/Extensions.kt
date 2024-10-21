@@ -81,7 +81,7 @@ fun String.exportToFile(
             infoManagerData = InfoManagerData(
                 message = "${getStringResource("success.export.general")}: $path",
                 duration = null,
-                extraVisible = true
+                buttonVisible = true
             ),
             path = path
         )

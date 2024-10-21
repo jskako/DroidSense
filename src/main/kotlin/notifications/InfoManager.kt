@@ -24,7 +24,7 @@ class InfoManager : InfoManagerInterface {
         _infoManagerData.value = InfoManagerData(
             message = infoManagerData.message,
             color = infoManagerData.color,
-            extraVisible = infoManagerData.extraVisible
+            buttonVisible = infoManagerData.buttonVisible
         )
         if (infoManagerData.duration != null) {
             showTimeLimitedInfoMessage(

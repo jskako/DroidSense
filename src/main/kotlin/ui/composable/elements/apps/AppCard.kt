@@ -112,7 +112,7 @@ fun AppCard(
                         enabled = buttonsEnabled,
                         onClick = {
                             onButtonEnabled(false)
-                            dialogTitle = getStringResource("info.clear.cache.title")
+                            dialogTitle = "${getStringResource("info.clear.cache.title")}: ${app.packageId}"
                             dialogDescription = getStringResource("info.clear.cache.description")
                             onDialogConfirm = {
                                 scope.launch {
@@ -138,9 +138,14 @@ fun AppCard(
                         contentColor = darkRed,
                         onClick = {
                             onButtonEnabled(false)
-                            dialogTitle = getStringResource("info.delete.app.title")
+                            dialogTitle = "${getStringResource("info.delete.app.title")}: ${app.packageId}"
                             dialogDescription = getStringResource("info.delete.app.description")
                             onDialogConfirm = {
+                                onMessage(
+                                    InfoManagerData(
+                                        message = "${getStringResource("info.app.uninstall.started")} ${app.packageId}"
+                                    )
+                                )
                                 scope.launch {
                                     when (app.applicationType) {
                                         ApplicationType.SYSTEM -> Unit
@@ -148,6 +153,22 @@ fun AppCard(
                                             uninstallApp(
                                                 adbPath = adbPath,
                                                 packageName = app.packageId
+                                            ).fold(
+                                                onSuccess = {
+                                                    onMessage(
+                                                        InfoManagerData(
+                                                            message = "${getStringResource("info.app.uninstall.success")} ${app.packageId}"
+                                                        )
+                                                    )
+                                                },
+                                                onFailure = {
+                                                    onMessage(
+                                                        InfoManagerData(
+                                                            message = "${getStringResource("info.app.uninstall.failed")} ${app.packageId}",
+                                                            color = darkRed
+                                                        )
+                                                    )
+                                                }
                                             )
                                         }
                                     }

@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,10 +37,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import log.AppData
+import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
 import ui.composable.elements.SelectionDialog
+import ui.composable.sections.info.InfoSection
 import utils.Colors.darkBlue
 import utils.EMPTY_STRING
 import utils.getStringResource
@@ -48,8 +51,7 @@ import utils.getStringResource
 @Composable
 fun AppsView(
     adbPath: String,
-    apps: List<AppData>,
-    onMessage: (InfoManagerData) -> Unit
+    apps: List<AppData>
 ) {
 
     val listState = rememberLazyListState()
@@ -57,8 +59,17 @@ fun AppsView(
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
     var showInstallDialog by remember { mutableStateOf(false) }
     var buttonsEnabled by remember { mutableStateOf(true) }
+    val infoManager = remember { InfoManager() }
+    val scope = rememberCoroutineScope()
 
-    if(showInstallDialog) {
+    fun showMessage(infoManagerData: InfoManagerData) {
+        infoManager.showMessage(
+            infoManagerData = infoManagerData,
+            scope = scope
+        )
+    }
+
+    if (showInstallDialog) {
         SelectionDialog(
             options = listOf("abc", "dfc", "mmc"),
             onOptionSelected = {},
@@ -76,7 +87,7 @@ fun AppsView(
 
     Scaffold(
         floatingActionButton = {
-            if(buttonsEnabled) {
+            if (buttonsEnabled) {
                 ExtendedFloatingActionButton(
                     onClick = {
                         showInstallDialog = true
@@ -90,6 +101,16 @@ fun AppsView(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
+
+            InfoSection(
+                onCloseClicked = {
+                    infoManager.clearInfoMessage()
+                },
+                message = infoManager.infoManagerData.value.message,
+                color = infoManager.infoManagerData.value.color,
+                buttonVisible = infoManager.infoManagerData.value.buttonVisible
+            )
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -163,7 +184,9 @@ fun AppsView(
                             AppCard(
                                 adbPath = adbPath,
                                 app = app,
-                                onMessage = onMessage,
+                                onMessage = {
+                                    showMessage(it)
+                                },
                                 buttonsEnabled = buttonsEnabled,
                                 onButtonEnabled = { buttonsEnabled = it },
                             )
