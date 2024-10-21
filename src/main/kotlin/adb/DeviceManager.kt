@@ -9,6 +9,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import log.getDeviceProperty
+import log.getPrivateSpaceId
 import notifications.InfoManagerData
 import utils.ADB_DEVICE_OFFLINE
 import utils.ADB_POLLING_INTERVAL_MS
@@ -23,8 +25,6 @@ import utils.DEVICE_MANUFACTURER
 import utils.DEVICE_MODEL_PROPERTY
 import utils.DEVICE_SERIAL_NUMBER
 import utils.deviceRegex
-import utils.getDeviceProperty
-import utils.getPrivateSpaceId
 import utils.getStringResource
 import java.io.BufferedReader
 import java.io.InputStreamReader

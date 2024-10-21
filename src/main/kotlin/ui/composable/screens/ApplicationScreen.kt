@@ -54,6 +54,7 @@ fun ApplicationScreen(
 
     if (userApps.value.isNotEmpty() || systemApps.value.isNotEmpty()) {
         DeviceGroup(
+            adbPath = adbPath,
             apps = userApps.value + systemApps.value,
         )
     }
@@ -61,9 +62,11 @@ fun ApplicationScreen(
 
 @Composable
 fun DeviceGroup(
+    adbPath: String,
     apps: List<AppData>,
 ) {
     AppsView(
+        adbPath = adbPath,
         apps = apps,
         onMessage = {
         }

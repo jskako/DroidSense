@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import log.LogLevel
 import log.LogManager
+import log.getDevicePropertyList
 import notifications.InfoManagerData
 import ui.composable.elements.DropdownItem
 import ui.composable.elements.FilterText
@@ -33,7 +34,6 @@ import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import utils.DEVICE_PACKAGES
 import utils.EMPTY_STRING
-import utils.getDevicePropertyList
 import utils.getStringResource
 
 @Composable

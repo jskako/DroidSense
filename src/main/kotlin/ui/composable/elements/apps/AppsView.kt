@@ -39,6 +39,7 @@ import log.AppData
 import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
+import ui.composable.elements.SelectionDialog
 import utils.Colors.darkBlue
 import utils.EMPTY_STRING
 import utils.getStringResource
@@ -46,6 +47,7 @@ import utils.getStringResource
 
 @Composable
 fun AppsView(
+    adbPath: String,
     apps: List<AppData>,
     onMessage: (InfoManagerData) -> Unit
 ) {
@@ -53,16 +55,30 @@ fun AppsView(
     val listState = rememberLazyListState()
     var selectedApplicationType by remember { mutableStateOf(ApplicationType.USER) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
+    var showInstallDialog by remember { mutableStateOf(false) }
+
+    if(showInstallDialog) {
+        SelectionDialog(
+            options = listOf("abc", "dfc", "mmc"),
+            onOptionSelected = {},
+            onDismissRequest = {
+                showInstallDialog = false
+            }
+        )
+    }
 
     val filteredApps = apps.filter { app ->
         val matchesApplicationType = app.applicationType == selectedApplicationType
         val matchesSearchText = searchText.isEmpty() || app.packageId.contains(searchText, ignoreCase = true)
         matchesApplicationType && matchesSearchText
     }
+
     Scaffold(
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { },
+                onClick = {
+                    showInstallDialog = true
+                },
                 containerColor = darkBlue,
                 contentColor = Color.White,
                 icon = { Icon(Icons.Filled.Add, "Search Icon") },
@@ -122,7 +138,7 @@ fun AppsView(
             DividerColored()
 
             CircularProgressBar(
-                text = getStringResource("info.getting.application"),
+                text = getStringResource("info.search.application.empty"),
                 isVisible = filteredApps.isEmpty()
             )
 
@@ -142,6 +158,7 @@ fun AppsView(
                     ) {
                         items(filteredApps) { app ->
                             AppsCard(
+                                adbPath = adbPath,
                                 app = app,
                                 onMessage = onMessage
                             )

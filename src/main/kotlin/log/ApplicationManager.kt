@@ -22,43 +22,34 @@ class ApplicationManager(
                 ApplicationType.USER -> "3"
             }
 
-            val appProcess = ProcessBuilder(
+            val appsProcess = runProcess(
                 adbPath,
-                "-s",
-                identifier,
-                "shell",
-                "pm",
-                "list",
-                "packages",
-                "-$applicationTypeIdentifier"
-            ).start()
+                "-s", identifier,
+                "shell", "pm", "list", "packages", "-$applicationTypeIdentifier"
+            )
 
             runCatching {
                 val apps = mutableListOf<Deferred<AppData?>>()
 
-                appProcess.inputStream.bufferedReader().useLines { lines ->
+                appsProcess?.inputStream?.bufferedReader()?.useLines { lines ->
                     lines.forEach { packageId ->
-                        packageId.replace("package:", "").let {
-                            if (it.trim().isNotEmpty()) {
-                                apps.add(async {
-                                    val appPath = getAppPath(adbPath, it)
-                                    val appSize = getAppSize(adbPath, appPath)
-                                    if (appPath != null && appSize != null) {
-                                        AppData(
-                                            packageId = it,
-                                            appPath = appPath,
-                                            appSize = appSize,
-                                            applicationType = applicationType
-                                        )
-                                    } else {
-                                        null
-                                    }
-                                })
-                            }
+                        val cleanPackageId = packageId.replace("package:", "").trim()
+                        if (cleanPackageId.isNotEmpty()) {
+                            apps.add(async(Dispatchers.IO) {
+                                val appPath = getAppPath(cleanPackageId)
+                                val appSize = getAppSize(appPath)
+                                if (appPath != null && appSize != null) {
+                                    AppData(
+                                        packageId = cleanPackageId,
+                                        appPath = appPath,
+                                        appSize = appSize,
+                                        applicationType = applicationType
+                                    )
+                                } else null
+                            })
                         }
                     }
                 }
-
                 onDone(apps.awaitAll().filterNotNull())
             }.onFailure {
                 onDone(emptyList())
@@ -66,35 +57,32 @@ class ApplicationManager(
         }
     }
 
-    private suspend fun getAppPath(
-        adbPath: String,
-        packageId: String
-    ): String? = withContext(Dispatchers.IO) {
-        val process = ProcessBuilder(adbPath, "shell", "pm", "path", packageId).start()
-
-        return@withContext runCatching {
-            process.inputStream.bufferedReader().useLines { lines ->
-                lines.firstNotNullOfOrNull { line ->
-                    if (line.contains("package:")) line.replace("package:", "") else null
-                }
-            }
-        }.getOrNull()
+    private suspend fun getAppPath(packageId: String): String? = withContext(Dispatchers.IO) {
+        val process = runProcess(adbPath, "shell", "pm", "path", packageId)
+        return@withContext parseProcessOutput(process) { line ->
+            if (line.contains("package:")) line.replace("package:", "") else null
+        }
     }
 
-    private suspend fun getAppSize(
-        adbPath: String,
-        apkPath: String?
-    ): String? = apkPath?.let {
+    private suspend fun getAppSize(apkPath: String?): String? = apkPath?.let {
         withContext(Dispatchers.IO) {
-            val process = ProcessBuilder(adbPath, "shell", "du", "-h", apkPath).start()
+            val process = runProcess(adbPath, "shell", "du", "-h", apkPath)
+            return@withContext parseProcessOutput(process) { line ->
+                line.split("\\s+".toRegex()).firstOrNull()
+            }
+        }
+    }
 
-            return@withContext runCatching {
-                process.inputStream.bufferedReader().useLines { lines ->
-                    lines.firstNotNullOfOrNull { line ->
-                        line.split(" ").firstOrNull()?.split("\\s+".toRegex())?.first()
-                    }
-                }
-            }.getOrNull()
+    private fun runProcess(vararg args: String): Process? = runCatching {
+        ProcessBuilder(*args).start()
+    }.getOrNull()
+
+    private fun parseProcessOutput(
+        process: Process?,
+        parseLine: (String) -> String?
+    ): String? {
+        return process?.inputStream?.bufferedReader()?.useLines { lines ->
+            lines.firstNotNullOfOrNull { line -> parseLine(line) }
         }
     }
 }
