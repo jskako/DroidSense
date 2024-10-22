@@ -115,10 +115,30 @@ fun AppCard(
                             dialogTitle = "${getStringResource("info.clear.cache.title")}: ${app.packageId}"
                             dialogDescription = getStringResource("info.clear.cache.description")
                             onDialogConfirm = {
+                                onMessage(
+                                    InfoManagerData(
+                                        message = "${getStringResource("info.app.clear.data.started")} ${app.packageId}"
+                                    )
+                                )
                                 scope.launch {
                                     clearAppCache(
                                         adbPath = adbPath,
                                         packageName = app.packageId
+                                    ).fold(
+                                        onSuccess = {
+                                            onMessage(
+                                                InfoManagerData(
+                                                    message = "${getStringResource("info.app.clear.data.success")} ${app.packageId}"
+                                                )
+                                            )
+                                        },
+                                        onFailure = {
+                                            onMessage(
+                                                InfoManagerData(
+                                                    message = "${getStringResource("info.app.clear.data.failed")} ${app.packageId}"
+                                                )
+                                            )
+                                        }
                                     )
                                     onButtonEnabled(true)
                                 }
