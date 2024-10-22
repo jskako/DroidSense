@@ -51,7 +51,8 @@ import utils.getStringResource
 @Composable
 fun AppsView(
     adbPath: String,
-    apps: List<AppData>
+    apps: List<AppData>,
+    onAppDeleted: (AppData) -> Unit
 ) {
 
     val listState = rememberLazyListState()
@@ -189,6 +190,7 @@ fun AppsView(
                                 },
                                 buttonsEnabled = buttonsEnabled,
                                 onButtonEnabled = { buttonsEnabled = it },
+                                onAppDeleted = onAppDeleted
                             )
                         }
                     }

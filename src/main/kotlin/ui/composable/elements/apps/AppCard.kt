@@ -38,7 +38,8 @@ fun AppCard(
     app: AppData,
     buttonsEnabled: Boolean,
     onMessage: (InfoManagerData) -> Unit,
-    onButtonEnabled: (Boolean) -> Unit
+    onButtonEnabled: (Boolean) -> Unit,
+    onAppDeleted: (AppData) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -175,6 +176,7 @@ fun AppCard(
                                                 packageName = app.packageId
                                             ).fold(
                                                 onSuccess = {
+                                                    onAppDeleted(app)
                                                     onMessage(
                                                         InfoManagerData(
                                                             message = "${getStringResource("info.app.uninstall.success")} ${app.packageId}"

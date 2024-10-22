@@ -2,11 +2,16 @@ package ui.composable.screens
 
 import adb.ApplicationType
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import log.AppData
 import log.ApplicationManager
 import ui.composable.elements.CircularProgressBar
@@ -19,22 +24,57 @@ fun ApplicationScreen(
     identifier: String
 ) {
 
+    val scope = rememberCoroutineScope()
     val applicationManager by remember {
         mutableStateOf(ApplicationManager(adbPath = adbPath))
     }
 
-    val userApps = rememberAppsData(applicationManager, identifier, ApplicationType.USER)
-    val systemApps = rememberAppsData(applicationManager, identifier, ApplicationType.SYSTEM)
+    var userApps by remember { mutableStateOf<List<AppData>>(emptyList()) }
+    var systemApps by remember { mutableStateOf<List<AppData>>(emptyList()) }
+
+    LaunchedEffect(identifier) {
+        val userAppsData = async {
+            applicationManager.getAppsData(
+                applicationType = ApplicationType.USER,
+                identifier = identifier
+            )
+        }
+
+        val systemAppsData = async {
+            applicationManager.getAppsData(
+                applicationType = ApplicationType.SYSTEM,
+                identifier = identifier
+            )
+        }
+
+        userApps = userAppsData.await()
+        systemApps = systemAppsData.await()
+    }
 
     CircularProgressBar(
         text = getStringResource("info.getting.application"),
-        isVisible = userApps.value.isEmpty() && systemApps.value.isEmpty()
+        isVisible = userApps.isEmpty() && systemApps.isEmpty()
     )
 
-    if (userApps.value.isNotEmpty() || systemApps.value.isNotEmpty()) {
+    if (userApps.isNotEmpty() || systemApps.isNotEmpty()) {
         DeviceGroup(
             adbPath = adbPath,
-            apps = userApps.value + systemApps.value
+            apps = userApps + systemApps,
+            onAppDeleted = { appData ->
+                scope.launch {
+                    deleteApplication(
+                        appData = appData,
+                        list = if (appData.applicationType == ApplicationType.USER) userApps else systemApps,
+                        onDone = { updatedList ->
+                            if (appData.applicationType == ApplicationType.SYSTEM) {
+                                systemApps = updatedList
+                            } else {
+                                userApps = updatedList
+                            }
+                        }
+                    )
+                }
+            }
         )
     }
 }
@@ -42,26 +82,26 @@ fun ApplicationScreen(
 @Composable
 fun DeviceGroup(
     adbPath: String,
-    apps: List<AppData>
+    apps: List<AppData>,
+    onAppDeleted: (AppData) -> Unit
 ) {
     AppsView(
         adbPath = adbPath,
-        apps = apps
+        apps = apps,
+        onAppDeleted = onAppDeleted
     )
 }
 
-@Composable
-private fun rememberAppsData(
-    applicationManager: ApplicationManager,
-    identifier: String,
-    applicationType: ApplicationType
-): State<List<AppData>> {
-    return produceState(initialValue = emptyList(), applicationType) {
-        applicationManager.getAppsData(
-            identifier = identifier,
-            applicationType = applicationType
-        ) { appsList ->
-            value = appsList
+private suspend fun deleteApplication(
+    appData: AppData,
+    list: List<AppData>,
+    onDone: (List<AppData>) -> Unit
+) {
+    withContext(Dispatchers.Default) {
+        val updatedAppData = list.filterNot { app ->
+            app.packageId == appData.packageId
         }
+
+        onDone(updatedAppData)
     }
 }
