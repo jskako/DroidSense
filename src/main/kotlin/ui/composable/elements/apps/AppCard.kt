@@ -136,7 +136,8 @@ fun AppCard(
                                         onFailure = {
                                             onMessage(
                                                 InfoManagerData(
-                                                    message = "${getStringResource("info.app.clear.data.failed")} ${app.packageId}"
+                                                    message = "${getStringResource("info.app.clear.data.failed")} ${app.packageId}",
+                                                    color = darkRed
                                                 )
                                             )
                                         }

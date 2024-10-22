@@ -45,33 +45,39 @@ private fun buildAdbInstallCommand(
     identifier: String,
     filePath: String,
     isPrivateSpace: Boolean
-): MutableList<String> {
-    val command = mutableListOf(adbPath, "-s", identifier, "install")
-
-    if (isPrivateSpace) {
-        getPrivateSpaceId(adbPath)?.let { userId ->
-            command.add("--user")
-            command.add(userId)
+): List<String> {
+    return mutableListOf(adbPath, "-s", identifier, "install").apply {
+        if (isPrivateSpace) {
+            getPrivateSpaceId(adbPath, identifier)?.let { userId ->
+                add("--user")
+                add(userId)
+            }
         }
+        addAll(listOf("-r", filePath))
     }
-
-    command.addAll(listOf("-r", filePath))
-    return command
 }
 
-fun getPrivateSpaceId(adbPath: String): String? {
+fun getPrivateSpaceId(adbPath: String, identifier: String): String? {
+    return getAvailableSpaces(adbPath, identifier)
+        .firstOrNull { it.contains("PrivateSpace") }
+        ?.substringAfter("UserInfo{")
+        ?.substringBefore(":")
+}
+
+fun getAvailableSpaces(adbPath: String, identifier: String): List<String> {
     return runCatching {
-        ProcessBuilder(adbPath, "shell", "dumpsys", "user")
-            .redirectErrorStream(true)
-            .start()
-            .inputStream
+        ProcessBuilder(adbPath, "-s", identifier, "shell", "pm", "list", "users").start().inputStream
             .bufferedReader()
-            .use { it.readText() }
-            .lineSequence()
-            .firstOrNull { it.contains("Private space") }
-            ?.substringAfter("UserInfo{")
-            ?.substringBefore(":")
-    }.getOrNull()
+            .use { reader ->
+                reader.readLines()
+            }
+    }.getOrNull()?.mapNotNull { line ->
+        if (line.contains("UserInfo")) {
+            line.trim()
+        } else {
+            null
+        }
+    } ?: emptyList()
 }
 
 fun getDeviceProperty(

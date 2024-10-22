@@ -60,6 +60,7 @@ fun ApplicationScreen(
         DeviceGroup(
             adbPath = adbPath,
             apps = userApps + systemApps,
+            identifier = identifier,
             onAppDeleted = { appData ->
                 scope.launch {
                     deleteApplication(
@@ -83,11 +84,13 @@ fun ApplicationScreen(
 fun DeviceGroup(
     adbPath: String,
     apps: List<AppData>,
+    identifier: String,
     onAppDeleted: (AppData) -> Unit
 ) {
     AppsView(
         adbPath = adbPath,
         apps = apps,
+        identifier = identifier,
         onAppDeleted = onAppDeleted
     )
 }

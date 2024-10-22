@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import log.AppData
+import log.getAvailableSpaces
 import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar
@@ -52,6 +53,7 @@ import utils.getStringResource
 fun AppsView(
     adbPath: String,
     apps: List<AppData>,
+    identifier: String,
     onAppDeleted: (AppData) -> Unit
 ) {
 
@@ -72,7 +74,10 @@ fun AppsView(
 
     if (showInstallDialog) {
         SelectionDialog(
-            options = listOf("abc", "dfc", "mmc"),
+            options = getAvailableSpaces(
+                adbPath = adbPath,
+                identifier = identifier
+            ),
             onOptionSelected = {},
             onDismissRequest = {
                 showInstallDialog = false

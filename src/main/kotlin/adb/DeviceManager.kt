@@ -254,7 +254,10 @@ class DeviceManager(
         ).takeIf { it.isNotEmpty() }
             ?: getStringResource("info.not.connected"),
         state = MonitoringStatus.MONITORING,
-        privateSpaceIdentifier = getPrivateSpaceId(adbPath = adbPath)
+        privateSpaceIdentifier = getPrivateSpaceId(
+            adbPath = adbPath,
+            identifier = identifier
+        )
     )
 
     private fun removeDevice(
