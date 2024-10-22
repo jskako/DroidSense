@@ -69,3 +69,5 @@ fun startScrCpy(
 }
 
 fun isValidIpAddressWithPort(input: String) = ipPortRegex.matches(input)
+
+fun getSpaceId(userInfo: String) = spaceIdRegex.find(userInfo)?.groups?.get(1)?.value?.toInt()

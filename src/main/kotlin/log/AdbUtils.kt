@@ -2,7 +2,13 @@ package log
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import notifications.InfoManagerData
+import utils.APK_EXTENSION
+import utils.Colors.darkBlue
+import utils.Colors.darkRed
 import utils.EMPTY_STRING
+import utils.getStringResource
+import utils.pickFile
 
 suspend fun uninstallApp(
     adbPath: String,
@@ -40,19 +46,53 @@ suspend fun clearAppCache(
     }.getOrElse { Result.failure(it) }
 }
 
+suspend fun installApplication(
+    adbPath: String,
+    identifier: String,
+    spaceId: String
+): Result<InfoManagerData> = withContext(Dispatchers.Default) {
+    runCatching {
+        val file = pickFile(allowedExtension = APK_EXTENSION) ?: return@withContext Result.failure(
+            IllegalArgumentException("File selection was canceled.")
+        )
+
+        val command = buildAdbInstallCommand(
+            adbPath = adbPath,
+            identifier = identifier,
+            filePath = file.absolutePath,
+            spaceId = spaceId
+        )
+        val process = ProcessBuilder(command).apply { redirectErrorStream(true) }.start()
+        val exitCode = process.waitFor()
+
+        val resultMessage = if (exitCode == 0) {
+            getStringResource("success.file.install")
+        } else {
+            getStringResource("error.file.install")
+        }
+
+        Result.success(
+            InfoManagerData(
+                message = "$resultMessage: ${file.canonicalPath}",
+                color = if (exitCode == 0) darkBlue else darkRed
+            )
+        )
+    }.getOrElse {
+        Result.failure(Exception(getStringResource("error.file.install")))
+    }
+}
+
+
 private fun buildAdbInstallCommand(
     adbPath: String,
     identifier: String,
     filePath: String,
-    isPrivateSpace: Boolean
+    spaceId: String
 ): List<String> {
     return mutableListOf(adbPath, "-s", identifier, "install").apply {
-        if (isPrivateSpace) {
-            getPrivateSpaceId(adbPath, identifier)?.let { userId ->
-                add("--user")
-                add(userId)
-            }
-        }
+        add("--user")
+        add(spaceId)
+
         addAll(listOf("-r", filePath))
     }
 }

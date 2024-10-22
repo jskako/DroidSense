@@ -36,8 +36,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import log.AppData
 import log.getAvailableSpaces
+import log.installApplication
 import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar
@@ -46,6 +48,7 @@ import ui.composable.elements.SelectionDialog
 import ui.composable.sections.info.InfoSection
 import utils.Colors.darkBlue
 import utils.EMPTY_STRING
+import utils.getSpaceId
 import utils.getStringResource
 
 
@@ -60,7 +63,7 @@ fun AppsView(
     val listState = rememberLazyListState()
     var selectedApplicationType by remember { mutableStateOf(ApplicationType.USER) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
-    var showInstallDialog by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
     var buttonsEnabled by remember { mutableStateOf(true) }
     val infoManager = remember { InfoManager() }
     val scope = rememberCoroutineScope()
@@ -72,15 +75,26 @@ fun AppsView(
         )
     }
 
-    if (showInstallDialog) {
+    if (showDialog) {
         SelectionDialog(
+            title = getStringResource("info.select.space"),
             options = getAvailableSpaces(
                 adbPath = adbPath,
                 identifier = identifier
             ),
-            onOptionSelected = {},
+            onOptionSelected = { userInfo ->
+                getSpaceId(userInfo)?.let {
+                    scope.launch {
+                        installApplication(
+                            adbPath = adbPath,
+                            identifier = identifier,
+                            spaceId = it.toString()
+                        )
+                    }
+                }
+            },
             onDismissRequest = {
-                showInstallDialog = false
+                showDialog = false
             }
         )
     }
@@ -96,7 +110,7 @@ fun AppsView(
             if (buttonsEnabled) {
                 ExtendedFloatingActionButton(
                     onClick = {
-                        showInstallDialog = true
+                        showDialog = true
                     },
                     containerColor = darkBlue,
                     contentColor = Color.White,

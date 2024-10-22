@@ -42,7 +42,7 @@ fun SelectionDialog(
                 Text(text = title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                options.forEach { option ->
+                options.forEachIndexed { index, option ->
                     Text(
                         text = option,
                         modifier = Modifier
@@ -54,12 +54,15 @@ fun SelectionDialog(
                             .padding(12.dp),
                         fontSize = 16.sp
                     )
-                    HorizontalDivider()
+
+                    if (index != options.size - 1) {
+                        HorizontalDivider()
+                    }
                 }
 
                 Button(
                     onClick = { onDismissRequest() },
-                    colors =  ButtonDefaults.buttonColors(
+                    colors = ButtonDefaults.buttonColors(
                         containerColor = darkBlue,
                         disabledContainerColor = lightGray
                     ),
