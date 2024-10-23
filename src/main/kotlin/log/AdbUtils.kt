@@ -8,12 +8,33 @@ import utils.EMPTY_STRING
 import utils.getStringResource
 import utils.pickFile
 
+suspend fun getAppDetails(
+    adbPath: String,
+    identifier: String,
+    packageName: String
+): String? = withContext(Dispatchers.IO) {
+    fun runProcess(vararg args: String): Process? = runCatching {
+        ProcessBuilder(*args).start()
+    }.getOrNull()
+
+    fun parseProcessOutput(process: Process?): String? {
+        return process?.inputStream?.bufferedReader()?.useLines { lines ->
+            lines.joinToString(separator = "\n") { it }.takeIf { it.isNotBlank() }
+        }
+    }
+
+    val process = runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "package", packageName)
+
+    parseProcessOutput(process)
+}
+
 suspend fun uninstallApp(
     adbPath: String,
+    identifier: String,
     packageName: String
 ): Result<Unit> = withContext(Dispatchers.IO) {
     runCatching {
-        val process = ProcessBuilder(adbPath, "shell", "pm", "uninstall", packageName).start()
+        val process = ProcessBuilder(adbPath, "-s", identifier, "shell", "pm", "uninstall", packageName).start()
         val isSuccess = process.inputStream.bufferedReader().useLines { lines ->
             lines.any { it.contains("Success") }
         }
@@ -28,10 +49,11 @@ suspend fun uninstallApp(
 
 suspend fun clearAppCache(
     adbPath: String,
+    identifier: String,
     packageName: String
 ): Result<Unit> = withContext(Dispatchers.IO) {
     runCatching {
-        val process = ProcessBuilder(adbPath, "shell", "pm", "clear", packageName).start()
+        val process = ProcessBuilder(adbPath, "-s", identifier, "shell", "pm", "clear", packageName).start()
         val isSuccess = process.inputStream.bufferedReader().useLines { lines ->
             lines.any { it.contains("Success") }
         }

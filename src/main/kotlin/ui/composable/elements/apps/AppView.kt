@@ -230,6 +230,7 @@ fun AppsView(
                                 },
                                 buttonsEnabled = buttonsEnabled,
                                 onButtonEnabled = { buttonsEnabled = it },
+                                identifier = identifier,
                                 onAppDeleted = onAppDeleted
                             )
                         }

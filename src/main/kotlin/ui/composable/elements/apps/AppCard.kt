@@ -35,6 +35,7 @@ import utils.getStringResource
 @Composable
 fun AppCard(
     adbPath: String,
+    identifier: String,
     app: AppData,
     buttonsEnabled: Boolean,
     onMessage: (InfoManagerData) -> Unit,
@@ -124,6 +125,7 @@ fun AppCard(
                                 scope.launch {
                                     clearAppCache(
                                         adbPath = adbPath,
+                                        identifier = identifier,
                                         packageName = app.packageId
                                     ).fold(
                                         onSuccess = {
@@ -171,6 +173,7 @@ fun AppCard(
                                 scope.launch {
                                     uninstallApp(
                                         adbPath = adbPath,
+                                        identifier = identifier,
                                         packageName = app.packageId
                                     ).fold(
                                         onSuccess = {
