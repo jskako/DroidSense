@@ -6,14 +6,112 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import notifications.InfoManagerData
+import utils.APK_EXTENSION
+import utils.getStringResource
+import utils.pickFile
 
 class ApplicationManager(
-    private val adbPath: String
+    private val adbPath: String,
+    private val identifier: String
 ) {
 
+    suspend fun getAppDetails(
+        packageName: String
+    ): String? = withContext(Dispatchers.IO) {
+        fun runProcess(vararg args: String): Process? = runCatching {
+            ProcessBuilder(*args).start()
+        }.getOrNull()
+
+        fun parseProcessOutput(process: Process?): String? {
+            return process?.inputStream?.bufferedReader()?.useLines { lines ->
+                lines.joinToString(separator = "\n") { it }.takeIf { it.isNotBlank() }
+            }
+        }
+
+        val process = runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "package", packageName)
+
+        parseProcessOutput(process)
+    }
+
+    suspend fun uninstallApp(
+        packageName: String
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            val process = ProcessBuilder(adbPath, "-s", identifier, "shell", "pm", "uninstall", packageName).start()
+            val isSuccess = process.inputStream.bufferedReader().useLines { lines ->
+                lines.any { it.contains("Success") }
+            }
+
+            if (isSuccess) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Failed to uninstall the app"))
+            }
+        }.getOrElse { Result.failure(it) }
+    }
+
+    suspend fun clearAppCache(
+        packageName: String
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            val process = ProcessBuilder(adbPath, "-s", identifier, "shell", "pm", "clear", packageName).start()
+            val isSuccess = process.inputStream.bufferedReader().useLines { lines ->
+                lines.any { it.contains("Success") }
+            }
+
+            if (isSuccess) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Failed to clear the app cache"))
+            }
+        }.getOrElse { Result.failure(it) }
+    }
+
+    suspend fun installApplication(
+        spaceId: String
+    ): Result<InfoManagerData> = withContext(Dispatchers.Default) {
+        runCatching {
+            val file = pickFile(allowedExtension = APK_EXTENSION) ?: return@withContext Result.failure(
+                IllegalArgumentException("File selection was canceled.")
+            )
+
+            val command = listOf(adbPath, "-s", identifier, "install", "--user", spaceId, "-r", file.absolutePath)
+
+            val process = ProcessBuilder(command).apply { redirectErrorStream(true) }.start()
+            val exitCode = process.waitFor()
+
+            val resultMessage = if (exitCode == 0) {
+                getStringResource("success.file.install")
+            } else {
+                throw Exception(getStringResource("error.file.install"))
+            }
+
+            Result.success(
+                InfoManagerData(
+                    message = "$resultMessage: ${file.canonicalPath}"
+                )
+            )
+        }.getOrElse {
+            Result.failure(Exception(getStringResource("error.file.install")))
+        }
+    }
+
+
+    private fun buildAdbInstallCommand(
+        filePath: String,
+        spaceId: String
+    ): List<String> {
+        return mutableListOf(adbPath, "-s", identifier, "install").apply {
+            add("--user")
+            add(spaceId)
+
+            addAll(listOf("-r", filePath))
+        }
+    }
+
     suspend fun getAppsData(
-        applicationType: ApplicationType,
-        identifier: String
+        applicationType: ApplicationType
     ) = withContext(Dispatchers.IO) {
         val applicationTypeIdentifier = when (applicationType) {
             ApplicationType.SYSTEM -> "s"

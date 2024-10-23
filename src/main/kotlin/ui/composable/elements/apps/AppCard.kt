@@ -23,8 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import log.AppData
-import log.clearAppCache
-import log.uninstallApp
+import log.ApplicationManager
 import notifications.InfoManagerData
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.OutlinedButton
@@ -34,8 +33,7 @@ import utils.getStringResource
 
 @Composable
 fun AppCard(
-    adbPath: String,
-    identifier: String,
+    applicationManager: ApplicationManager,
     app: AppData,
     buttonsEnabled: Boolean,
     onMessage: (InfoManagerData) -> Unit,
@@ -123,9 +121,7 @@ fun AppCard(
                                     )
                                 )
                                 scope.launch {
-                                    clearAppCache(
-                                        adbPath = adbPath,
-                                        identifier = identifier,
+                                    applicationManager.clearAppCache(
                                         packageName = app.packageId
                                     ).fold(
                                         onSuccess = {
@@ -171,9 +167,7 @@ fun AppCard(
                                     )
                                 )
                                 scope.launch {
-                                    uninstallApp(
-                                        adbPath = adbPath,
-                                        identifier = identifier,
+                                    applicationManager.uninstallApp(
                                         packageName = app.packageId
                                     ).fold(
                                         onSuccess = {

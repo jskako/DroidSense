@@ -38,8 +38,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import log.AppData
+import log.ApplicationManager
 import log.getAvailableSpaces
-import log.installApplication
 import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar
@@ -55,6 +55,7 @@ import utils.getStringResource
 
 @Composable
 fun AppsView(
+    applicationManager: ApplicationManager,
     adbPath: String,
     apps: List<AppData>,
     identifier: String,
@@ -93,9 +94,7 @@ fun AppsView(
 
                 scope.launch {
                     getSpaceId(userInfo)?.let {
-                        installApplication(
-                            adbPath = adbPath,
-                            identifier = identifier,
+                        applicationManager.installApplication(
                             spaceId = it.toString()
                         ).fold(
                             onSuccess = { infoData ->
@@ -223,14 +222,13 @@ fun AppsView(
                     ) {
                         items(filteredApps) { app ->
                             AppCard(
-                                adbPath = adbPath,
+                                applicationManager = applicationManager,
                                 app = app,
                                 onMessage = {
                                     showMessage(it)
                                 },
                                 buttonsEnabled = buttonsEnabled,
                                 onButtonEnabled = { buttonsEnabled = it },
-                                identifier = identifier,
                                 onAppDeleted = onAppDeleted
                             )
                         }

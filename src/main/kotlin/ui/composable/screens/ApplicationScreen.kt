@@ -26,7 +26,12 @@ fun ApplicationScreen(
 
     val scope = rememberCoroutineScope()
     val applicationManager by remember {
-        mutableStateOf(ApplicationManager(adbPath = adbPath))
+        mutableStateOf(
+            ApplicationManager(
+                adbPath = adbPath,
+                identifier = identifier
+            )
+        )
     }
 
     var userApps by remember { mutableStateOf<List<AppData>>(emptyList()) }
@@ -35,15 +40,13 @@ fun ApplicationScreen(
     LaunchedEffect(identifier) {
         val userAppsData = async {
             applicationManager.getAppsData(
-                applicationType = ApplicationType.USER,
-                identifier = identifier
+                applicationType = ApplicationType.USER
             )
         }
 
         val systemAppsData = async {
             applicationManager.getAppsData(
-                applicationType = ApplicationType.SYSTEM,
-                identifier = identifier
+                applicationType = ApplicationType.SYSTEM
             )
         }
 
@@ -58,6 +61,7 @@ fun ApplicationScreen(
 
     if (userApps.isNotEmpty() || systemApps.isNotEmpty()) {
         DeviceGroup(
+            applicationManager = applicationManager,
             adbPath = adbPath,
             apps = userApps + systemApps,
             identifier = identifier,
@@ -82,12 +86,14 @@ fun ApplicationScreen(
 
 @Composable
 fun DeviceGroup(
+    applicationManager: ApplicationManager,
     adbPath: String,
     apps: List<AppData>,
     identifier: String,
     onAppDeleted: (AppData) -> Unit
 ) {
     AppsView(
+        applicationManager = applicationManager,
         adbPath = adbPath,
         apps = apps,
         identifier = identifier,
