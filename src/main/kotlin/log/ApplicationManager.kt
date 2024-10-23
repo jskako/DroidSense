@@ -61,7 +61,7 @@ class ApplicationManager(
         }
     }
 
-    suspend fun getAppSize(apkPath: String?): String? = apkPath?.let {
+    private suspend fun getAppSize(apkPath: String?): String? = apkPath?.let {
         withContext(Dispatchers.IO) {
             val process = runProcess(adbPath, "shell", "du", "-h", apkPath)
             return@withContext parseProcessOutput(process) { line ->

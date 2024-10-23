@@ -4,8 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
 import utils.APK_EXTENSION
-import utils.Colors.darkBlue
-import utils.Colors.darkRed
 import utils.EMPTY_STRING
 import utils.getStringResource
 import utils.pickFile
@@ -68,13 +66,12 @@ suspend fun installApplication(
         val resultMessage = if (exitCode == 0) {
             getStringResource("success.file.install")
         } else {
-            getStringResource("error.file.install")
+            throw Exception(getStringResource("error.file.install"))
         }
 
         Result.success(
             InfoManagerData(
-                message = "$resultMessage: ${file.canonicalPath}",
-                color = if (exitCode == 0) darkBlue else darkRed
+                message = "$resultMessage: ${file.canonicalPath}"
             )
         )
     }.getOrElse {
