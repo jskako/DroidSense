@@ -47,6 +47,7 @@ import ui.composable.elements.DividerColored
 import ui.composable.elements.SelectionDialog
 import ui.composable.sections.info.InfoSection
 import utils.Colors.darkBlue
+import utils.Colors.darkRed
 import utils.EMPTY_STRING
 import utils.getSpaceId
 import utils.getStringResource
@@ -78,19 +79,39 @@ fun AppsView(
     if (showDialog) {
         SelectionDialog(
             title = getStringResource("info.select.space"),
-            options = getAvailableSpaces(
-                adbPath = adbPath,
-                identifier = identifier
-            ),
+            options = getAvailableSpaces(adbPath, identifier).mapIndexed { index, item ->
+                item.takeIf { index != 0 } ?: "$item (Default)"
+            },
             onOptionSelected = { userInfo ->
-                getSpaceId(userInfo)?.let {
-                    scope.launch {
+                buttonsEnabled = false
+                showMessage(
+                    infoManagerData = InfoManagerData(
+                        message = getStringResource("info.install.application"),
+                        duration = null
+                    )
+                )
+
+                scope.launch {
+                    getSpaceId(userInfo)?.let {
                         installApplication(
                             adbPath = adbPath,
                             identifier = identifier,
                             spaceId = it.toString()
+                        ).fold(
+                            onSuccess = { infoData ->
+                                showMessage(infoManagerData = infoData)
+                            },
+                            onFailure = {
+                                showMessage(
+                                    infoManagerData = InfoManagerData(
+                                        message = it.message ?: EMPTY_STRING,
+                                        color = darkRed
+                                    )
+                                )
+                            }
                         )
                     }
+                    buttonsEnabled = true
                 }
             },
             onDismissRequest = {
