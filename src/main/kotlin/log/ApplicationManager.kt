@@ -25,7 +25,12 @@ class ApplicationManager(
 
         fun parseProcessOutput(process: Process?): List<String>? {
             return process?.inputStream?.bufferedReader()?.useLines { lines ->
-                lines.filter { it.isNotBlank() }.toList()
+                val output = buildString {
+                    lines.filter { it.isNotBlank() }.forEach { line ->
+                        append(line).append("\n")
+                    }
+                }
+                if (output.isNotEmpty()) listOf(output) else null
             }
         }
 

@@ -1,9 +1,9 @@
 [versions]
 about-libraries = "11.2.3"
-material = "1.6.11"
+material = "1.7.0"
 sqldelight = "2.0.2"
-kotlin = "2.0.20"
-compose-plugin = "1.6.11"
+kotlin = "2.0.21"
+compose-plugin = "1.7.0"
 sl4j = "2.0.16"
 
 [libraries]
