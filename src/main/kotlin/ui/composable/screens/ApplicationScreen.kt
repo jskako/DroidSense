@@ -14,12 +14,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import log.AppData
 import log.ApplicationManager
+import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.apps.AppsView
 import utils.getStringResource
 
 @Composable
 fun ApplicationScreen(
+    windowStateManager: WindowStateManager,
+    serialNumber: String,
+    deviceModel: String,
     adbPath: String,
     identifier: String
 ) {
@@ -61,7 +65,10 @@ fun ApplicationScreen(
 
     if (userApps.isNotEmpty() || systemApps.isNotEmpty()) {
         DeviceGroup(
+            windowStateManager = windowStateManager,
             applicationManager = applicationManager,
+            deviceModel = deviceModel,
+            serialNumber = serialNumber,
             adbPath = adbPath,
             apps = userApps + systemApps,
             identifier = identifier,
@@ -86,17 +93,23 @@ fun ApplicationScreen(
 
 @Composable
 fun DeviceGroup(
+    windowStateManager: WindowStateManager,
     applicationManager: ApplicationManager,
+    serialNumber: String,
+    deviceModel: String,
     adbPath: String,
     apps: List<AppData>,
     identifier: String,
     onAppDeleted: (AppData) -> Unit
 ) {
     AppsView(
+        windowStateManager = windowStateManager,
         applicationManager = applicationManager,
         adbPath = adbPath,
         apps = apps,
         identifier = identifier,
+        deviceModel = deviceModel,
+        serialNumber = serialNumber,
         onAppDeleted = onAppDeleted
     )
 }

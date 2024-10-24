@@ -217,6 +217,9 @@ fun DeviceCard(
                                     windowExtra = WindowExtra(
                                         screen = {
                                             ApplicationScreen(
+                                                deviceModel = device.model ?: "",
+                                                windowStateManager = windowStateManager,
+                                                serialNumber = device.serialNumber,
                                                 identifier = device.deviceIdentifier,
                                                 adbPath = adbPath
                                             )

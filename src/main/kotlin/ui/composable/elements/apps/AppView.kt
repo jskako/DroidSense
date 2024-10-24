@@ -42,6 +42,7 @@ import log.ApplicationManager
 import log.getAvailableSpaces
 import notifications.InfoManager
 import notifications.InfoManagerData
+import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
 import ui.composable.elements.SelectionDialog
@@ -55,7 +56,10 @@ import utils.getStringResource
 
 @Composable
 fun AppsView(
+    windowStateManager: WindowStateManager,
     applicationManager: ApplicationManager,
+    serialNumber: String,
+    deviceModel: String,
     adbPath: String,
     apps: List<AppData>,
     identifier: String,
@@ -222,7 +226,10 @@ fun AppsView(
                     ) {
                         items(filteredApps) { app ->
                             AppCard(
+                                windowStateManager = windowStateManager,
                                 applicationManager = applicationManager,
+                                serialNumber = serialNumber,
+                                deviceModel = deviceModel,
                                 app = app,
                                 onMessage = {
                                     showMessage(it)

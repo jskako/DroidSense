@@ -18,14 +18,14 @@ class ApplicationManager(
 
     suspend fun getAppDetails(
         packageName: String
-    ): String? = withContext(Dispatchers.IO) {
+    ): List<String>? = withContext(Dispatchers.IO) {
         fun runProcess(vararg args: String): Process? = runCatching {
             ProcessBuilder(*args).start()
         }.getOrNull()
 
-        fun parseProcessOutput(process: Process?): String? {
+        fun parseProcessOutput(process: Process?): List<String>? {
             return process?.inputStream?.bufferedReader()?.useLines { lines ->
-                lines.joinToString(separator = "\n") { it }.takeIf { it.isNotBlank() }
+                lines.filter { it.isNotBlank() }.toList()
             }
         }
 

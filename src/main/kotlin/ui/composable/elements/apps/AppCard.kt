@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
@@ -19,21 +21,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import log.AppData
 import log.ApplicationManager
 import notifications.InfoManagerData
+import ui.application.WindowExtra
+import ui.application.WindowStateManager
+import ui.application.navigation.WindowData
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.window.TextDialog
+import ui.composable.screens.ApplicationDetailsScreen
 import utils.Colors.darkRed
 import utils.getStringResource
 
 @Composable
 fun AppCard(
     applicationManager: ApplicationManager,
+    windowStateManager: WindowStateManager,
+    deviceModel: String,
+    serialNumber: String,
     app: AppData,
     buttonsEnabled: Boolean,
     onMessage: (InfoManagerData) -> Unit,
@@ -83,21 +91,21 @@ fun AppCard(
                     text2 = app.packageId
                 )
 
-                addSpaceHeight()
+                Spacer(modifier = Modifier.height(5.dp))
 
                 BasicTextCaption(
                     text1 = getStringResource("info.app.package.path"),
                     text2 = app.appPath ?: ""
                 )
 
-                addSpaceHeight()
+                Spacer(modifier = Modifier.height(5.dp))
 
                 BasicTextCaption(
                     text1 = getStringResource("info.app.package.size"),
                     text2 = app.appSize ?: ""
                 )
 
-                addSpaceHeight(height = 10.dp)
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Row(
                     modifier = Modifier
@@ -107,6 +115,29 @@ fun AppCard(
                         alignment = Alignment.End
                     )
                 ) {
+                    OutlinedButton(
+                        text = getStringResource("info.app.details"),
+                        enabled = buttonsEnabled,
+                        onClick = {
+                            windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                                newWindow(
+                                    WindowData(
+                                        title = "$deviceModel ($serialNumber) - ${app.packageId}",
+                                        icon = Icons.Default.Info,
+                                        windowExtra = WindowExtra(
+                                            screen = {
+                                                ApplicationDetailsScreen(
+                                                    applicationManager = applicationManager,
+                                                    packageId = app.packageId
+                                                )
+                                            },
+                                            onClose = {}
+                                        )
+                                    )
+                                )
+                            }
+                        }
+                    )
                     OutlinedButton(
                         text = getStringResource("info.app.clear.data"),
                         enabled = buttonsEnabled,
@@ -197,9 +228,4 @@ fun AppCard(
             }
         }
     }
-}
-
-@Composable
-fun addSpaceHeight(height: Dp = 5.dp) {
-    Spacer(modifier = Modifier.height(height))
 }
