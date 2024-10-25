@@ -1,6 +1,5 @@
-package log
+package adb.application
 
-import adb.ApplicationType
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -18,25 +17,43 @@ class ApplicationManager(
 
     suspend fun getAppDetails(
         packageName: String
-    ): List<String>? = withContext(Dispatchers.IO) {
-        fun runProcess(vararg args: String): Process? = runCatching {
-            ProcessBuilder(*args).start()
-        }.getOrNull()
+    ): List<AppDetailsData>? = withContext(Dispatchers.IO) {
 
-        fun parseProcessOutput(process: Process?): List<String>? {
+        fun parseProcessOutput(process: Process?, appDetailType: AppDetailType): AppDetailsData? {
             return process?.inputStream?.bufferedReader()?.useLines { lines ->
                 val output = buildString {
                     lines.filter { it.isNotBlank() }.forEach { line ->
-                        append(line).append("\n")
+                        appendLine(line)
                     }
                 }
-                if (output.isNotEmpty()) listOf(output) else null
+                if (output.isNotEmpty()) AppDetailsData(appDetailType.title, output) else null
             }
         }
 
-        val process = runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "package", packageName)
+        val details = mutableListOf<AppDetailsData>()
 
-        parseProcessOutput(process)
+        val packageInfoProcess = runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "package", packageName)
+        parseProcessOutput(packageInfoProcess, AppDetailType.PACKAGE_INFO)?.let {
+            details.add(it)
+            val uidRegex = Regex("userId=(\\d+)")
+            val uid = uidRegex.find(it.info)?.groupValues?.get(1)
+
+            uid?.let { uuid ->
+                val networkStatsProcess =
+                    runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "netstats", "--uid", uuid)
+                parseProcessOutput(networkStatsProcess, AppDetailType.NETWORK_STATS)?.let { networkData ->
+                    details.add(networkData)
+                }
+            }
+        }
+
+        val memoryInfoProcess = runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "meminfo", packageName)
+        parseProcessOutput(memoryInfoProcess, AppDetailType.MEMORY_INFO)?.let { details.add(it) }
+
+        val batteryUsageProcess = runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "batterystats", packageName)
+        parseProcessOutput(batteryUsageProcess, AppDetailType.BATTERY_USAGE)?.let { details.add(it) }
+
+        return@withContext details.ifEmpty { null }
     }
 
     suspend fun uninstallApp(
@@ -99,19 +116,6 @@ class ApplicationManager(
             )
         }.getOrElse {
             Result.failure(Exception(getStringResource("error.file.install")))
-        }
-    }
-
-
-    private fun buildAdbInstallCommand(
-        filePath: String,
-        spaceId: String
-    ): List<String> {
-        return mutableListOf(adbPath, "-s", identifier, "install").apply {
-            add("--user")
-            add(spaceId)
-
-            addAll(listOf("-r", filePath))
         }
     }
 

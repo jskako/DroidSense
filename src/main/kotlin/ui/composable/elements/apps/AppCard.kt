@@ -1,6 +1,6 @@
 package ui.composable.elements.apps
 
-import adb.ApplicationType
+import adb.application.ApplicationType
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import log.AppData
-import log.ApplicationManager
+import adb.application.AppData
+import adb.application.ApplicationManager
 import notifications.InfoManagerData
 import ui.application.WindowExtra
 import ui.application.WindowStateManager

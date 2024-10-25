@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import log.LogLevel
-import log.LogManager
-import log.getDevicePropertyList
+import adb.log.LogLevel
+import adb.log.LogManager
+import adb.getDevicePropertyList
 import notifications.InfoManagerData
 import ui.composable.elements.DropdownItem
 import ui.composable.elements.FilterText

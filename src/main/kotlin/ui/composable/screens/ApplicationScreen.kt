@@ -1,6 +1,6 @@
 package ui.composable.screens
 
-import adb.ApplicationType
+import adb.application.ApplicationType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -12,8 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import log.AppData
-import log.ApplicationManager
+import adb.application.AppData
+import adb.application.ApplicationManager
 import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.apps.AppsView

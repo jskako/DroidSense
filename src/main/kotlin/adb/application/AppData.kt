@@ -1,6 +1,4 @@
-package log
-
-import adb.ApplicationType
+package adb.application
 
 data class AppData(
     val packageId: String,

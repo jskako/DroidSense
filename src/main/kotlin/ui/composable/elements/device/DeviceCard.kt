@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import log.LogManager
+import adb.log.LogManager
 import notifications.InfoManagerData
 import ui.application.WindowExtra
 import ui.application.WindowStateManager

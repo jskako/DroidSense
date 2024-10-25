@@ -19,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import log.ExportOption
-import log.LogLevel
-import log.LogManager
+import adb.log.ExportOption
+import adb.log.LogLevel
+import adb.log.LogManager
 import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar

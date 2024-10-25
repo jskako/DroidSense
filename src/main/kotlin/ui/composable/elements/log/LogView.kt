@@ -17,8 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import log.LogData
-import log.LogLevel
+import adb.log.LogData
+import adb.log.LogLevel
 import java.util.UUID
 
 

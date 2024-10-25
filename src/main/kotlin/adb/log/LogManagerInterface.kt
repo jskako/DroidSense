@@ -1,4 +1,4 @@
-package log
+package adb.log
 
 import kotlinx.coroutines.CoroutineScope
 import notifications.InfoManagerData

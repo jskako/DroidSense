@@ -1,4 +1,4 @@
-package log
+package adb.log
 
 import androidx.compose.runtime.mutableStateListOf
 import kotlinx.coroutines.CoroutineScope

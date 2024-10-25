@@ -18,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import log.SelectOption
+import adb.log.SelectOption
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.darkRed

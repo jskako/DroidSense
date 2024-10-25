@@ -1,4 +1,4 @@
-package log
+package adb
 
 import utils.EMPTY_STRING
 

@@ -2,7 +2,7 @@ package data.model
 
 import com.jskako.GetUUIDs
 import com.jskako.LogHistory
-import log.LogLevel
+import adb.log.LogLevel
 import java.util.UUID
 
 fun GetUUIDs.toUuidItem(): UuidItem {

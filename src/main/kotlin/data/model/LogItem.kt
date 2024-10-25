@@ -1,6 +1,6 @@
 package data.model
 
-import log.LogLevel
+import adb.log.LogLevel
 import java.util.UUID
 
 data class LogItem(

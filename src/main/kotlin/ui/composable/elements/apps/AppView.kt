@@ -1,8 +1,10 @@
 package ui.composable.elements.apps
 
-import adb.ApplicationType
+import adb.application.AppData
+import adb.application.ApplicationManager
+import adb.application.ApplicationType
+import adb.getAvailableSpaces
 import androidx.compose.foundation.VerticalScrollbar
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,18 +35,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import log.AppData
-import log.ApplicationManager
-import log.getAvailableSpaces
 import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
+import ui.composable.elements.SelectableRow
 import ui.composable.elements.SelectionDialog
 import ui.composable.sections.info.InfoSection
 import utils.Colors.darkBlue
@@ -159,26 +157,16 @@ fun AppsView(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = getStringResource("info.app.user"),
-                    textAlign = TextAlign.Start,
-                    fontWeight = if (selectedApplicationType == ApplicationType.USER) FontWeight.Bold else FontWeight.Normal,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .clickable {
-                            selectedApplicationType = ApplicationType.USER
-                        },
-                )
-
-                Text(
-                    text = getStringResource("info.app.system"),
-                    textAlign = TextAlign.Start,
-                    fontWeight = if (selectedApplicationType == ApplicationType.SYSTEM) FontWeight.Bold else FontWeight.Normal,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .clickable {
-                            selectedApplicationType = ApplicationType.SYSTEM
-                        },
+                SelectableRow(
+                    enumValues = ApplicationType.entries.toTypedArray(),
+                    selectedValue = selectedApplicationType,
+                    onSelect = { selectedApplicationType = it },
+                    getTitle = { type ->
+                        when (type) {
+                            ApplicationType.USER -> getStringResource("info.app.user")
+                            ApplicationType.SYSTEM -> getStringResource("info.app.system")
+                        }
+                    }
                 )
 
                 TextField(

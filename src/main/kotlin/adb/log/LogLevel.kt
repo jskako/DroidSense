@@ -1,4 +1,4 @@
-package log
+package adb.log
 
 import androidx.compose.ui.graphics.Color
 
