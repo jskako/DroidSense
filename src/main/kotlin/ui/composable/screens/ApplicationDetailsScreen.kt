@@ -9,14 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,85 +25,83 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.async
 import log.ApplicationManager
 import ui.composable.elements.CircularProgressBar
-import utils.Colors.darkBlue
 import utils.getStringResource
-
 
 @Composable
 fun ApplicationDetailsScreen(
     applicationManager: ApplicationManager,
     packageId: String
 ) {
-
     val listState = rememberLazyListState()
     var applicationDetails by remember { mutableStateOf<List<String>>(emptyList()) }
 
     LaunchedEffect(Unit) {
-        val userAppsData = async {
-            applicationManager.getAppDetails(
-                packageName = packageId
-            )
+        val appDataDeferred = async {
+            applicationManager.getAppDetails(packageName = packageId)
         }
-
-        applicationDetails = userAppsData.await() ?: emptyList()
+        applicationDetails = appDataDeferred.await() ?: emptyList()
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = {
-
-                },
-                containerColor = darkBlue,
-                contentColor = Color.White,
-                icon = { Icon(Icons.Filled.Add, getStringResource("info.install.app")) },
-                text = { Text(text = getStringResource("info.install.app")) },
-            )
-        }
+        modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            CircularProgressBar(
-                text = getStringResource("info.search.application.empty"),
-                isVisible = applicationDetails.isEmpty()
-            )
+        ApplicationDetailsContent(
+            applicationDetails = applicationDetails,
+            listState = listState,
+            paddingValues = paddingValues
+        )
+    }
+}
 
-            if (applicationDetails.isNotEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    LazyColumn(
-                        state = listState,
-                        contentPadding = PaddingValues(
-                            start = 16.dp,
-                            end = 16.dp,
-                            top = 8.dp,
-                            bottom = 80.dp
-                        )
-                    ) {
-                        items(applicationDetails) { line ->
-                            SelectionContainer {
-                                Text(text = line)
-                            }
-                        }
-                    }
-                    VerticalScrollbar(
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .fillMaxHeight()
-                            .padding(end = 5.dp)
-                            .width(15.dp),
-                        adapter = rememberScrollbarAdapter(
-                            scrollState = listState
-                        )
+@Composable
+private fun ApplicationDetailsContent(
+    applicationDetails: List<String>,
+    listState: LazyListState,
+    paddingValues: PaddingValues
+) {
+    Column(modifier = Modifier.padding(paddingValues)) {
+        CircularProgressBar(
+            text = getStringResource("info.search.application.empty"),
+            isVisible = applicationDetails.isEmpty()
+        )
+
+        if (applicationDetails.isNotEmpty()) {
+            DetailsList(applicationDetails, listState)
+        }
+    }
+}
+
+@Composable
+private fun DetailsList(
+    applicationDetails: List<String>,
+    listState: LazyListState
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            state = listState,
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+        ) {
+            items(applicationDetails) { line ->
+                SelectionContainer {
+                    Text(
+                        text = line,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
         }
+
+        VerticalScrollbar(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight()
+                .padding(end = 5.dp)
+                .width(15.dp),
+            adapter = rememberScrollbarAdapter(scrollState = listState)
+        )
     }
 }
