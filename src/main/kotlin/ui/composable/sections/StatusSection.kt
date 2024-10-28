@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.application.WindowExtra
@@ -29,6 +30,7 @@ import ui.application.WindowStateManager
 import ui.application.navigation.WindowData
 import ui.composable.elements.iconButtons.IconClickableText
 import ui.composable.elements.iconButtons.TooltipIconButton
+import ui.composable.screens.SettingsScreen
 import utils.Colors.darkGreen
 import utils.Colors.darkRed
 import utils.getStringResource
@@ -39,7 +41,8 @@ fun StatusSection(
     scrCpyPath: String,
     deviceManager: DeviceManager,
     onMessage: (InfoManagerData) -> Unit,
-    windowStateManager: WindowStateManager
+    windowStateManager: WindowStateManager,
+    settingsSource: SettingsSource
 ) {
     val scope = rememberCoroutineScope()
 
@@ -99,20 +102,7 @@ fun StatusSection(
                 icon = Icons.Default.History,
                 tooltip = getStringResource("info.history"),
                 function = {
-                    windowStateManager.windowState?.openNewWindow?.let { newWindow ->
-                        newWindow(
-                            WindowData(
-                                title = "",
-                                icon = Icons.Default.Info,
-                                windowExtra = WindowExtra(
-                                    screen = {
 
-                                    },
-                                    onClose = {}
-                                )
-                            )
-                        )
-                    }
                 }
             )
 
@@ -123,10 +113,13 @@ fun StatusSection(
                     windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                         newWindow(
                             WindowData(
-                                title = "",
+                                title = getStringResource("info.settings"),
                                 icon = Icons.Default.Info,
                                 windowExtra = WindowExtra(
                                     screen = {
+                                        SettingsScreen(
+                                            settingsSource = settingsSource
+                                        )
                                     },
                                     onClose = {}
                                 )

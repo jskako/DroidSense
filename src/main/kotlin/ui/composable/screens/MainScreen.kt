@@ -73,6 +73,7 @@ fun MainScreen(
             scrCpyPath = scrcpyPath,
             deviceManager = deviceManager,
             windowStateManager = windowStateManager,
+            settingsSource = settingsSource,
             onMessage = {
                 infoManager.showMessage(
                     infoManagerData = it,
