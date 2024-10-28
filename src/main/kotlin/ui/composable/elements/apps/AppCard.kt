@@ -190,7 +190,12 @@ fun AppCard(
                         onClick = {
                             onButtonEnabled(false)
                             dialogTitle = "${getStringResource("info.delete.app.title")}: ${app.packageId}"
-                            dialogDescription = getStringResource("info.delete.app.description")
+                            dialogDescription = getStringResource(
+                                when (app.applicationType) {
+                                    ApplicationType.SYSTEM -> "info.force.delete.app.description"
+                                    ApplicationType.USER -> "info.delete.app.description"
+                                }
+                            )
                             onDialogConfirm = {
                                 onMessage(
                                     InfoManagerData(
