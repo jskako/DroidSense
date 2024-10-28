@@ -10,7 +10,7 @@ class SettingsSource(private val settingsDao: SettingsQueries) :
         settingsDao.insert(identifier = identifier, value_ = value)
 
     override suspend fun update(identifier: String, value: String) =
-        settingsDao.insert(identifier = identifier, value_ = value)
+        settingsDao.update(identifier = identifier, value = value)
 
     override fun get(identifier: String): String = settingsDao.get(identifier = identifier).executeAsOne()
     override suspend fun delete(identifier: String) = settingsDao.delete(identifier = identifier)
