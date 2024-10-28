@@ -71,13 +71,8 @@ fun GeneralSection(
             text = "Save",
             enabled = settingsToSave.isNotEmpty(),
             onClick = {
-                if (settingsSource.get(SettingsKey.ADB.name) != adbPath) {
-                    scope.launch {
-                        settingsSource.update(
-                            identifier = SettingsKey.ADB.name,
-                            value = adbPath
-                        )
-                    }
+                settingsToSave.forEach { (_, u) ->
+                    u.invoke()
                 }
             },
             modifier = Modifier
