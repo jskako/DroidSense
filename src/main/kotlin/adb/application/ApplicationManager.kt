@@ -39,21 +39,13 @@ class ApplicationManager(
         val details = mutableListOf<AppDetailsData>()
 
         val packageInfoProcess = runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "package", packageName)
-        parseProcessOutput(packageInfoProcess, AppDetailType.PACKAGE_INFO)?.let {
-            details.add(it)
-            val uidRegex = Regex("userId=(\\d+)")
-            val uid = uidRegex.find(it.info)?.groupValues?.get(1)
+        parseProcessOutput(packageInfoProcess, AppDetailType.PACKAGE_INFO)?.let { details.add(it) }
 
-            uid?.let { uuid ->
-                val networkStatsProcess =
-                    runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "netstats", "--uid", uuid)
-                parseProcessOutput(networkStatsProcess, AppDetailType.NETWORK_STATS)?.let { networkData ->
-                    details.add(networkData)
-                }
-            }
-        }
+        val networkInfoProcess =
+            runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "netstats", "detail", packageName)
+        parseProcessOutput(networkInfoProcess, AppDetailType.NETWORK_STATS)?.let { details.add(it) }
 
-        val memoryInfoProcess = runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "meminfo", packageName)
+        val memoryInfoProcess = runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "meminfo", packageName, "-d")
         parseProcessOutput(memoryInfoProcess, AppDetailType.MEMORY_INFO)?.let { details.add(it) }
 
         val batteryUsageProcess = runProcess(adbPath, "-s", identifier, "shell", "dumpsys", "batterystats", packageName)
