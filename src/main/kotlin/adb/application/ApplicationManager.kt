@@ -170,7 +170,7 @@ class ApplicationManager(
     }
 
     private suspend fun getAppPath(packageId: String): String? = withContext(Dispatchers.IO) {
-        val process = runProcess(adbPath, "shell", "pm", "path", packageId)
+        val process = runProcess(adbPath, "-s", identifier, "shell", "pm", "path", packageId)
         return@withContext parseProcessOutput(process) { line ->
             if (line.contains("package:")) line.replace("package:", "") else null
         }
@@ -178,7 +178,7 @@ class ApplicationManager(
 
     private suspend fun getAppSize(apkPath: String?): String? = apkPath?.let {
         withContext(Dispatchers.IO) {
-            val process = runProcess(adbPath, "shell", "du", "-h", apkPath)
+            val process = runProcess(adbPath, "-s", identifier, "shell", "du", "-h", apkPath)
             return@withContext parseProcessOutput(process) { line ->
                 line.split("\\s+".toRegex()).firstOrNull()
             }

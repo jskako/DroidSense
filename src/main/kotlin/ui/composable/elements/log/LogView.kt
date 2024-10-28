@@ -1,6 +1,8 @@
 package ui.composable.elements.log
 
 
+import adb.log.LogData
+import adb.log.LogLevel
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,8 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import adb.log.LogData
-import adb.log.LogLevel
 import java.util.UUID
 
 

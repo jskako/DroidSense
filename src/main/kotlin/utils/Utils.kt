@@ -2,6 +2,8 @@ package utils
 
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
@@ -61,11 +63,13 @@ fun getOSArch(): Arch {
 
 fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }
 
-fun startScrCpy(
+suspend fun startScrCpy(
     scrCpyPath: String,
     identifier: String
 ) {
-    ProcessBuilder(scrCpyPath, "-s", identifier).start()
+    withContext(Dispatchers.IO) {
+        ProcessBuilder(scrCpyPath, "-s", identifier).start()
+    }
 }
 
 fun isValidIpAddressWithPort(input: String) = ipPortRegex.matches(input)

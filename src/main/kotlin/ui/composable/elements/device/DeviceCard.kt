@@ -2,6 +2,7 @@ package ui.composable.elements.device
 
 import adb.ConnectionType
 import adb.DeviceDetails
+import adb.log.LogManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,7 +30,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import adb.log.LogManager
 import notifications.InfoManagerData
 import ui.application.WindowExtra
 import ui.application.WindowStateManager
@@ -150,10 +150,12 @@ fun DeviceCard(
                 OutlinedButton(
                     text = getStringResource("info.share.screen"),
                     onClick = {
-                        startScrCpy(
-                            scrCpyPath = scrCpyPath,
-                            identifier = device.deviceIdentifier
-                        )
+                        scope.launch {
+                            startScrCpy(
+                                scrCpyPath = scrCpyPath,
+                                identifier = device.deviceIdentifier
+                            )
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()

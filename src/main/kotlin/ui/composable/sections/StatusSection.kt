@@ -1,20 +1,18 @@
 package ui.composable.sections
 
 import adb.DeviceManager
-import adb.DeviceOptions
 import adb.MonitorStatus
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ScreenShare
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Policy
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.RunCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
@@ -22,17 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.useResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
+import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.application.WindowExtra
 import ui.application.WindowStateManager
 import ui.application.navigation.WindowData
-import ui.composable.elements.ClickableIconMenu
 import ui.composable.elements.iconButtons.IconClickableText
-import utils.ABOUT_LIBRARIES_JSON_NAME
+import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkGreen
 import utils.Colors.darkRed
 import utils.getStringResource
@@ -46,6 +42,7 @@ fun StatusSection(
     windowStateManager: WindowStateManager
 ) {
     val scope = rememberCoroutineScope()
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -81,40 +78,65 @@ fun StatusSection(
                 }
             }
 
-            ClickableIconMenu(
-                icon = Icons.Default.Menu,
-                functions = listOf(
-                    DeviceOptions(
-                        text = getStringResource("info.log.history"),
-                        function = {
-                            windowStateManager.windowState?.openNewWindow?.let { newWindow ->
-                                newWindow(
-                                    WindowData(
-                                        title = getStringResource("info.log.history"),
-                                        icon = Icons.Default.History,
-                                        WindowExtra()
-                                    )
-                                )
-                            }
-                        }
-                    ),
-                    DeviceOptions(
-                        text = getStringResource("info.share.all.screens"),
-                        function = {
+            if (deviceManager.devices.size > 1) {
+                TooltipIconButton(
+                    icon = Icons.AutoMirrored.Filled.ScreenShare,
+                    tooltip = getStringResource("info.share.all.screens"),
+                    function = {
+                        scope.launch {
                             deviceManager.devices.forEach {
                                 startScrCpy(
                                     scrCpyPath = scrCpyPath,
                                     identifier = it.deviceIdentifier
                                 )
                             }
-                        },
-                        enabled = deviceManager.devices.isNotEmpty()
-                    ),
+                        }
+                    }
                 )
+            }
+
+            TooltipIconButton(
+                icon = Icons.Default.History,
+                tooltip = getStringResource("info.history"),
+                function = {
+                    windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                        newWindow(
+                            WindowData(
+                                title = "",
+                                icon = Icons.Default.Info,
+                                windowExtra = WindowExtra(
+                                    screen = {
+
+                                    },
+                                    onClose = {}
+                                )
+                            )
+                        )
+                    }
+                }
             )
 
-            Spacer(modifier = Modifier.width(4.dp))
+            TooltipIconButton(
+                icon = Icons.Default.Settings,
+                tooltip = getStringResource("info.settings"),
+                function = {
+                    windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                        newWindow(
+                            WindowData(
+                                title = "",
+                                icon = Icons.Default.Info,
+                                windowExtra = WindowExtra(
+                                    screen = {
+                                    },
+                                    onClose = {}
+                                )
+                            )
+                        )
+                    }
+                }
+            )
 
+            /*
             ClickableIconMenu(
                 icon = Icons.Default.Settings,
                 functions = listOf(
@@ -141,6 +163,7 @@ fun StatusSection(
                     )
                 )
             )
+            */
         }
     }
 }
