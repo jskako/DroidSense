@@ -1,13 +1,16 @@
 package adb
 
 import utils.EMPTY_STRING
+import utils.PRIVATE_SPACE_KEY
+import utils.spaceIdRegex
 
-fun getPrivateSpaceId(adbPath: String, identifier: String): String? {
-    return getAvailableSpaces(adbPath, identifier)
-        .firstOrNull { it.contains("PrivateSpace") }
-        ?.substringAfter("UserInfo{")
-        ?.substringBefore(":")
-}
+fun getPrivateSpaceId(adbPath: String, identifier: String) = getAvailableSpaces(adbPath, identifier)
+    .find {
+        it.contains(PRIVATE_SPACE_KEY, ignoreCase = true)
+    }
+    ?.let { match ->
+        spaceIdRegex.find(match)?.groupValues?.get(1)
+    }
 
 fun getAvailableSpaces(adbPath: String, identifier: String): List<String> {
     return runCatching {

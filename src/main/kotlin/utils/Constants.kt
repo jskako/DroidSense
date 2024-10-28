@@ -15,6 +15,7 @@ const val SCRCPY_WINDOWS_32_PATH = "tools/scrcpy/windows/32/scrcpy.exe"
 const val MIN_WINDOW_WIDTH = 800
 const val MIN_WINDOW_HEIGHT = 600
 const val ADB_DEVICE_OFFLINE = "offline"
+const val PRIVATE_SPACE_KEY = "Private Space"
 
 private const val GET_PROPERTY: String = "getprop"
 const val DEVICE_MODEL_PROPERTY: String = "$GET_PROPERTY ro.product.model"
