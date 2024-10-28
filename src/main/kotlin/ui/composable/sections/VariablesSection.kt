@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,9 +40,20 @@ fun VariablesSection(
     settingsSource: SettingsSource,
     navigateToMainScreen: () -> Unit,
 ) {
-    var adbPath by remember { mutableStateOf(settingsSource.get(SettingsKey.ADB.name)) }
-    var scrcpyPath by remember { mutableStateOf(settingsSource.get(SettingsKey.SCRCPY.name)) }
+    var adbPath by remember { mutableStateOf("") }
+    var scrcpyPath by remember { mutableStateOf("") }
+
+    val adbDatabasePath by settingsSource.get(SettingsKey.ADB.name).collectAsState(initial = "")
+    val scrcpyDatabasePath by settingsSource.get(SettingsKey.SCRCPY.name).collectAsState(initial = "")
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(adbDatabasePath) {
+        adbPath = adbDatabasePath
+    }
+
+    LaunchedEffect(scrcpyDatabasePath) {
+        scrcpyPath = scrcpyDatabasePath
+    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -118,7 +131,7 @@ fun VariablesSection(
                     onClick = {
                         scope.launch {
                             adbPath.trim().also {
-                                if (settingsSource.get(SettingsKey.ADB.name) != it) {
+                                if (adbDatabasePath != it) {
                                     settingsSource.update(
                                         identifier = SettingsKey.ADB.name,
                                         value = it
@@ -126,7 +139,7 @@ fun VariablesSection(
                                 }
                             }
                             scrcpyPath.trim().also {
-                                if (settingsSource.get(SettingsKey.SCRCPY.name) != it) {
+                                if (scrcpyDatabasePath != it) {
                                     settingsSource.update(
                                         identifier = SettingsKey.SCRCPY.name,
                                         value = it

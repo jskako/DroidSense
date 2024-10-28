@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -32,10 +32,10 @@ fun MainScreen(
     settingsSource: SettingsSource
 ) {
 
-    val adbPath by remember { mutableStateOf(settingsSource.get(SettingsKey.ADB.name)) }
-    val scrcpyPath by remember { mutableStateOf(settingsSource.get(SettingsKey.SCRCPY.name)) }
+    val adbPath by settingsSource.get(SettingsKey.ADB.name).collectAsState(initial = "")
+    val scrcpyPath by settingsSource.get(SettingsKey.SCRCPY.name).collectAsState(initial = "")
 
-    val deviceManager = remember {
+    val deviceManager = remember(adbPath) {
         DeviceManager(
             adbPath = adbPath
         )
@@ -43,24 +43,27 @@ fun MainScreen(
 
     val infoManager = remember { InfoManager() }
     val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-        deviceManager.manageListeningStatus(
-            monitorStatus = MonitorStatus.START,
-            scope = scope,
-            onMessage = {
-                infoManager.showMessage(
-                    infoManagerData = it,
-                    scope = scope
-                )
-            }
-        )
-        infoManager.showMessage(
-            InfoManagerData(
-                message = getStringResource("info.usb.debugging.enabled"),
-                duration = null
-            ),
-            scope = scope
-        )
+
+    LaunchedEffect(adbPath) {
+        if (adbPath.isNotEmpty()) {
+            deviceManager.manageListeningStatus(
+                monitorStatus = MonitorStatus.START,
+                scope = scope,
+                onMessage = {
+                    infoManager.showMessage(
+                        infoManagerData = it,
+                        scope = scope
+                    )
+                }
+            )
+            infoManager.showMessage(
+                InfoManagerData(
+                    message = getStringResource("info.usb.debugging.enabled"),
+                    duration = null
+                ),
+                scope = scope
+            )
+        }
     }
 
     Column {
@@ -88,19 +91,24 @@ fun MainScreen(
         )
         CircularProgressBar(
             text = getStringResource("info.waiting.device"),
-            isVisible = deviceManager.devices.isEmpty() && deviceManager.monitoringStatus.value == MonitoringStatus.MONITORING
+            isVisible = deviceManager.devices.isEmpty()
+                    && deviceManager.monitoringStatus.value == MonitoringStatus.MONITORING
+                    && adbPath.isEmpty()
         )
-        DeviceView(
-            devices = deviceManager.devices,
-            windowStateManager = windowStateManager,
-            onMessage = {
-                infoManager.showMessage(
-                    infoManagerData = it,
-                    scope = scope
-                )
-            },
-            adbPath = adbPath,
-            scrCpyPath = scrcpyPath
-        )
+
+        if (adbPath.isNotEmpty() && deviceManager.devices.isNotEmpty()) {
+            DeviceView(
+                devices = deviceManager.devices,
+                windowStateManager = windowStateManager,
+                onMessage = {
+                    infoManager.showMessage(
+                        infoManagerData = it,
+                        scope = scope
+                    )
+                },
+                adbPath = adbPath,
+                scrCpyPath = scrcpyPath
+            )
+        }
     }
 }

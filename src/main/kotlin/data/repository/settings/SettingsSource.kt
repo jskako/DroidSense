@@ -1,7 +1,10 @@
 package data.repository.settings
 
+import app.cash.sqldelight.coroutines.asFlow
 import com.jskako.SettingsQueries
 import data.keys.SettingsKey
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class SettingsSource(private val settingsDao: SettingsQueries) :
     SettingsRepository {
@@ -12,7 +15,13 @@ class SettingsSource(private val settingsDao: SettingsQueries) :
     override suspend fun update(identifier: String, value: String) =
         settingsDao.update(identifier = identifier, value = value)
 
-    override fun get(identifier: String): String = settingsDao.get(identifier = identifier).executeAsOne()
+    override fun get(identifier: String): Flow<String> = settingsDao
+        .get(identifier = identifier)
+        .asFlow()
+        .map { query ->
+            query.executeAsOne()
+        }
+
     override suspend fun delete(identifier: String) = settingsDao.delete(identifier = identifier)
 
     override suspend fun isValid() =

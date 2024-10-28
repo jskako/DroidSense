@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,8 +32,13 @@ fun GeneralSection(
 
     val scope = rememberCoroutineScope()
     val settingsToSave = remember { mutableStateMapOf<SaveSetting, () -> Unit>() }
-    var adbPath by remember { mutableStateOf(settingsSource.get(SettingsKey.ADB.name)) }
-    val scrcpyPath by remember { mutableStateOf(settingsSource.get(SettingsKey.SCRCPY.name)) }
+
+    var adbPath by remember { mutableStateOf("") }
+    val adbDatabasePath by settingsSource.get(SettingsKey.ADB.name).collectAsState(initial = "")
+
+    LaunchedEffect(adbDatabasePath) {
+        adbPath = adbDatabasePath
+    }
 
     Column(
         modifier = Modifier
@@ -49,7 +56,7 @@ fun GeneralSection(
             onValueChanged = { changedPath ->
                 adbPath = changedPath
                 changedPath.trim().also {
-                    if (settingsSource.get(SettingsKey.ADB.name) != it) {
+                    if (adbDatabasePath != it) {
                         settingsToSave[SaveSetting.ADB_PATH] = {
                             scope.launch {
                                 settingsSource.update(
