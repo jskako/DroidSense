@@ -26,6 +26,8 @@ dependencies {
     implementation(libs.sqldelight.coroutines)
     implementation(libs.sqldelight.jvm)
     implementation(libs.sl4j)
+    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
+    implementation(libs.compose.resource)
 }
 
 compose.desktop {

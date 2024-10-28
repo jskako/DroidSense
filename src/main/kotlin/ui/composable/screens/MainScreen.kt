@@ -40,6 +40,7 @@ fun MainScreen(
             adbPath = adbPath
         )
     }
+
     val infoManager = remember { InfoManager() }
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {

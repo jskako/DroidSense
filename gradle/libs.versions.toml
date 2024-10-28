@@ -5,6 +5,8 @@ sqldelight = "2.0.2"
 kotlin = "2.0.21"
 compose-plugin = "1.7.0"
 sl4j = "2.0.16"
+material3-adaptive-navigation-suite = "1.3.0"
+compose-resource = "1.7.0"
 
 [libraries]
 material-icons = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "material" }
@@ -14,6 +16,8 @@ about-libraries-compose = { module = "com.mikepenz:aboutlibraries-compose-m3", v
 sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sl4j = { module = "org.slf4j:slf4j-reload4j", version.ref = "sl4j" }
+androidx-compose-material3-adaptive-navigation-suite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3-adaptive-navigation-suite" }
+compose-resource = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-resource" }
 
 [plugins]
 about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about-libraries" }

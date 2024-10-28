@@ -128,7 +128,8 @@ fun StatusSection(
                                         icon = Icons.Default.Policy,
                                         windowExtra = WindowExtra(
                                             screen = {
-                                                LibrariesContainer(useResource(ABOUT_LIBRARIES_JSON_NAME) {
+                                                LibrariesContainer(
+                                                    useResource(ABOUT_LIBRARIES_JSON_NAME) {
                                                     it.bufferedReader().readText()
                                                 }, Modifier.fillMaxSize())
                                             }
