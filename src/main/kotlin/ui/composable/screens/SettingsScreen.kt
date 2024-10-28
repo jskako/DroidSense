@@ -1,6 +1,7 @@
 package ui.composable.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Dataset
@@ -16,11 +17,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.useResource
+import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import data.repository.settings.SettingsSource
 import notifications.InfoManager
 import ui.composable.sections.info.InfoSection
 import ui.composable.sections.settings.GeneralSection
+import utils.ABOUT_LIBRARIES_JSON_NAME
 
 @Composable
 fun SettingsScreen(
@@ -63,7 +68,13 @@ fun SettingsScreen(
                     SettingsOption.DATABASE -> {}
                     SettingsOption.AI -> {}
                     SettingsOption.ABOUT -> {}
-                    SettingsOption.LICENSES -> {}
+                    SettingsOption.LICENSES -> {
+                        LibrariesContainer(
+                            useResource(ABOUT_LIBRARIES_JSON_NAME) {
+                                it.bufferedReader().readText()
+                            }, Modifier.fillMaxSize()
+                        )
+                    }
                 }
             }
         )

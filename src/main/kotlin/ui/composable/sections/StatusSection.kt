@@ -128,35 +128,6 @@ fun StatusSection(
                     }
                 }
             )
-
-            /*
-            ClickableIconMenu(
-                icon = Icons.Default.Settings,
-                functions = listOf(
-                    DeviceOptions(
-                        text = getStringResource("info.log.licenses"),
-                        function = {
-                            windowStateManager.windowState?.openNewWindow?.let { newWindow ->
-                                newWindow(
-                                    WindowData(
-                                        title = getStringResource("info.log.licenses"),
-                                        icon = Icons.Default.Policy,
-                                        windowExtra = WindowExtra(
-                                            screen = {
-                                                LibrariesContainer(
-                                                    useResource(ABOUT_LIBRARIES_JSON_NAME) {
-                                                    it.bufferedReader().readText()
-                                                }, Modifier.fillMaxSize())
-                                            }
-                                        )
-                                    )
-                                )
-                            }
-                        }
-                    )
-                )
-            )
-            */
         }
     }
 }

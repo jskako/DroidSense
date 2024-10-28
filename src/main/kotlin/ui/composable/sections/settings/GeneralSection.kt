@@ -1,11 +1,13 @@
 package ui.composable.sections.settings
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,6 +25,11 @@ import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.SelectableText
+import ui.composable.elements.window.TextDialog
+import utils.ADB_PACKAGE
+import utils.Colors.darkRed
+import utils.SCRCPY_PACKAGE
+import utils.findPath
 import utils.getStringResource
 
 @Composable
@@ -36,8 +43,44 @@ fun GeneralSection(
     var adbPath by remember { mutableStateOf("") }
     val adbDatabasePath by settingsSource.get(SettingsKey.ADB.name).collectAsState(initial = "")
 
-    LaunchedEffect(adbDatabasePath) {
+    var scrcpyPath by remember { mutableStateOf("") }
+    val scrcpyDatabasePath by settingsSource.get(SettingsKey.SCRCPY.name).collectAsState(initial = "")
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        TextDialog(
+            title = getStringResource("info.reset"),
+            description = getStringResource("info.reset.general.description"),
+            onConfirmRequest = {
+                showDialog = false
+                settingsToSave[SaveSetting.ADB_PATH] = {
+                    scope.launch {
+                        settingsSource.update(
+                            identifier = SettingsKey.ADB.name,
+                            value = ADB_PACKAGE.findPath()
+                        )
+                    }
+                }
+
+                settingsToSave[SaveSetting.SCRCPY_PATH] = {
+                    scope.launch {
+                        settingsSource.update(
+                            identifier = SettingsKey.SCRCPY.name,
+                            value = SCRCPY_PACKAGE.findPath()
+                        )
+                    }
+                }
+            },
+            onDismissRequest = {
+                showDialog = false
+            }
+        )
+    }
+
+    LaunchedEffect(adbDatabasePath, scrcpyDatabasePath) {
         adbPath = adbDatabasePath
+        scrcpyPath = scrcpyDatabasePath
     }
 
     Column(
@@ -72,21 +115,65 @@ fun GeneralSection(
             }
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        SelectableText(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
+            text = scrcpyPath,
+            hintText = getStringResource("info.scrcpy.hint"),
+            infoText = getStringResource("info.scrcpy.info"),
+            onValueChanged = { changedPath ->
+                scrcpyPath = changedPath
+                changedPath.trim().also {
+                    if (scrcpyDatabasePath != it) {
+                        settingsToSave[SaveSetting.SCRCPY_PATH] = {
+                            scope.launch {
+                                settingsSource.update(
+                                    identifier = SettingsKey.SCRCPY.name,
+                                    value = it
+                                )
+                            }
+                        }
+                    } else {
+                        settingsToSave.remove(SaveSetting.SCRCPY_PATH)
+                    }
+                }
+            }
+        )
+
         Spacer(modifier = Modifier.weight(1f))
 
-        OutlinedButton(
-            text = "Save",
-            enabled = settingsToSave.isNotEmpty(),
-            onClick = {
-                settingsToSave.forEach { (_, u) ->
-                    u.invoke()
-                }
-            },
+        Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .align(Alignment.End)
-                .wrapContentSize()
-        )
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(
+                space = 10.dp,
+                alignment = Alignment.End
+            )
+        ) {
+
+            OutlinedButton(
+                text = getStringResource("info.reset"),
+                contentColor = darkRed,
+                onClick = {
+                    showDialog = true
+                }
+            )
+
+            OutlinedButton(
+                text = getStringResource("info.save"),
+                enabled = settingsToSave.isNotEmpty(),
+                onClick = {
+                    settingsToSave.forEach { (_, u) ->
+                        u.invoke()
+                    }
+                }
+            )
+        }
     }
 }
 
