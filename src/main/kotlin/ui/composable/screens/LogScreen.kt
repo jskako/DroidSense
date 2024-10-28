@@ -1,5 +1,8 @@
 package ui.composable.screens
 
+import adb.log.ExportOption
+import adb.log.LogLevel
+import adb.log.LogManager
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,9 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import adb.log.ExportOption
-import adb.log.LogLevel
-import adb.log.LogManager
 import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar
