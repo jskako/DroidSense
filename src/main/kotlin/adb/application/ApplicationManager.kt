@@ -58,7 +58,17 @@ class ApplicationManager(
         packageName: String
     ): Result<Unit> = withContext(Dispatchers.IO) {
         runCatching {
-            val process = ProcessBuilder(adbPath, "-s", identifier, "shell", "pm", "uninstall", packageName).start()
+            val process = ProcessBuilder(
+                adbPath,
+                "-s",
+                identifier,
+                "shell",
+                "pm",
+                "uninstall",
+                "-k",
+                "--user 0",
+                packageName
+            ).start()
             val isSuccess = process.inputStream.bufferedReader().useLines { lines ->
                 lines.any { it.contains("Success") }
             }
