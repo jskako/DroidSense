@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -28,7 +29,7 @@ fun GeneralSection(
 ) {
 
     val scope = rememberCoroutineScope()
-    val settingsToSave: MutableMap<SaveSetting, () -> Unit> = mutableMapOf()
+    val settingsToSave = remember { mutableStateMapOf<SaveSetting, () -> Unit>() }
     var adbPath by remember { mutableStateOf(settingsSource.get(SettingsKey.ADB.name)) }
     val scrcpyPath by remember { mutableStateOf(settingsSource.get(SettingsKey.SCRCPY.name)) }
 
