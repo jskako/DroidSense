@@ -1,5 +1,8 @@
 package ui.composable.sections.log
 
+import adb.getDevicePropertyList
+import adb.log.LogLevel
+import adb.log.LogManager
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,17 +26,13 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import adb.log.LogLevel
-import adb.log.LogManager
-import adb.getDevicePropertyList
 import notifications.InfoManagerData
 import ui.composable.elements.DropdownItem
-import ui.composable.elements.FilterText
-import ui.composable.elements.HintBox
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.window.DropdownTextItem
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
+import utils.Colors.transparentTextFieldDefault
 import utils.DEVICE_PACKAGES
 import utils.EMPTY_STRING
 import utils.getStringResource
@@ -52,7 +53,6 @@ fun LogStatusSection(
     var isRunning by remember { mutableStateOf(false) }
     var selectedLogLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
-    var filterVisible by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -118,28 +118,8 @@ fun LogStatusSection(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                FilterText(
-                    onClick = {
-                        filterVisible = it
-                    }
-                )
-            }
-
-            if (filterVisible) {
-                HintBox(
-                    modifier = Modifier
-                        .padding(top = 8.dp, bottom = 8.dp)
-                        .fillMaxWidth(),
-                    text = searchText,
-                    onValueChanged = {
-                        searchText = it
-                        onSearchTextChanged(it)
-                    }
-                )
-
                 DropdownTextItem(
                     modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp)
                         .fillMaxWidth(),
                     list = enumValues<LogLevel>().map { it.name },
                     text = selectedLogLevel.name,
@@ -149,6 +129,19 @@ fun LogStatusSection(
                             onLogLevelSelected(it)
                         }
                     }
+                )
+
+                TextField(
+                    value = searchText,
+                    colors = transparentTextFieldDefault,
+                    singleLine = true,
+                    onValueChange = {
+                        searchText = it
+                        onSearchTextChanged(it)
+                    },
+                    placeholder = { Text(getStringResource("info.search")) },
+                    modifier = Modifier
+                        .fillMaxWidth()
                 )
             }
         }

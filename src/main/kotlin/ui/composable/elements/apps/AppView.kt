@@ -25,7 +25,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +46,7 @@ import ui.composable.elements.SelectionDialog
 import ui.composable.sections.info.InfoSection
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
+import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
 import utils.getSpaceId
 import utils.getStringResource
@@ -171,16 +171,7 @@ fun AppsView(
 
                 TextField(
                     value = searchText,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        errorContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    ),
+                    colors = transparentTextFieldDefault,
                     singleLine = true,
                     onValueChange = {
                         searchText = it

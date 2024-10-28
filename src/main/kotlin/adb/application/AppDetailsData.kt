@@ -1,6 +1,6 @@
 package adb.application
 
 data class AppDetailsData(
-    val title: String,
+    val type: AppDetailType,
     val info: String
 )

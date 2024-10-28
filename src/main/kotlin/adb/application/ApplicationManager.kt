@@ -19,14 +19,20 @@ class ApplicationManager(
         packageName: String
     ): List<AppDetailsData>? = withContext(Dispatchers.IO) {
 
-        fun parseProcessOutput(process: Process?, appDetailType: AppDetailType): AppDetailsData? {
+        fun parseProcessOutput(
+            process: Process?,
+            appDetailType: AppDetailType
+        ): AppDetailsData? {
             return process?.inputStream?.bufferedReader()?.useLines { lines ->
                 val output = buildString {
                     lines.filter { it.isNotBlank() }.forEach { line ->
                         appendLine(line)
                     }
                 }
-                if (output.isNotEmpty()) AppDetailsData(appDetailType.title, output) else null
+                if (output.isNotEmpty()) AppDetailsData(
+                    type = appDetailType,
+                    info = output
+                ) else null
             }
         }
 

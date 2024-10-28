@@ -30,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.async
 import ui.composable.elements.CircularProgressBar
+import ui.composable.elements.DividerColored
+import ui.composable.elements.SelectableRow
 import utils.getStringResource
 
 @Composable
@@ -64,14 +66,35 @@ private fun ApplicationDetailsContent(
 
     var selectedApplicationType by remember { mutableStateOf(AppDetailType.PACKAGE_INFO) }
 
+    val filteredAppDetails = applicationDetails.filter { app ->
+        app.type == selectedApplicationType
+    }
+
     Column(modifier = Modifier.padding(paddingValues)) {
+
+        SelectableRow(
+            enumValues = AppDetailType.entries.toTypedArray(),
+            selectedValue = selectedApplicationType,
+            onSelect = { selectedApplicationType = it },
+            getTitle = { type ->
+                when (type) {
+                    AppDetailType.PACKAGE_INFO -> AppDetailType.PACKAGE_INFO.title
+                    AppDetailType.MEMORY_INFO -> AppDetailType.MEMORY_INFO.title
+                    AppDetailType.BATTERY_USAGE -> AppDetailType.BATTERY_USAGE.title
+                    AppDetailType.NETWORK_STATS -> AppDetailType.NETWORK_STATS.title
+                }
+            }
+        )
+
+        DividerColored()
+
         CircularProgressBar(
             text = getStringResource("info.search.application.empty"),
-            isVisible = applicationDetails.isEmpty()
+            isVisible = filteredAppDetails.isEmpty()
         )
 
         if (applicationDetails.isNotEmpty()) {
-            DetailsList(applicationDetails)
+            DetailsList(filteredAppDetails)
         }
     }
 }
@@ -88,15 +111,11 @@ private fun DetailsList(
             state = listState,
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
         ) {
-            items(applicationDetails) { line ->
+            items(applicationDetails) { appDetailsData ->
                 SelectionContainer {
                     Column {
                         Text(
-                            text = line.title,
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                        Text(
-                            text = line.info,
+                            text = appDetailsData.info,
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }

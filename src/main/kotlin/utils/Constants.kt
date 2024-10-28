@@ -1,8 +1,6 @@
 package utils
 
 const val DEFAULT_TIMESTAMP: String = "HH:mm:ss"
-const val EXPORT_DATA_TIMESTAMP: String = "yyMMdd-HHmm-ss"
-const val LOG_EXTENSION: String = ".log"
 const val EMPTY_STRING: String = ""
 const val SYSTEM_OS_PROPERTY: String = "os.name"
 const val SYSTEM_OS_ARCH: String = "os.arch"
