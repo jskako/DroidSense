@@ -39,7 +39,8 @@ fun TooltipIconButton(
     tooltip: String,
     tint: Color = darkBlue,
     function: () -> Unit,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
+    plainTooltipPositionProvider: Dp = 25.dp
 ) {
     val scope = rememberCoroutineScope()
     val tooltipState = remember { BasicTooltipState() }
@@ -66,7 +67,7 @@ fun TooltipIconButton(
             }
         },
         state = tooltipState,
-        positionProvider = rememberPlainTooltipPositionProvider(25.dp)
+        positionProvider = rememberPlainTooltipPositionProvider(plainTooltipPositionProvider)
     ) {
         IconButton(
             enabled = isEnabled,
