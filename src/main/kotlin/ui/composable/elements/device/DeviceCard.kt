@@ -2,6 +2,8 @@ package ui.composable.elements.device
 
 import adb.ConnectionType
 import adb.DeviceDetails
+import adb.connectDeviceWirelessly
+import adb.disconnectDevice
 import adb.log.LogManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.SwitchAccessShortcut
-import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -156,7 +157,38 @@ fun DeviceCard(
                             icon = Icons.Default.SwitchAccessShortcut,
                             tooltip = getStringResource("info.device.connection.switch"),
                             function = {
-
+                                scope.launch {
+                                    device.ipAddress?.let {
+                                        connectDeviceWirelessly(
+                                            adbPath = adbPath,
+                                            deviceIpAddress = device.ipAddress,
+                                            identifier = device.deviceIdentifier
+                                        ).fold(
+                                            onSuccess = {
+                                                onMessage(
+                                                    InfoManagerData(
+                                                        message = getStringResource("info.device.ip.success")
+                                                    )
+                                                )
+                                                disconnectDevice(
+                                                    adbPath = adbPath,
+                                                    identifier = device.deviceIdentifier
+                                                )
+                                            },
+                                            onFailure = {
+                                                onMessage(
+                                                    InfoManagerData(
+                                                        message = "${getStringResource("info.device.connect.general.error")} $it"
+                                                    )
+                                                )
+                                            }
+                                        )
+                                    } ?: onMessage(
+                                        InfoManagerData(
+                                            message = getStringResource("info.device.ip.incorrect")
+                                        )
+                                    )
+                                }
                             }
                         )
                     }

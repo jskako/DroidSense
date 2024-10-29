@@ -1,8 +1,50 @@
 package adb
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import utils.EMPTY_STRING
 import utils.PRIVATE_SPACE_KEY
 import utils.spaceIdRegex
+
+suspend fun connectDeviceWirelessly(
+    adbPath: String,
+    identifier: String,
+    deviceIpAddress: String
+): Result<Unit> = withContext(Dispatchers.IO) {
+    runCatching {
+        val tcpipProcess = ProcessBuilder(adbPath, "-s", identifier, "tcpip", "5555").start()
+        val tcpipExitCode = tcpipProcess.waitFor()
+
+        if (tcpipExitCode != 0) {
+            return@runCatching Result.failure<Unit>(Exception("Failed to set adb to TCP/IP mode."))
+        }
+
+        val connectProcess = ProcessBuilder(adbPath, "connect", "$deviceIpAddress:5555").start()
+        val connectExitCode = connectProcess.waitFor()
+
+        if (connectExitCode == 0) {
+            Result.success(Unit)
+        } else {
+            Result.failure(Exception("Failed to connect to device at $deviceIpAddress:5555"))
+        }
+    }.getOrElse { Result.failure(it) }
+}
+
+suspend fun disconnectDevice(
+    adbPath: String,
+    identifier: String
+): Result<Unit> = withContext(Dispatchers.IO) {
+    runCatching {
+        val disconnectProcess = ProcessBuilder(adbPath, "disconnect", identifier).start()
+        val disconnectExitCode = disconnectProcess.waitFor()
+
+        if (disconnectExitCode == 0) {
+            Result.success(Unit)
+        } else {
+            Result.failure(Exception("Failed to disconnect device at $identifier"))
+        }
+    }.getOrElse { Result.failure(it) }
+}
 
 fun getPrivateSpaceId(adbPath: String, identifier: String) = getAvailableSpaces(adbPath, identifier)
     .find {
