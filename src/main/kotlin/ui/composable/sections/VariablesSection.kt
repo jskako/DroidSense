@@ -30,6 +30,7 @@ import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.SelectableText
+import utils.Colors.darkRed
 import utils.getStringResource
 
 @Composable
@@ -47,11 +48,8 @@ fun VariablesSection(
     val scrcpyDatabasePath by settingsSource.get(SettingsKey.SCRCPY.name).collectAsState(initial = "")
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(adbDatabasePath) {
+    LaunchedEffect(adbDatabasePath, scrcpyDatabasePath) {
         adbPath = adbDatabasePath
-    }
-
-    LaunchedEffect(scrcpyDatabasePath) {
         scrcpyPath = scrcpyDatabasePath
     }
 
@@ -63,28 +61,29 @@ fun VariablesSection(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(16.dp)
         ) {
-            title.also {
-                if (it.isNotEmpty()) {
-                    Text(
-                        text = it,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
+            if (title.isNotEmpty()) {
+                Text(
+                    text = title,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
-            description.also {
-                if (it.isNotEmpty()) {
-                    Text(
-                        textAlign = TextAlign.Center,
-                        text = description,
-                        fontSize = 16.sp
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
+            if (description.isNotEmpty()) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = description,
+                    fontSize = 16.sp
+                )
+                Spacer(modifier = Modifier.height(24.dp))
             }
 
+            Text(
+                text = getStringResource("info.required"),
+                color = darkRed,
+                fontWeight = FontWeight.SemiBold
+            )
             SelectableText(
                 modifier = Modifier.fillMaxWidth(),
                 text = adbPath,
@@ -110,7 +109,6 @@ fun VariablesSection(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-
                 if (cancelButtonEnabled) {
                     OutlinedButton(
                         text = getStringResource("info.cancel"),
@@ -123,23 +121,17 @@ fun VariablesSection(
                     Spacer(modifier = Modifier.width(8.dp))
                 }
 
-                val isValid = adbPath.isNotEmpty() && scrcpyPath.isNotEmpty()
-
                 OutlinedButton(
                     text = getStringResource("info.next"),
-                    enabled = isValid,
+                    enabled = adbPath.isNotEmpty(),
                     onClick = {
                         scope.launch {
-                            adbPath.trim().also {
-                                if (adbDatabasePath != it) {
-                                    settingsSource.update(
-                                        identifier = SettingsKey.ADB.name,
-                                        value = it
-                                    )
-                                }
-                            }
+                            settingsSource.update(
+                                identifier = SettingsKey.ADB.name,
+                                value = adbPath.trim()
+                            )
                             scrcpyPath.trim().also {
-                                if (scrcpyDatabasePath != it) {
+                                if (it.isNotEmpty()) {
                                     settingsSource.update(
                                         identifier = SettingsKey.SCRCPY.name,
                                         value = it
