@@ -3,13 +3,19 @@ package data
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.jskako.DSDatabase
-import java.io.File
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.exists
+
 
 fun createDriver(): SqlDriver {
-    val driver = JdbcSqliteDriver(url = "jdbc:sqlite:$DATABASE_NAME")
-    if (!File(DATABASE_NAME).exists()) {
+    val databasePath = Path(System.getProperty("user.home")).resolve(DATABASE_NAME)
+    val driver = JdbcSqliteDriver(url = "jdbc:sqlite:${databasePath.absolutePathString()}")
+
+    if (!databasePath.exists()) {
         DSDatabase.Schema.create(driver)
     }
+
     return driver
 }
 
