@@ -37,6 +37,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "DroidSense"
+            modules("java.sql")
             packageVersion = "1.0.0"
             macOS {
                 iconFile.set(project.file("icon/mac/icon.icns"))
