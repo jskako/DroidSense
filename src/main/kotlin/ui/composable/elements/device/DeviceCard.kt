@@ -4,6 +4,7 @@ import adb.ConnectionType
 import adb.DeviceDetails
 import adb.log.LogManager
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.SwitchAccessShortcut
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -37,6 +40,7 @@ import ui.application.navigation.WindowData
 import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.OutlinedButton
+import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.screens.ApplicationScreen
 import ui.composable.screens.LogScreen
 import utils.Colors.darkRed
@@ -134,14 +138,29 @@ fun DeviceCard(
                     mutableStateOf(
                         isValidIpAddressWithPort(device.deviceIdentifier).let {
                             if (it) ConnectionType.WIRELESS else ConnectionType.CABLE
-                        }.name
+                        }
                     )
                 }
 
-                Text(
-                    text = "${getStringResource("info.device.connection.type")}: $connectionType",
-                    color = Color.Gray
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "${getStringResource("info.device.connection.type")}: ${connectionType.name}",
+                        color = Color.Gray
+                    )
+
+                    if (connectionType == ConnectionType.CABLE) {
+                        TooltipIconButton(
+                            icon = Icons.Default.SwitchAccessShortcut,
+                            tooltip = getStringResource("info.device.connection.switch"),
+                            function = {
+
+                            }
+                        )
+                    }
+                }
             }
 
             Column(
