@@ -52,7 +52,7 @@ import utils.capitalizeFirstChar
 import utils.getImageBitmap
 import utils.getStringResource
 import utils.isValidIpAddressWithPort
-import utils.startScrCpy
+import utils.shareScreen
 
 @Composable
 fun DeviceCard(
@@ -202,7 +202,7 @@ fun DeviceCard(
                     text = getStringResource("info.share.screen"),
                     onClick = {
                         scope.launch {
-                            startScrCpy(
+                            shareScreen(
                                 scrCpyPath = scrCpyPath,
                                 identifier = device.deviceIdentifier
                             ).fold(

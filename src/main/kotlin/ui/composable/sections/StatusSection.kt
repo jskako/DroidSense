@@ -34,7 +34,7 @@ import ui.composable.screens.SettingsScreen
 import utils.Colors.darkGreen
 import utils.Colors.darkRed
 import utils.getStringResource
-import utils.startScrCpy
+import utils.shareScreen
 
 @Composable
 fun StatusSection(
@@ -88,7 +88,7 @@ fun StatusSection(
                     function = {
                         scope.launch {
                             deviceManager.devices.forEach {
-                                startScrCpy(
+                                shareScreen(
                                     scrCpyPath = scrCpyPath,
                                     identifier = it.deviceIdentifier
                                 )

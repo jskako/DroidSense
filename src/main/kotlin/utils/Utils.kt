@@ -63,19 +63,13 @@ fun getOSArch(): Arch {
 
 fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }
 
-suspend fun startScrCpy(
+suspend fun shareScreen(
     scrCpyPath: String,
     identifier: String
 ): Result<Unit> = withContext(Dispatchers.IO) {
     runCatching {
-        val process = ProcessBuilder(scrCpyPath, "-s", identifier).start()
-        val exitCode = process.waitFor()
-
-        if (exitCode == 0) {
-            Result.success(Unit)
-        } else {
-            Result.failure(Exception("Failed to start ScrCpy with exit code $exitCode"))
-        }
+        ProcessBuilder(scrCpyPath, "-s", identifier).start()
+        Result.success(Unit)
     }.getOrElse { Result.failure(it) }
 }
 
