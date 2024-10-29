@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import data.keys.SettingsKey
 import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
+import notifications.InfoManagerData
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.SelectableText
 import ui.composable.elements.window.TextDialog
@@ -34,7 +35,8 @@ import utils.getStringResource
 
 @Composable
 fun GeneralSection(
-    settingsSource: SettingsSource
+    settingsSource: SettingsSource,
+    onMessage: (InfoManagerData) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -63,6 +65,12 @@ fun GeneralSection(
                     settingsSource.update(
                         identifier = SettingsKey.SCRCPY.name,
                         value = SCRCPY_PACKAGE.findPath()
+                    )
+
+                    onMessage(
+                        InfoManagerData(
+                            message = getStringResource("info.reset.success")
+                        )
                     )
                 }
             },
@@ -165,6 +173,11 @@ fun GeneralSection(
                     settingsToSave.forEach { (_, u) ->
                         u.invoke()
                     }
+                    onMessage(
+                        InfoManagerData(
+                            message = getStringResource("info.save.success")
+                        )
+                    )
                 }
             )
         }

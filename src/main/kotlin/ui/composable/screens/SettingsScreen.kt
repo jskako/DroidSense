@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -31,6 +32,8 @@ import utils.ABOUT_LIBRARIES_JSON_NAME
 fun SettingsScreen(
     settingsSource: SettingsSource
 ) {
+
+    val scope = rememberCoroutineScope()
     val infoManager = remember { InfoManager() }
     var selectedOption by rememberSaveable { mutableStateOf(SettingsOption.GENERAL) }
 
@@ -63,6 +66,12 @@ fun SettingsScreen(
                 when (selectedOption) {
                     SettingsOption.GENERAL -> GeneralSection(
                         settingsSource = settingsSource,
+                        onMessage = {
+                            infoManager.showMessage(
+                                infoManagerData = it,
+                                scope = scope
+                            )
+                        }
                     )
 
                     SettingsOption.DATABASE -> {}
