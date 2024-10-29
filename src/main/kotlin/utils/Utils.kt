@@ -66,10 +66,17 @@ fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }
 suspend fun startScrCpy(
     scrCpyPath: String,
     identifier: String
-) {
-    withContext(Dispatchers.IO) {
-        ProcessBuilder(scrCpyPath, "-s", identifier).start()
-    }
+): Result<Unit> = withContext(Dispatchers.IO) {
+    runCatching {
+        val process = ProcessBuilder(scrCpyPath, "-s", identifier).start()
+        val exitCode = process.waitFor()
+
+        if (exitCode == 0) {
+            Result.success(Unit)
+        } else {
+            Result.failure(Exception("Failed to start ScrCpy with exit code $exitCode"))
+        }
+    }.getOrElse { Result.failure(it) }
 }
 
 fun isValidIpAddressWithPort(input: String) = ipPortRegex.matches(input)

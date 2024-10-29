@@ -39,6 +39,7 @@ import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.OutlinedButton
 import ui.composable.screens.ApplicationScreen
 import ui.composable.screens.LogScreen
+import utils.Colors.darkRed
 import utils.DEFAULT_PHONE_IMAGE
 import utils.EMPTY_STRING
 import utils.IMAGES_DIRECTORY
@@ -82,7 +83,6 @@ fun DeviceCard(
             Spacer(modifier = Modifier.width(16.dp))
 
             Column {
-
                 Row {
                     BasicText(
                         value = "${device.manufacturer?.capitalizeFirstChar()} ${device.model}",
@@ -154,6 +154,22 @@ fun DeviceCard(
                             startScrCpy(
                                 scrCpyPath = scrCpyPath,
                                 identifier = device.deviceIdentifier
+                            ).fold(
+                                onSuccess = {
+                                    onMessage(
+                                        InfoManagerData(
+                                            message = "${getStringResource("info.share.screen.done")} ${device.deviceIdentifier}"
+                                        )
+                                    )
+                                },
+                                onFailure = {
+                                    onMessage(
+                                        InfoManagerData(
+                                            message = "${getStringResource("info.share.screen.fail")} ${device.deviceIdentifier}. ${it.message}",
+                                            color = darkRed
+                                        )
+                                    )
+                                }
                             )
                         }
                     },
