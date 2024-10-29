@@ -54,22 +54,16 @@ fun GeneralSection(
             description = getStringResource("info.reset.general.description"),
             onConfirmRequest = {
                 showDialog = false
-                settingsToSave[SaveSetting.ADB_PATH] = {
-                    scope.launch {
-                        settingsSource.update(
-                            identifier = SettingsKey.ADB.name,
-                            value = ADB_PACKAGE.findPath()
-                        )
-                    }
-                }
+                scope.launch {
+                    settingsSource.update(
+                        identifier = SettingsKey.ADB.name,
+                        value = ADB_PACKAGE.findPath()
+                    )
 
-                settingsToSave[SaveSetting.SCRCPY_PATH] = {
-                    scope.launch {
-                        settingsSource.update(
-                            identifier = SettingsKey.SCRCPY.name,
-                            value = SCRCPY_PACKAGE.findPath()
-                        )
-                    }
+                    settingsSource.update(
+                        identifier = SettingsKey.SCRCPY.name,
+                        value = SCRCPY_PACKAGE.findPath()
+                    )
                 }
             },
             onDismissRequest = {

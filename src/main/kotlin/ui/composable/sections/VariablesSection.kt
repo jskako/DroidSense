@@ -30,7 +30,6 @@ import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.SelectableText
-import utils.Colors.darkRed
 import utils.getStringResource
 
 @Composable
@@ -79,16 +78,11 @@ fun VariablesSection(
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
-            Text(
-                text = getStringResource("info.required"),
-                color = darkRed,
-                fontWeight = FontWeight.SemiBold
-            )
             SelectableText(
                 modifier = Modifier.fillMaxWidth(),
                 text = adbPath,
                 infoText = getStringResource("info.adb.info"),
-                hintText = getStringResource("info.adb.hint"),
+                hintText = "${getStringResource("info.adb.hint")} ***REQUIRED***",
                 onValueChanged = {
                     adbPath = it
                 }
