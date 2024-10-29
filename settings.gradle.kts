@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "DroidSense"
+rootProject.name = "droidsense"
