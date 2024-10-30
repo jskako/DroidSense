@@ -17,6 +17,6 @@ data class DeviceDetails(
     val privateSpaceIdentifier: String? = null
 ) {
     override fun toString(): String {
-        return "${manufacturer?.capitalizeFirstChar()} $model ($serialNumber)"
+        return "${manufacturer?.capitalizeFirstChar()} $model ($deviceIdentifier)"
     }
 }

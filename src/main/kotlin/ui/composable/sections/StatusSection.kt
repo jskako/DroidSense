@@ -16,12 +16,10 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.RunCircle
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
@@ -29,6 +27,7 @@ import notifications.InfoManagerData
 import ui.application.WindowExtra
 import ui.application.WindowStateManager
 import ui.application.navigation.WindowData
+import ui.composable.elements.TooltipTextButton
 import ui.composable.elements.iconButtons.IconClickableText
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.screens.SettingsScreen
@@ -76,9 +75,12 @@ fun StatusSection(
                 if (devices.isNotEmpty()) {
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    Text(
+                    TooltipTextButton(
+                        plainTooltipPositionProvider = 60.dp,
+                        tooltip = devices.filter { it.toString().trim().isNotEmpty() }
+                            .joinToString(separator = "\n"),
                         text = "${getStringResource("info.device.number")}: ${devices.size}",
-                        textAlign = TextAlign.Center
+                        function = {}
                     )
                 }
             }
