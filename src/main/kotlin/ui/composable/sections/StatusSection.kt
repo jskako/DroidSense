@@ -89,10 +89,10 @@ fun StatusSection(
                     tooltip = getStringResource("info.share.all.screens"),
                     function = {
                         scope.launch {
-                            devices.forEach {
+                            devices.distinctBy { it.serialNumber }.forEach { device ->
                                 shareScreen(
                                     scrCpyPath = scrCpyPath,
-                                    identifier = it.deviceIdentifier
+                                    identifier = device.deviceIdentifier
                                 )
                             }
                         }
