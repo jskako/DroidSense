@@ -1,6 +1,7 @@
 package adb
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import utils.EMPTY_STRING
 import utils.PRIVATE_SPACE_KEY
@@ -12,20 +13,32 @@ suspend fun connectDeviceWirelessly(
     deviceIpAddress: String
 ): Result<Unit> = withContext(Dispatchers.IO) {
     runCatching {
-        val tcpipProcess = ProcessBuilder(adbPath, "-s", identifier, "tcpip", "5555").start()
-        val tcpipExitCode = tcpipProcess.waitFor()
+        val devicesProcess = ProcessBuilder(adbPath, "devices", "-l").start()
+        val devicesOutput = devicesProcess.inputStream.bufferedReader().readText()
+        devicesProcess.waitFor()
 
-        if (tcpipExitCode != 0) {
-            return@runCatching Result.failure<Unit>(Exception("Failed to set adb to TCP/IP mode."))
+        val tcpDeviceIdentifier = "$deviceIpAddress:5555"
+        if (devicesOutput.contains(tcpDeviceIdentifier)) {
+            println("Device $tcpDeviceIdentifier is already in TCP/IP mode.")
+        } else {
+            val tcpipProcess = ProcessBuilder(adbPath, "-s", identifier, "tcpip", "5555").start()
+            val tcpipExitCode = tcpipProcess.waitFor()
+
+            if (tcpipExitCode != 0) {
+                return@runCatching Result.failure<Unit>(Exception("Failed to set adb to TCP/IP mode."))
+            }
+
+            delay(500)
         }
 
-        val connectProcess = ProcessBuilder(adbPath, "connect", "$deviceIpAddress:5555").start()
+        val connectProcess = ProcessBuilder(adbPath, "connect", tcpDeviceIdentifier).start()
+        val connectOutput = connectProcess.inputStream.bufferedReader().readText()
         val connectExitCode = connectProcess.waitFor()
 
-        if (connectExitCode == 0) {
+        if (connectExitCode == 0 && connectOutput.contains("connected", ignoreCase = true)) {
             Result.success(Unit)
         } else {
-            Result.failure(Exception("Failed to connect to device at $deviceIpAddress:5555"))
+            Result.failure(Exception("Failed to connect to device at $tcpDeviceIdentifier"))
         }
     }.getOrElse { Result.failure(it) }
 }
