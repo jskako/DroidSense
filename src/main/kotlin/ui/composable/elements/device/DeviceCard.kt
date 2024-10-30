@@ -203,10 +203,6 @@ fun DeviceCard(
                                                         message = getStringResource("info.device.ip.success")
                                                     )
                                                 )
-                                                disconnectDevice(
-                                                    adbPath = adbPath,
-                                                    identifier = device.deviceIdentifier
-                                                )
                                             },
                                             onFailure = {
                                                 onMessage(
