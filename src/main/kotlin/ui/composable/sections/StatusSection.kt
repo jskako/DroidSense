@@ -17,6 +17,9 @@ import androidx.compose.material.icons.filled.RunCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +48,7 @@ fun StatusSection(
     settingsSource: SettingsSource
 ) {
     val scope = rememberCoroutineScope()
+    val devices by remember(deviceManager.devices.value) { mutableStateOf(deviceManager.devices.value) }
 
     Box(
         modifier = Modifier
@@ -71,23 +75,23 @@ fun StatusSection(
                     }
                 )
 
-                if (deviceManager.devices.isNotEmpty()) {
+                if (devices.isNotEmpty()) {
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Text(
-                        text = "${getStringResource("info.device.number")}: ${deviceManager.devices.size}",
+                        text = "${getStringResource("info.device.number")}: ${devices.size}",
                         textAlign = TextAlign.Center
                     )
                 }
             }
 
-            if (deviceManager.devices.size > 1) {
+            if (devices.size > 1) {
                 TooltipIconButton(
                     icon = Icons.AutoMirrored.Filled.ScreenShare,
                     tooltip = getStringResource("info.share.all.screens"),
                     function = {
                         scope.launch {
-                            deviceManager.devices.forEach {
+                            devices.forEach {
                                 shareScreen(
                                     scrCpyPath = scrCpyPath,
                                     identifier = it.deviceIdentifier

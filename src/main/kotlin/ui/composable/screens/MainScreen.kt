@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -43,6 +44,7 @@ fun MainScreen(
 
     val infoManager = remember { InfoManager() }
     val scope = rememberCoroutineScope()
+    val devices by remember(deviceManager.devices.value) { mutableStateOf(deviceManager.devices.value) }
 
     LaunchedEffect(adbPath) {
         if (adbPath.isNotEmpty()) {
@@ -56,6 +58,7 @@ fun MainScreen(
                     )
                 }
             )
+
             infoManager.showMessage(
                 InfoManagerData(
                     message = getStringResource("info.usb.debugging.enabled"),
@@ -91,14 +94,14 @@ fun MainScreen(
         )
         CircularProgressBar(
             text = getStringResource("info.waiting.device"),
-            isVisible = deviceManager.devices.isEmpty()
+            isVisible = devices.isEmpty()
                     && deviceManager.monitoringStatus.value == MonitoringStatus.MONITORING
                     && adbPath.isEmpty()
         )
 
-        if (adbPath.isNotEmpty() && deviceManager.devices.isNotEmpty()) {
+        if (adbPath.isNotEmpty() && devices.isNotEmpty()) {
             DeviceView(
-                devices = deviceManager.devices,
+                devices = devices,
                 windowStateManager = windowStateManager,
                 onMessage = {
                     infoManager.showMessage(

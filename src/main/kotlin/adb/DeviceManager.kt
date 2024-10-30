@@ -1,12 +1,13 @@
 package adb
 
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
@@ -32,10 +33,9 @@ class DeviceManager(
 ) : DeviceManagerInterface {
 
     private var monitorJob: Job? = null
-    private val _devices = mutableStateListOf<DeviceDetails>()
+    private val _devices = MutableStateFlow<List<DeviceDetails>>(emptyList())
     private val _monitoringStatus = mutableStateOf(MonitoringStatus.NOT_MONITORING)
-    val devices: List<DeviceDetails>
-        get() = _devices
+    val devices = _devices.asStateFlow()
 
     val monitoringStatus: State<MonitoringStatus>
         get() = _monitoringStatus
@@ -113,7 +113,7 @@ class DeviceManager(
 
                                 val parts = line.split("\\s+".toRegex())
                                 val identifier = parts.first().trim()
-                                val deviceExist = devices.any { it.deviceIdentifier == identifier }
+                                val deviceExist = devices.value.any { it.deviceIdentifier == identifier }
                                 val deviceAvailable = parts.last().trim() != ADB_DEVICE_OFFLINE
 
                                 currentDevices.add(identifier)
@@ -163,7 +163,7 @@ class DeviceManager(
         onMessage: (InfoManagerData) -> Unit
     ) {
         if (monitoringStatus.value == MonitoringStatus.MONITORING) {
-            val disconnectedIdentifiers = devices.map { it.deviceIdentifier } - currentDevices
+            val disconnectedIdentifiers = devices.value.map { it.deviceIdentifier } - currentDevices
             for (identifier in disconnectedIdentifiers) {
                 removeDevice(
                     identifier = identifier,
@@ -180,7 +180,7 @@ class DeviceManager(
         getDeviceInfo(
             identifier = identifier
         ).also {
-            _devices.add(it)
+            _devices.value += it
             onMessage(InfoManagerData(message = "${getStringResource("info.add.device")}: $it"))
         }
     }
@@ -192,9 +192,9 @@ class DeviceManager(
         getDeviceInfo(
             identifier = identifier
         ).also { deviceDetails ->
-            _devices.indexOfFirst { it.deviceIdentifier == deviceDetails.deviceIdentifier }.also { index ->
-                if (_devices[index] != deviceDetails) {
-                    _devices[index] = deviceDetails
+            _devices.value.indexOfFirst { it.deviceIdentifier == deviceDetails.deviceIdentifier }.also { index ->
+                if (_devices.value[index] != deviceDetails) {
+                    _devices.value = _devices.value.toMutableList().also { it[index] = deviceDetails }
                     onMessage(InfoManagerData(message = "${getStringResource("info.update.device")}: $deviceDetails"))
                 }
             }
@@ -262,9 +262,9 @@ class DeviceManager(
         identifier: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
-        val deviceToRemove = _devices.firstOrNull { it.deviceIdentifier == identifier }
+        val deviceToRemove = _devices.value.firstOrNull { it.deviceIdentifier == identifier }
         deviceToRemove?.let { device ->
-            _devices.remove(device)
+            _devices.value = _devices.value.filter { it != device }
             onMessage(
                 InfoManagerData(
                     message = "${getStringResource("info.remove.device")}: $device",
@@ -275,7 +275,7 @@ class DeviceManager(
     }
 
     private fun clearDevices() {
-        _devices.clear()
+        _devices.value = emptyList()
     }
 }
 
