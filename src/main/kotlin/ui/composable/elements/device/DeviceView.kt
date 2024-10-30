@@ -29,8 +29,21 @@ fun DeviceView(
                 scrCpyPath = scrCpyPath,
                 device = device,
                 onMessage = onMessage,
-                windowStateManager = windowStateManager
+                windowStateManager = windowStateManager,
+                hasMatchingIp = hasMatchingIpForSerialNumber(
+                    devices = devices,
+                    serialNumber = device.serialNumber
+                )
             )
         }
+    }
+}
+
+private fun hasMatchingIpForSerialNumber(devices: List<DeviceDetails>, serialNumber: String): Boolean {
+    val matchingDevices = devices.filter { it.serialNumber == serialNumber }
+
+    return matchingDevices.any { device ->
+        val deviceIdentifierWithoutPort = device.deviceIdentifier.substringBefore(":")
+        deviceIdentifierWithoutPort == device.ipAddress
     }
 }

@@ -64,7 +64,8 @@ fun DeviceCard(
     scrCpyPath: String,
     device: DeviceDetails,
     onMessage: (InfoManagerData) -> Unit,
-    windowStateManager: WindowStateManager
+    windowStateManager: WindowStateManager,
+    hasMatchingIp: Boolean
 ) {
     val scope = rememberCoroutineScope()
     var disconnectInProgress by remember(device) { mutableStateOf(false) }
@@ -184,7 +185,7 @@ fun DeviceCard(
                         color = Color.Gray
                     )
 
-                    if (connectionType == ConnectionType.CABLE) {
+                    if (connectionType == ConnectionType.CABLE && !hasMatchingIp) {
                         TooltipIconButton(
                             icon = Icons.Default.SwitchAccessShortcut,
                             tooltip = getStringResource("info.device.connection.switch"),
