@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Copyright
 import androidx.compose.material.icons.filled.Dataset
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Scanner
@@ -25,6 +26,8 @@ import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import data.repository.settings.SettingsSource
 import notifications.InfoManager
 import ui.composable.sections.info.InfoSection
+import ui.composable.sections.settings.AboutSection
+import ui.composable.sections.settings.CopyrightSection
 import ui.composable.sections.settings.GeneralSection
 import utils.ABOUT_LIBRARIES_JSON_NAME
 
@@ -76,7 +79,7 @@ fun SettingsScreen(
 
                     SettingsOption.DATABASE -> {}
                     SettingsOption.AI -> {}
-                    SettingsOption.ABOUT -> {}
+                    SettingsOption.ABOUT -> AboutSection()
                     SettingsOption.LICENSES -> {
                         LibrariesContainer(
                             useResource(ABOUT_LIBRARIES_JSON_NAME) {
@@ -84,6 +87,8 @@ fun SettingsScreen(
                             }, Modifier.fillMaxSize()
                         )
                     }
+
+                    SettingsOption.COPYRIGHT -> CopyrightSection()
                 }
             }
         )
@@ -114,7 +119,12 @@ enum class SettingsOption {
     LICENSES {
         override fun title() = "Licenses"
         override fun icon() = Icons.AutoMirrored.Filled.List
-    };
+    },
+
+    COPYRIGHT {
+        override fun title() = "Copyright"
+        override fun icon() = Icons.Default.Copyright
+    },;
 
     abstract fun title(): String
     abstract fun icon(): ImageVector

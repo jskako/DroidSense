@@ -76,3 +76,9 @@ suspend fun shareScreen(
 fun isValidIpAddressWithPort(input: String) = ipPortRegex.matches(input)
 
 fun getSpaceId(userInfo: String) = spaceIdRegex.find(userInfo)?.groups?.get(1)?.value?.toInt()
+
+fun readFile(path: String): String? {
+    return runCatching {
+        File(path).readText()
+    }.getOrNull()
+}
