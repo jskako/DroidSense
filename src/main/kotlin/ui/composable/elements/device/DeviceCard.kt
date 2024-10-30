@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.Eject
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.SwitchAccessShortcut
 import androidx.compose.material3.Card
@@ -27,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,7 +46,9 @@ import ui.composable.elements.OutlinedButton
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.screens.ApplicationScreen
 import ui.composable.screens.LogScreen
+import utils.Colors.darkBlue
 import utils.Colors.darkRed
+import utils.Colors.lightGray
 import utils.DEFAULT_PHONE_IMAGE
 import utils.EMPTY_STRING
 import utils.IMAGES_DIRECTORY
@@ -63,6 +67,7 @@ fun DeviceCard(
     windowStateManager: WindowStateManager
 ) {
     val scope = rememberCoroutineScope()
+    var disconnectInProgress by remember(device) { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -88,7 +93,30 @@ fun DeviceCard(
             Spacer(modifier = Modifier.width(16.dp))
 
             Column {
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TooltipIconButton(
+                        isEnabled = !disconnectInProgress,
+                        tint = if (disconnectInProgress) lightGray else darkBlue,
+                        icon = Icons.Default.Eject,
+                        tooltip = getStringResource("info.disconnect"),
+                        function = {
+                            disconnectInProgress = true
+                            onMessage(
+                                InfoManagerData(
+                                    message = "${getStringResource("info.disconnecting.device")}: $device"
+                                )
+                            )
+                            scope.launch {
+                                disconnectDevice(
+                                    adbPath = adbPath,
+                                    identifier = device.deviceIdentifier
+                                )
+                            }
+                        }
+                    )
+
                     BasicText(
                         value = "${device.manufacturer?.capitalizeFirstChar()} ${device.model}",
                         fontSize = 20.sp,
