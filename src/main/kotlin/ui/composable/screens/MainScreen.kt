@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,8 @@ import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.device.DeviceView
 import ui.composable.sections.StatusSection
 import ui.composable.sections.info.InfoSection
+import utils.EMPTY_STRING
+import utils.capitalizeFirstChar
 import utils.getStringResource
 
 @Composable
@@ -35,6 +38,7 @@ fun MainScreen(
 
     val adbPath by settingsSource.get(SettingsKey.ADB.name).collectAsState(initial = "")
     val scrcpyPath by settingsSource.get(SettingsKey.SCRCPY.name).collectAsState(initial = "")
+    var searchText by remember { mutableStateOf(EMPTY_STRING) }
 
     val deviceManager = remember(adbPath) {
         DeviceManager(
@@ -45,6 +49,15 @@ fun MainScreen(
     val infoManager = remember { InfoManager() }
     val scope = rememberCoroutineScope()
     val devices by remember(deviceManager.devices.value) { mutableStateOf(deviceManager.devices.value) }
+
+    val filteredDevices = devices.filter { device ->
+        println("${device.manufacturer}")
+        searchText.isEmpty()
+                || device.serialNumber.contains(searchText, ignoreCase = true)
+                || device.deviceIdentifier.contains(searchText, ignoreCase = true)
+                || (device.manufacturer?.contains(searchText, ignoreCase = true) ?: false)
+                || ("${device.manufacturer?.capitalizeFirstChar()} ${device.model}".contains(searchText, ignoreCase = true))
+    }
 
     LaunchedEffect(adbPath) {
         if (adbPath.isNotEmpty()) {
@@ -86,7 +99,11 @@ fun MainScreen(
                     scope = scope
                 )
             },
-            devices = devices
+            devices = devices,
+            searchText = searchText,
+            onSearchTextChanged = {
+                searchText = it
+            }
         )
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
@@ -95,13 +112,13 @@ fun MainScreen(
         )
         CircularProgressBar(
             text = getStringResource("info.waiting.device"),
-            isVisible = devices.isEmpty()
+            isVisible = filteredDevices.isEmpty()
                     && deviceManager.monitoringStatus.value == MonitoringStatus.MONITORING
         )
 
-        if (adbPath.isNotEmpty() && devices.isNotEmpty()) {
+        if (adbPath.isNotEmpty() && filteredDevices.isNotEmpty()) {
             DeviceView(
-                devices = devices,
+                devices = filteredDevices,
                 windowStateManager = windowStateManager,
                 onMessage = {
                     infoManager.showMessage(

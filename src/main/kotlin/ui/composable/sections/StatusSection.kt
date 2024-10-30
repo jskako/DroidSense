@@ -16,6 +16,8 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.RunCircle
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -33,6 +35,7 @@ import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.screens.SettingsScreen
 import utils.Colors.darkGreen
 import utils.Colors.darkRed
+import utils.Colors.transparentTextFieldDefault
 import utils.getStringResource
 import utils.shareScreen
 
@@ -43,7 +46,9 @@ fun StatusSection(
     onMessage: (InfoManagerData) -> Unit,
     windowStateManager: WindowStateManager,
     settingsSource: SettingsSource,
-    devices: List<DeviceDetails>
+    onSearchTextChanged: (String) -> Unit,
+    devices: List<DeviceDetails>,
+    searchText: String,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -52,7 +57,9 @@ fun StatusSection(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Row(
                 modifier = Modifier
                     .weight(1f),
@@ -81,6 +88,18 @@ fun StatusSection(
                             .joinToString(separator = "\n"),
                         text = "${getStringResource("info.device.number")}: ${devices.size}",
                         function = {}
+                    )
+
+                    TextField(
+                        value = searchText,
+                        colors = transparentTextFieldDefault,
+                        singleLine = true,
+                        onValueChange = {
+                            onSearchTextChanged(it)
+                        },
+                        placeholder = { Text(getStringResource("info.search")) },
+                        modifier = Modifier
+                            .fillMaxWidth()
                     )
                 }
             }
