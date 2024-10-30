@@ -99,6 +99,13 @@ fun DeviceCard(
                 addSpaceHeight(16.dp)
 
                 BasicTextCaption(
+                    text1 = getStringResource("info.adb.identifier"),
+                    text2 = device.deviceIdentifier
+                )
+
+                addSpaceHeight()
+
+                BasicTextCaption(
                     text1 = getStringResource("info.serial.number"),
                     text2 = device.serialNumber
                 )
@@ -135,12 +142,9 @@ fun DeviceCard(
 
                 addSpaceHeight(16.dp)
 
-                val connectionType by remember {
-                    mutableStateOf(
-                        isValidIpAddressWithPort(device.deviceIdentifier).let {
-                            if (it) ConnectionType.WIRELESS else ConnectionType.CABLE
-                        }
-                    )
+                val connectionType = when {
+                    isValidIpAddressWithPort(device.deviceIdentifier) -> ConnectionType.WIRELESS
+                    else -> ConnectionType.CABLE
                 }
 
                 Row(
