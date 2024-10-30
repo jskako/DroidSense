@@ -85,7 +85,8 @@ fun MainScreen(
                     infoManagerData = it,
                     scope = scope
                 )
-            }
+            },
+            devices = devices
         )
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
@@ -96,7 +97,6 @@ fun MainScreen(
             text = getStringResource("info.waiting.device"),
             isVisible = devices.isEmpty()
                     && deviceManager.monitoringStatus.value == MonitoringStatus.MONITORING
-                    && adbPath.isEmpty()
         )
 
         if (adbPath.isNotEmpty() && devices.isNotEmpty()) {

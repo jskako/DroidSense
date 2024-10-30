@@ -1,5 +1,6 @@
 package ui.composable.sections
 
+import adb.DeviceDetails
 import adb.DeviceManager
 import adb.MonitorStatus
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +18,6 @@ import androidx.compose.material.icons.filled.RunCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,10 +43,10 @@ fun StatusSection(
     deviceManager: DeviceManager,
     onMessage: (InfoManagerData) -> Unit,
     windowStateManager: WindowStateManager,
-    settingsSource: SettingsSource
+    settingsSource: SettingsSource,
+    devices: List<DeviceDetails>
 ) {
     val scope = rememberCoroutineScope()
-    val devices by remember(deviceManager.devices.value) { mutableStateOf(deviceManager.devices.value) }
 
     Box(
         modifier = Modifier
