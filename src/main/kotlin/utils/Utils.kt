@@ -69,7 +69,9 @@ suspend fun shareScreen(
     identifier: String
 ): Result<Unit> = withContext(Dispatchers.IO) {
     runCatching {
-        ProcessBuilder(scrCpyPath, "-s", identifier).start()
+        ProcessBuilder(scrCpyPath, "-s", identifier)
+            .redirectErrorStream(true)
+            .start()
         Result.success(Unit)
     }.getOrElse { Result.failure(it) }
 }

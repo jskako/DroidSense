@@ -60,8 +60,7 @@ internal fun SelectableText(
                     modifier = Modifier.padding(start = 4.dp),
                     icon = Icons.Default.Info,
                     tooltip = infoText,
-                    function = {},
-                    plainTooltipPositionProvider = 40.dp
+                    function = {}
                 )
             }
         },
