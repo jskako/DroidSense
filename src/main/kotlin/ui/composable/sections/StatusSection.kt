@@ -83,7 +83,6 @@ fun StatusSection(
                     Spacer(modifier = Modifier.width(16.dp))
 
                     TooltipTextButton(
-                        plainTooltipPositionProvider = 60.dp,
                         tooltip = devices.filter { it.toString().trim().isNotEmpty() }
                             .joinToString(separator = "\n"),
                         text = "${getStringResource("info.device.number")}: ${devices.size}",

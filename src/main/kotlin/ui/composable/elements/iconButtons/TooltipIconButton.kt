@@ -23,14 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntRect
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupPositionProvider
 import kotlinx.coroutines.launch
+import ui.composable.utils.defaultPositionProvider
 import utils.Colors.darkBlue
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -48,19 +44,6 @@ fun TooltipIconButton(
     val tooltipState = remember { BasicTooltipState() }
     val interactionSource = remember { MutableInteractionSource() }
     var tooltipVisible by remember { mutableStateOf(false) }
-
-    val positionProvider = object : PopupPositionProvider {
-        override fun calculatePosition(
-            anchorBounds: IntRect,
-            windowSize: IntSize,
-            layoutDirection: LayoutDirection,
-            popupContentSize: IntSize
-        ): IntOffset {
-            val x = anchorBounds.left
-            val y = anchorBounds.bottom
-            return IntOffset(x, y)
-        }
-    }
 
     BasicTooltipBox(
         tooltip = {
@@ -80,7 +63,7 @@ fun TooltipIconButton(
             }
         },
         state = tooltipState,
-        positionProvider = positionProvider
+        positionProvider = defaultPositionProvider
     ) {
         IconButton(
             enabled = isEnabled,
