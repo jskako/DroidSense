@@ -61,7 +61,8 @@ fun AppsView(
     adbPath: String,
     apps: List<AppData>,
     identifier: String,
-    onAppDeleted: (AppData) -> Unit
+    onAppDeleted: (AppData) -> Unit,
+    onAppInstalled: () -> Unit,
 ) {
 
     val listState = rememberLazyListState()
@@ -101,11 +102,12 @@ fun AppsView(
                         ).fold(
                             onSuccess = { infoData ->
                                 showMessage(infoManagerData = infoData)
+                                onAppInstalled()
                             },
-                            onFailure = {
+                            onFailure = { error ->
                                 showMessage(
                                     infoManagerData = InfoManagerData(
-                                        message = it.message ?: EMPTY_STRING,
+                                        message = error.message ?: EMPTY_STRING,
                                         color = darkRed
                                     )
                                 )

@@ -92,7 +92,6 @@ class LogManager(
             val index = _logs.indexOf(logData)
             _logs[index] = logData.copy(isSelected = !logData.isSelected)
         }.onFailure { exception ->
-            println("Failed to update log selection for UUID $uuid: ${exception.message}")
         }
     }
 

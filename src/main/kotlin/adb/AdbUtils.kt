@@ -19,7 +19,6 @@ suspend fun connectDeviceWirelessly(
 
         val tcpDeviceIdentifier = "$deviceIpAddress:5555"
         if (devicesOutput.contains(tcpDeviceIdentifier)) {
-            println("Device $tcpDeviceIdentifier is already in TCP/IP mode.")
         } else {
             val tcpipProcess = ProcessBuilder(adbPath, "-s", identifier, "tcpip", "5555").start()
             val tcpipExitCode = tcpipProcess.waitFor()

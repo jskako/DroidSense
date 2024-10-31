@@ -51,7 +51,6 @@ fun MainScreen(
     val devices by remember(deviceManager.devices.value) { mutableStateOf(deviceManager.devices.value) }
 
     val filteredDevices = devices.filter { device ->
-        println("${device.manufacturer}")
         searchText.isEmpty()
                 || device.serialNumber.contains(searchText, ignoreCase = true)
                 || device.deviceIdentifier.contains(searchText, ignoreCase = true)
