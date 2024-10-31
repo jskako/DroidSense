@@ -7,11 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.window.Window
 import com.jskako.DSDatabase
 import data.createDriver
+import data.repository.log.LogHistorySource
 import data.repository.settings.SettingsSource
 import ui.application.WindowState
 import ui.application.WindowStateManager
@@ -36,9 +38,11 @@ fun NavWindow(
 ) {
 
     val navigationManager = remember { NavigationManager() }
+    val scope = rememberCoroutineScope()
 
     val dsDatabase by remember { mutableStateOf(DSDatabase(createDriver())) }
     val settingsSource by remember { mutableStateOf(SettingsSource(dsDatabase.settingsQueries)) }
+    val logHistorySource by remember { mutableStateOf(LogHistorySource(dsDatabase.logHistoryQueries)) }
 
     window.minimumSize = Dimension(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
 
@@ -53,7 +57,8 @@ fun NavWindow(
                 is NavRoute.MainScreen -> {
                     MainScreen(
                         windowStateManager = windowStateManager,
-                        settingsSource = settingsSource
+                        settingsSource = settingsSource,
+                        logHistorySource = logHistorySource
                     )
                 }
 

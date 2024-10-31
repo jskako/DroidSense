@@ -23,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import data.repository.log.LogHistorySource
 import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
@@ -41,6 +42,7 @@ import utils.shareScreen
 
 @Composable
 fun StatusSection(
+    logHistorySource: LogHistorySource,
     scrCpyPath: String,
     adbPath: String,
     deviceManager: DeviceManager,
@@ -142,7 +144,8 @@ fun StatusSection(
                                 windowExtra = WindowExtra(
                                     screen = {
                                         SettingsScreen(
-                                            settingsSource = settingsSource
+                                            settingsSource = settingsSource,
+                                            logHistorySource = logHistorySource
                                         )
                                     },
                                     onClose = {}

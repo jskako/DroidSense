@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import data.keys.SettingsKey
+import data.repository.log.LogHistorySource
 import data.repository.settings.SettingsSource
 import notifications.InfoManager
 import notifications.InfoManagerData
@@ -33,7 +34,8 @@ import utils.getStringResource
 @Composable
 fun MainScreen(
     windowStateManager: WindowStateManager,
-    settingsSource: SettingsSource
+    settingsSource: SettingsSource,
+    logHistorySource: LogHistorySource
 ) {
 
     val adbPath by settingsSource.get(SettingsKey.ADB.name).collectAsState(initial = "")
@@ -92,6 +94,7 @@ fun MainScreen(
             deviceManager = deviceManager,
             windowStateManager = windowStateManager,
             settingsSource = settingsSource,
+            logHistorySource = logHistorySource,
             onMessage = {
                 infoManager.showMessage(
                     infoManagerData = it,

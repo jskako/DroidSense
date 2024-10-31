@@ -13,11 +13,9 @@ import kotlinx.coroutines.flow.map
 import java.util.UUID
 import kotlin.coroutines.CoroutineContext
 
-class LogDataSource(
+class LogHistorySource(
     private val logDao: LogHistoryQueries,
-    private val coroutineContext: CoroutineContext
-) :
-    LogRepository {
+) : LogRepository {
 
     override suspend fun add(logItem: LogItem) = logDao.insert(
         uuid = logItem.uuid.toString(),
@@ -31,28 +29,29 @@ class LogDataSource(
         hasBeenRead = if (logItem.hasBeenRead) 1 else 0
     )
 
-    override fun uuids(): Flow<List<UuidItem>> = logDao.getUUIDs().asFlow().mapToList(context = coroutineContext).map {
-        it.map { getUUIDs ->
-            getUUIDs.toUuidItem()
+    override fun uuids(context: CoroutineContext): Flow<List<UuidItem>> =
+        logDao.getUUIDs().asFlow().mapToList(context).map {
+            it.map { getUUIDs ->
+                getUUIDs.toUuidItem()
+            }
         }
-    }
 
-    override fun by(uuid: UUID): Flow<List<LogItem>> =
-        logDao.getDataBy(uuid.toString()).asFlow().mapToList(context = coroutineContext).map {
+    override fun by(context: CoroutineContext, uuid: UUID): Flow<List<LogItem>> =
+        logDao.getDataBy(uuid.toString()).asFlow().mapToList(context).map {
             it.map { logHistory ->
                 logHistory.toLogItem()
             }
         }
 
-    override fun countUnreadLogs(uuid: UUID): Flow<Long> =
+    override fun countUnreadLogs(context: CoroutineContext, uuid: UUID): Flow<Long> =
         logDao.countUnreadLogsByUUID(uuid.toString()).asFlow().mapToOneOrDefault(
             defaultValue = 0,
-            context = coroutineContext
+            context = context
         )
 
-    override fun countUnreadLogs() = logDao.countUnreadLogs().asFlow().mapToOneOrDefault(
+    override fun countUnreadLogs(context: CoroutineContext) = logDao.countUnreadLogs().asFlow().mapToOneOrDefault(
         defaultValue = 0,
-        context = coroutineContext
+        context = context
     )
 
     override suspend fun deleteBy(uuid: UUID) {
