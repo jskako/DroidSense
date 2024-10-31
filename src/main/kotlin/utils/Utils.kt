@@ -7,6 +7,7 @@ import kotlinx.coroutines.withContext
 import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
+import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -80,5 +81,11 @@ fun getSpaceId(userInfo: String) = spaceIdRegex.find(userInfo)?.groups?.get(1)?.
 fun readFile(path: String): String? {
     return runCatching {
         File(path).readText()
+    }.getOrNull()
+}
+
+fun readFile(inputStream: InputStream): String? {
+    return runCatching {
+        inputStream.bufferedReader().use { it.readText() }
     }.getOrNull()
 }

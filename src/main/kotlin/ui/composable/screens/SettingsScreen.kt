@@ -1,10 +1,7 @@
 package ui.composable.screens
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Copyright
 import androidx.compose.material.icons.filled.Dataset
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Scanner
@@ -19,17 +16,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.useResource
-import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import data.repository.settings.SettingsSource
 import notifications.InfoManager
 import ui.composable.sections.info.InfoSection
 import ui.composable.sections.settings.AboutSection
-import ui.composable.sections.settings.CopyrightSection
+import ui.composable.sections.settings.InfoSection
 import ui.composable.sections.settings.GeneralSection
-import utils.ABOUT_LIBRARIES_JSON_NAME
 
 @Composable
 fun SettingsScreen(
@@ -79,16 +72,7 @@ fun SettingsScreen(
 
                     SettingsOption.DATABASE -> {}
                     SettingsOption.AI -> {}
-                    SettingsOption.ABOUT -> AboutSection()
-                    SettingsOption.LICENSES -> {
-                        LibrariesContainer(
-                            useResource(ABOUT_LIBRARIES_JSON_NAME) {
-                                it.bufferedReader().readText()
-                            }, Modifier.fillMaxSize()
-                        )
-                    }
-
-                    SettingsOption.COPYRIGHT -> CopyrightSection()
+                    SettingsOption.INFO -> InfoSection()
                 }
             }
         )
@@ -111,20 +95,10 @@ enum class SettingsOption {
         override fun icon() = Icons.Default.Scanner
     },
 
-    ABOUT {
-        override fun title() = "About"
+    INFO {
+        override fun title() = "Info"
         override fun icon() = Icons.Default.Info
-    },
-
-    LICENSES {
-        override fun title() = "Licenses"
-        override fun icon() = Icons.AutoMirrored.Filled.List
-    },
-
-    COPYRIGHT {
-        override fun title() = "Copyright"
-        override fun icon() = Icons.Default.Copyright
-    },;
+    };
 
     abstract fun title(): String
     abstract fun icon(): ImageVector

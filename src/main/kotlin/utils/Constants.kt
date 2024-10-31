@@ -29,6 +29,7 @@ const val DEVICE_DISPLAY_DENSITY: String = "wm density"
 const val DEVICE_IP_ADDRESS: String = "ip route | awk '{print $9}'"
 const val DEVICE_PACKAGES: String = "pm list packages"
 
+const val DOCUMENTS_DIRECTORY: String = "documents"
 const val IMAGES_DIRECTORY: String = "images"
 const val DEFAULT_PHONE_IMAGE: String = "phone.png"
 

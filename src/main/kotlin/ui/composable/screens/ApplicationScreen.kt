@@ -77,7 +77,7 @@ fun ApplicationScreen(
             modifier = Modifier.fillMaxSize(),
         ) {
             LinearProgressBar(
-                text = "Updating applications",
+                text = getStringResource("info.updating.application"),
                 isVisible = updateRequired == ApplicationUpdateStatus.IN_PROGRESS
             )
             DeviceGroup(
