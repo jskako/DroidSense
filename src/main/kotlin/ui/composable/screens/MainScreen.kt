@@ -102,7 +102,8 @@ fun MainScreen(
             searchText = searchText,
             onSearchTextChanged = {
                 searchText = it
-            }
+            },
+            adbPath = adbPath
         )
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),

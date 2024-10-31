@@ -42,6 +42,7 @@ import utils.shareScreen
 @Composable
 fun StatusSection(
     scrCpyPath: String,
+    adbPath: String,
     deviceManager: DeviceManager,
     onMessage: (InfoManagerData) -> Unit,
     windowStateManager: WindowStateManager,
@@ -112,7 +113,8 @@ fun StatusSection(
                             devices.distinctBy { it.serialNumber }.forEach { device ->
                                 shareScreen(
                                     scrCpyPath = scrCpyPath,
-                                    identifier = device.deviceIdentifier
+                                    identifier = device.deviceIdentifier,
+                                    adbPath = adbPath
                                 )
                             }
                         }

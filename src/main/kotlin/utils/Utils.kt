@@ -66,11 +66,15 @@ fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }
 
 suspend fun shareScreen(
     scrCpyPath: String,
-    identifier: String
+    identifier: String,
+    adbPath: String
 ): Result<Unit> = withContext(Dispatchers.IO) {
     runCatching {
         ProcessBuilder(scrCpyPath, "-s", identifier)
             .redirectErrorStream(true)
+            .apply {
+                environment()["ADB"] = adbPath
+            }
             .start()
         Result.success(Unit)
     }.getOrElse { Result.failure(it) }

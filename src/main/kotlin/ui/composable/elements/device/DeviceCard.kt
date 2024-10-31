@@ -233,12 +233,13 @@ fun DeviceCard(
                         scope.launch {
                             shareScreen(
                                 scrCpyPath = scrCpyPath,
-                                identifier = device.deviceIdentifier
+                                identifier = device.deviceIdentifier,
+                                adbPath = adbPath
                             ).fold(
                                 onSuccess = {
                                     onMessage(
                                         InfoManagerData(
-                                            message = "${getStringResource("info.share.screen.done")} ${device.deviceIdentifier}"
+                                            message = "${getStringResource("info.share.screen.info")} ${device.deviceIdentifier}"
                                         )
                                     )
                                 },
