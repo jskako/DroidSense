@@ -1,0 +1,9 @@
+CREATE TABLE CustomName (
+    uuid TEXT NOT NULL PRIMARY KEY,
+    name TEXT
+);
+
+updateName:
+UPDATE CustomName
+SET name = :name
+WHERE uuid = :uuid;

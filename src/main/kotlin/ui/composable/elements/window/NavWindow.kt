@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.window.Window
@@ -38,11 +37,16 @@ fun NavWindow(
 ) {
 
     val navigationManager = remember { NavigationManager() }
-    val scope = rememberCoroutineScope()
 
     val dsDatabase by remember { mutableStateOf(DSDatabase(createDriver())) }
-    val settingsSource by remember { mutableStateOf(SettingsSource(dsDatabase.settingsQueries)) }
-    val logHistorySource by remember { mutableStateOf(LogHistorySource(dsDatabase.logHistoryQueries)) }
+    val sources by remember {
+        mutableStateOf(
+            Sources(
+                settingsSource = SettingsSource(dsDatabase.settingsQueries),
+                logHistorySource = LogHistorySource(dsDatabase.logHistoryQueries)
+            )
+        )
+    }
 
     window.minimumSize = Dimension(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
 
@@ -57,8 +61,7 @@ fun NavWindow(
                 is NavRoute.MainScreen -> {
                     MainScreen(
                         windowStateManager = windowStateManager,
-                        settingsSource = settingsSource,
-                        logHistorySource = logHistorySource
+                        sources = sources
                     )
                 }
 
@@ -66,13 +69,13 @@ fun NavWindow(
                     RequirementsScreen(
                         navigateToMainScreen = { navigationManager.navigateTo(NavRoute.MainScreen) },
                         navigateToSetVariablesScreen = { navigationManager.navigateTo(NavRoute.VariablesScreen) },
-                        settingsSource = settingsSource
+                        settingsSource = sources.settingsSource
                     )
                 }
 
                 is NavRoute.VariablesScreen -> {
                     VariablesScreen(
-                        settingsSource = settingsSource,
+                        settingsSource = sources.settingsSource,
                         navigateToMainScreen = { navigationManager.navigateTo(NavRoute.MainScreen) },
                     )
                 }

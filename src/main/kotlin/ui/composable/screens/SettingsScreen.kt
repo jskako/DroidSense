@@ -17,19 +17,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
-import data.repository.log.LogHistorySource
-import data.repository.settings.SettingsSource
 import notifications.InfoManager
+import ui.composable.elements.window.Sources
 import ui.composable.sections.info.InfoSection
-import ui.composable.sections.settings.AboutSection
 import ui.composable.sections.settings.DatabaseSection
-import ui.composable.sections.settings.InfoSection
 import ui.composable.sections.settings.GeneralSection
+import ui.composable.sections.settings.InfoSection
 
 @Composable
 fun SettingsScreen(
-    logHistorySource: LogHistorySource,
-    settingsSource: SettingsSource
+    sources: Sources
 ) {
 
     val scope = rememberCoroutineScope()
@@ -64,7 +61,7 @@ fun SettingsScreen(
             content = {
                 when (selectedOption) {
                     SettingsOption.GENERAL -> GeneralSection(
-                        settingsSource = settingsSource,
+                        settingsSource = sources.settingsSource,
                         onMessage = {
                             infoManager.showMessage(
                                 infoManagerData = it,
@@ -74,8 +71,9 @@ fun SettingsScreen(
                     )
 
                     SettingsOption.DATABASE -> DatabaseSection(
-                        logHistorySource = logHistorySource
+                        logHistorySource = sources.logHistorySource
                     )
+
                     SettingsOption.AI -> {}
                     SettingsOption.INFO -> InfoSection()
                 }

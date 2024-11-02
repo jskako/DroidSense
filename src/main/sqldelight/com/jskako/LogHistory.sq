@@ -1,31 +1,19 @@
 CREATE TABLE LogHistory (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     uuid TEXT NOT NULL,
-    name TEXT NOT NULL,
     date TEXT NOT NULL,
     time TEXT NOT NULL,
     tag TEXT NOT NULL,
     packageName TEXT NOT NULL,
     type TEXT NOT NULL,
-    message TEXT NOT NULL,
-    hasBeenRead INTEGER NOT NULL
+    message TEXT NOT NULL
 );
 
 getUUIDs:
-SELECT uuid, name, MIN(time) AS "time", hasBeenRead
+SELECT uuid, MIN(time) AS "time"
 FROM LogHistory
-GROUP BY uuid, name
+GROUP BY uuid
 ORDER BY id ASC;
-
-countUnreadLogs:
-SELECT COUNT(*)
-FROM LogHistory
-WHERE hasBeenRead = 0;
-
-countUnreadLogsByUUID:
-SELECT COUNT(*)
-FROM LogHistory
-WHERE uuid = :uuid AND hasBeenRead = 0;
 
 getDataBy:
 SELECT * FROM LogHistory
@@ -33,8 +21,8 @@ WHERE uuid = :uuid
 ORDER BY id ASC;
 
 insert:
-INSERT OR REPLACE INTO LogHistory(uuid, name, date, time, tag, packageName, type, message, hasBeenRead)
-VALUES(?,?,?,?,?,?,?,?,?);
+INSERT OR REPLACE INTO LogHistory(uuid, date, time, tag, packageName, type, message)
+VALUES(?,?,?,?,?,?,?);
 
 deleteBy:
 DELETE FROM LogHistory
@@ -42,13 +30,3 @@ WHERE uuid = :uuid;
 
 nukeTable:
 DELETE FROM LogHistory;
-
-updateReadState:
-UPDATE LogHistory
-SET hasBeenRead = :hasBeenRead
-WHERE uuid = :uuid;
-
-updateName:
-UPDATE LogHistory
-SET name = :name
-WHERE uuid = :uuid;

@@ -18,13 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import data.keys.SettingsKey
-import data.repository.log.LogHistorySource
-import data.repository.settings.SettingsSource
 import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.device.DeviceView
+import ui.composable.elements.window.Sources
 import ui.composable.sections.StatusSection
 import ui.composable.sections.info.InfoSection
 import utils.EMPTY_STRING
@@ -34,12 +33,11 @@ import utils.getStringResource
 @Composable
 fun MainScreen(
     windowStateManager: WindowStateManager,
-    settingsSource: SettingsSource,
-    logHistorySource: LogHistorySource
+    sources: Sources
 ) {
 
-    val adbPath by settingsSource.get(SettingsKey.ADB.name).collectAsState(initial = "")
-    val scrcpyPath by settingsSource.get(SettingsKey.SCRCPY.name).collectAsState(initial = "")
+    val adbPath by sources.settingsSource.get(SettingsKey.ADB.name).collectAsState(initial = "")
+    val scrcpyPath by sources.settingsSource.get(SettingsKey.SCRCPY.name).collectAsState(initial = "")
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
 
     val deviceManager = remember(adbPath) {
@@ -57,7 +55,10 @@ fun MainScreen(
                 || device.serialNumber.contains(searchText, ignoreCase = true)
                 || device.deviceIdentifier.contains(searchText, ignoreCase = true)
                 || (device.manufacturer?.contains(searchText, ignoreCase = true) ?: false)
-                || ("${device.manufacturer?.capitalizeFirstChar()} ${device.model}".contains(searchText, ignoreCase = true))
+                || ("${device.manufacturer?.capitalizeFirstChar()} ${device.model}".contains(
+            searchText,
+            ignoreCase = true
+        ))
     }
 
     LaunchedEffect(adbPath) {
@@ -93,8 +94,7 @@ fun MainScreen(
             scrCpyPath = scrcpyPath,
             deviceManager = deviceManager,
             windowStateManager = windowStateManager,
-            settingsSource = settingsSource,
-            logHistorySource = logHistorySource,
+            sources = sources,
             onMessage = {
                 infoManager.showMessage(
                     infoManagerData = it,

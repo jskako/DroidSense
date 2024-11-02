@@ -23,8 +23,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.repository.log.LogHistorySource
-import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.application.WindowExtra
@@ -33,6 +31,7 @@ import ui.application.navigation.WindowData
 import ui.composable.elements.TooltipTextButton
 import ui.composable.elements.iconButtons.IconClickableText
 import ui.composable.elements.iconButtons.TooltipIconButton
+import ui.composable.elements.window.Sources
 import ui.composable.screens.SettingsScreen
 import utils.Colors.darkGreen
 import utils.Colors.darkRed
@@ -42,13 +41,12 @@ import utils.shareScreen
 
 @Composable
 fun StatusSection(
-    logHistorySource: LogHistorySource,
+    sources: Sources,
     scrCpyPath: String,
     adbPath: String,
     deviceManager: DeviceManager,
     onMessage: (InfoManagerData) -> Unit,
     windowStateManager: WindowStateManager,
-    settingsSource: SettingsSource,
     onSearchTextChanged: (String) -> Unit,
     devices: List<DeviceDetails>,
     searchText: String,
@@ -144,8 +142,7 @@ fun StatusSection(
                                 windowExtra = WindowExtra(
                                     screen = {
                                         SettingsScreen(
-                                            settingsSource = settingsSource,
-                                            logHistorySource = logHistorySource
+                                            sources = sources
                                         )
                                     },
                                     onClose = {}
