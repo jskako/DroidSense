@@ -19,6 +19,9 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +55,7 @@ fun StatusSection(
     searchText: String,
 ) {
     val scope = rememberCoroutineScope()
+    val phoneSource by remember { mutableStateOf(sources.phoneSource) }
 
     Box(
         modifier = Modifier
@@ -75,7 +79,14 @@ fun StatusSection(
                         deviceManager.manageListeningStatus(
                             monitorStatus = if (deviceManager.isMonitoring()) MonitorStatus.STOP else MonitorStatus.START,
                             scope = scope,
-                            onMessage = onMessage
+                            onMessage = onMessage,
+                            onDeviceFound = { device ->
+                                scope.launch {
+                                    if (phoneSource.by(device.serialNumber) == null) {
+                                        phoneSource.add(device)
+                                    }
+                                }
+                            }
                         )
                     }
                 )

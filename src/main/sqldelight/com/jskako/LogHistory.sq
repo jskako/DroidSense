@@ -1,6 +1,7 @@
 CREATE TABLE LogHistory (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     uuid TEXT NOT NULL,
+    phoneSerialNumber TEXT NOT NULL,
     date TEXT NOT NULL,
     time TEXT NOT NULL,
     pid INTEGER NOT NULL,
@@ -22,8 +23,8 @@ WHERE uuid = :uuid
 ORDER BY id ASC;
 
 insert:
-INSERT OR REPLACE INTO LogHistory(uuid, date, time, pid, tid, tag, level, text)
-VALUES(?,?,?,?,?,?,?, ?);
+INSERT OR REPLACE INTO LogHistory(uuid, phoneSerialNumber, date, time, pid, tid, tag, level, text)
+VALUES(?,?,?,?,?,?,?, ?, ?);
 
 deleteBy:
 DELETE FROM LogHistory

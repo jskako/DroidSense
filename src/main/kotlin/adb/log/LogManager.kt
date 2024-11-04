@@ -1,7 +1,7 @@
 package adb.log
 
 import androidx.compose.runtime.mutableStateListOf
-import data.model.LogItem
+import data.model.items.LogItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -98,6 +98,7 @@ class LogManager(
         coroutineScope: CoroutineScope,
         packageName: String,
         identifier: String,
+        serialNumber: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
         stopMonitoring()
@@ -107,6 +108,7 @@ class LogManager(
                 monitor(
                     packageName = packageName.takeUnless { it == getStringResource("info.log.starting.package") },
                     identifier = identifier,
+                    serialNumber = serialNumber,
                     onMessage = onMessage
                 )
             }.onFailure { e ->
@@ -133,6 +135,7 @@ class LogManager(
     private suspend fun monitor(
         packageName: String?,
         identifier: String,
+        serialNumber: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
         withContext(Dispatchers.IO) {
@@ -178,6 +181,7 @@ class LogManager(
                             _logs.add(
                                 LogItem(
                                     uuid = uuid,
+                                    phoneSerialNumber = serialNumber,
                                     date = components.getOrElse(index = 0, defaultValue = { "" }),
                                     time = components.getOrElse(index = 1, defaultValue = { "" }),
                                     pid = components.getOrNull(index = 2)?.toLongOrNull() ?: 0L,

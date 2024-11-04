@@ -13,6 +13,7 @@ import androidx.compose.ui.window.Window
 import com.jskako.DSDatabase
 import data.createDriver
 import data.repository.log.LogHistorySource
+import data.repository.phone.PhoneSource
 import data.repository.settings.SettingsSource
 import ui.application.WindowState
 import ui.application.WindowStateManager
@@ -43,7 +44,8 @@ fun NavWindow(
         mutableStateOf(
             Sources(
                 settingsSource = SettingsSource(dsDatabase.settingsQueries),
-                logHistorySource = LogHistorySource(dsDatabase.logHistoryQueries)
+                logHistorySource = LogHistorySource(dsDatabase.logHistoryQueries),
+                phoneSource = PhoneSource(dsDatabase.phoneInfoQueries),
             )
         )
     }

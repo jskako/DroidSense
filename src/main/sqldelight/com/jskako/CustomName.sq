@@ -3,7 +3,15 @@ CREATE TABLE CustomName (
     name TEXT
 );
 
+getNameBy:
+SELECT * FROM CustomName
+WHERE uuid = :uuid;
+
 updateName:
 UPDATE CustomName
 SET name = :name
+WHERE uuid = :uuid;
+
+deleteBy:
+DELETE FROM CustomName
 WHERE uuid = :uuid;

@@ -44,6 +44,7 @@ fun LogScreen(
     adbPath: String,
     logManager: LogManager,
     deviceIdentifier: String,
+    serialNumber: String,
     sources: Sources
 ) {
 
@@ -103,6 +104,7 @@ fun LogScreen(
             adbPath = adbPath,
             identifier = deviceIdentifier,
             logManager = logManager,
+            serialNumber = serialNumber,
             onLogLevelSelected = {
                 logLevel = it
             },
@@ -117,7 +119,8 @@ fun LogScreen(
             },
             onMessage = {
                 showMessage(infoManagerData = it)
-            })
+            }
+        )
 
         DividerColored()
 

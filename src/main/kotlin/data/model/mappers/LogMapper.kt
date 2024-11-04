@@ -1,20 +1,14 @@
-package data.model
+package data.model.mappers
 
 import adb.log.LogLevel
-import com.jskako.GetUUIDs
 import com.jskako.LogHistory
+import data.model.items.LogItem
 import java.util.UUID
-
-fun GetUUIDs.toUuidItem(): UuidItem {
-    return UuidItem(
-        uuid = UUID.fromString(this.uuid),
-        time = this.time ?: ""
-    )
-}
 
 fun LogHistory.toLogItem(): LogItem {
     return LogItem(
         uuid = UUID.fromString(this.uuid),
+        phoneSerialNumber = this.phoneSerialNumber,
         date = this.date,
         time = this.time,
         pid = this.pid,

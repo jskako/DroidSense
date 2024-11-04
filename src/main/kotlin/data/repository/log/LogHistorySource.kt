@@ -3,10 +3,10 @@ package data.repository.log
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.jskako.LogHistoryQueries
-import data.model.LogItem
-import data.model.UuidItem
-import data.model.toLogItem
-import data.model.toUuidItem
+import data.model.items.LogItem
+import data.model.items.UuidItem
+import data.model.mappers.toLogItem
+import data.model.mappers.toUuidItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -18,6 +18,7 @@ class LogHistorySource(
 
     override suspend fun add(logItem: LogItem) = logDao.insert(
         uuid = logItem.uuid.toString(),
+        phoneSerialNumber = logItem.phoneSerialNumber,
         date = logItem.date,
         time = logItem.time,
         pid = logItem.pid,

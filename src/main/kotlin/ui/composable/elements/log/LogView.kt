@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import data.model.LogItem
+import data.model.items.LogItem
 import data.repository.log.LogHistorySource
 import kotlinx.coroutines.launch
 import java.util.UUID

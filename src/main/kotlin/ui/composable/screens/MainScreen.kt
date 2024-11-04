@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import data.keys.SettingsKey
+import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.application.WindowStateManager
@@ -39,6 +40,7 @@ fun MainScreen(
     val adbPath by sources.settingsSource.get(SettingsKey.ADB.name).collectAsState(initial = "")
     val scrcpyPath by sources.settingsSource.get(SettingsKey.SCRCPY.name).collectAsState(initial = "")
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
+    val phoneSource by remember { mutableStateOf(sources.phoneSource) }
 
     val deviceManager = remember(adbPath) {
         DeviceManager(
@@ -71,6 +73,13 @@ fun MainScreen(
                         infoManagerData = it,
                         scope = scope
                     )
+                },
+                onDeviceFound = { device ->
+                    scope.launch {
+                        if (phoneSource.by(device.serialNumber) == null) {
+                            phoneSource.add(device)
+                        }
+                    }
                 }
             )
 

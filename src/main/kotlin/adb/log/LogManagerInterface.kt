@@ -8,6 +8,7 @@ interface LogManagerInterface {
         coroutineScope: CoroutineScope,
         packageName: String,
         identifier: String,
+        serialNumber: String,
         onMessage: (InfoManagerData) -> Unit
     )
 

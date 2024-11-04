@@ -41,6 +41,7 @@ import utils.getStringResource
 fun LogStatusSection(
     adbPath: String,
     identifier: String,
+    serialNumber: String,
     logManager: LogManager,
     onMessage: (InfoManagerData) -> Unit,
     onLogLevelSelected: (LogLevel) -> Unit,
@@ -82,6 +83,7 @@ fun LogStatusSection(
                                             coroutineScope = this,
                                             packageName = selectedPackage,
                                             identifier = identifier,
+                                            serialNumber = serialNumber,
                                             onMessage = onMessage
                                         )
                                     }

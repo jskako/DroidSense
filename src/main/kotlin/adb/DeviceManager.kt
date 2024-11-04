@@ -2,6 +2,7 @@ package adb
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import data.model.items.PhoneItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
@@ -42,7 +43,8 @@ class DeviceManager(
 
     private fun startListening(
         onMessage: (InfoManagerData) -> Unit,
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
+        onDeviceFound: (PhoneItem) -> Unit
     ) {
         monitorJob?.cancel()
         monitorJob = coroutineScope.launch {
@@ -51,7 +53,8 @@ class DeviceManager(
             monitorAdbDevices(
                 adbPath = adbPath,
                 onMessage = onMessage,
-                scope = coroutineScope
+                scope = coroutineScope,
+                onDeviceFound = onDeviceFound
             )
         }
     }
@@ -68,7 +71,8 @@ class DeviceManager(
     override fun manageListeningStatus(
         monitorStatus: MonitorStatus,
         scope: CoroutineScope,
-        onMessage: (InfoManagerData) -> Unit
+        onMessage: (InfoManagerData) -> Unit,
+        onDeviceFound: (PhoneItem) -> Unit
     ) {
         if (_monitoringStatus.value == MonitoringStatus.MONITORING) {
             stopListening(
@@ -82,7 +86,8 @@ class DeviceManager(
         } else {
             startListening(
                 onMessage = onMessage,
-                coroutineScope = scope
+                coroutineScope = scope,
+                onDeviceFound = onDeviceFound
             )
             onMessage(
                 InfoManagerData(
@@ -97,7 +102,8 @@ class DeviceManager(
     private suspend fun monitorAdbDevices(
         adbPath: String,
         onMessage: (InfoManagerData) -> Unit,
-        scope: CoroutineScope
+        scope: CoroutineScope,
+        onDeviceFound: (PhoneItem) -> Unit
     ) {
         withContext(Default) {
             while (true) {
@@ -121,7 +127,8 @@ class DeviceManager(
                                 if (!deviceExist && deviceAvailable) {
                                     addDevice(
                                         identifier = identifier,
-                                        onMessage = onMessage
+                                        onMessage = onMessage,
+                                        onDeviceFound = onDeviceFound
                                     )
                                 }
 
@@ -175,12 +182,21 @@ class DeviceManager(
 
     private fun addDevice(
         identifier: String,
-        onMessage: (InfoManagerData) -> Unit
+        onMessage: (InfoManagerData) -> Unit,
+        onDeviceFound: (PhoneItem) -> Unit
     ) {
         getDeviceInfo(
             identifier = identifier
         ).also {
             _devices.value += it
+            onDeviceFound(
+                PhoneItem(
+                    serialNumber = it.serialNumber,
+                    model = it.model,
+                    manufacturer = it.manufacturer,
+                    brand = it.brand,
+                )
+            )
             onMessage(InfoManagerData(message = "${getStringResource("info.add.device")}: $it"))
         }
     }

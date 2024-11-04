@@ -281,6 +281,7 @@ fun DeviceCard(
                                                 sources = sources,
                                                 adbPath = adbPath,
                                                 deviceIdentifier = device.deviceIdentifier,
+                                                serialNumber = device.serialNumber,
                                                 logManager = logManager
                                             )
                                         },

@@ -1,4 +1,4 @@
-package data.model
+package data.model.items
 
 import java.util.UUID
 

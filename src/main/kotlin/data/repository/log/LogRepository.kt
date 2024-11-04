@@ -1,7 +1,7 @@
 package data.repository.log
 
-import data.model.LogItem
-import data.model.UuidItem
+import data.model.items.LogItem
+import data.model.items.UuidItem
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 import kotlin.coroutines.CoroutineContext

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import data.model.LogItem
+import data.model.items.LogItem
 import ui.composable.elements.BasicText
 import ui.composable.elements.TextBox
 import utils.Colors.lightGray

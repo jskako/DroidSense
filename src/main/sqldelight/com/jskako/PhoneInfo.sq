@@ -1,3 +1,21 @@
 CREATE TABLE PhoneInfo (
-    serialNumber TEXT NOT NULL PRIMARY KEY
+    serialNumber TEXT NOT NULL PRIMARY KEY,
+    model TEXT,
+    manufacturer TEXT,
+    brand TEXT
 );
+
+insert:
+INSERT OR REPLACE INTO PhoneInfo(serialNumber, model, manufacturer, brand)
+VALUES(?,?,?,?);
+
+getPhoneInfoBy:
+SELECT * FROM PhoneInfo
+WHERE serialNumber = :serialNumber;
+
+deleteBy:
+DELETE FROM PhoneInfo
+WHERE serialNumber = :serialNumber;
+
+nukeTable:
+DELETE FROM PhoneInfo;
