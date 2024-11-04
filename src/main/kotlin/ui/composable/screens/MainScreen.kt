@@ -121,6 +121,7 @@ fun MainScreen(
 
         if (adbPath.isNotEmpty() && filteredDevices.isNotEmpty()) {
             DeviceView(
+                sources = sources,
                 devices = filteredDevices,
                 windowStateManager = windowStateManager,
                 onMessage = {

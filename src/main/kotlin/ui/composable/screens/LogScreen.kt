@@ -27,6 +27,7 @@ import notifications.InfoManagerData
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
 import ui.composable.elements.log.LogView
+import ui.composable.elements.window.Sources
 import ui.composable.sections.info.FunctionIconData
 import ui.composable.sections.info.InfoSection
 import ui.composable.sections.log.FontSize
@@ -42,7 +43,8 @@ import utils.openFolderAtPath
 fun LogScreen(
     adbPath: String,
     logManager: LogManager,
-    deviceIdentifier: String
+    deviceIdentifier: String,
+    sources: Sources
 ) {
 
     var logLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
@@ -230,6 +232,7 @@ fun LogScreen(
                     )
                 } else {
                     LogView(
+                        logHistorySource = sources.logHistorySource,
                         logs = logs.takeLast(
                             LOG_MANAGER_NUMBER_OF_LINES
                         ),
@@ -237,6 +240,7 @@ fun LogScreen(
                         filteredText = filteredText,
                         reversedLogs = reverseLogs,
                         scrollToEnd = scrollToEnd,
+                        saveToDatabase = saveToDatabase,
                         fontSize = fontSize,
                         onLogSelected = { uuid ->
                             if (!selectionInProgress) {

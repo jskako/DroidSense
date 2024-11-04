@@ -44,6 +44,7 @@ import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.iconButtons.TooltipIconButton
+import ui.composable.elements.window.Sources
 import ui.composable.screens.ApplicationScreen
 import ui.composable.screens.LogScreen
 import utils.Colors.darkBlue
@@ -60,6 +61,7 @@ import utils.shareScreen
 
 @Composable
 fun DeviceCard(
+    sources: Sources,
     adbPath: String,
     scrCpyPath: String,
     device: DeviceDetails,
@@ -276,6 +278,7 @@ fun DeviceCard(
                                     windowExtra = WindowExtra(
                                         screen = {
                                             LogScreen(
+                                                sources = sources,
                                                 adbPath = adbPath,
                                                 deviceIdentifier = device.deviceIdentifier,
                                                 logManager = logManager

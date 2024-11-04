@@ -1,6 +1,5 @@
 package ui.composable.elements.log
 
-import adb.log.LogData
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,13 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import data.model.LogItem
 import ui.composable.elements.BasicText
 import ui.composable.elements.TextBox
 import utils.Colors.lightGray
 
 @Composable
 fun LogCard(
-    item: LogData,
+    item: LogItem,
     fontSize: TextUnit,
     onClicked: () -> Unit
 ) {
@@ -54,7 +54,7 @@ fun LogCard(
             )
         }
         BasicText(
-            value = item.log,
+            value = item.text,
             fontSize = fontSize,
             color = if (item.level.simplified() == 'E') Color.Red else Color.Black
         )

@@ -18,9 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import notifications.InfoManagerData
 import ui.application.WindowStateManager
+import ui.composable.elements.window.Sources
 
 @Composable
 fun DeviceView(
+    sources: Sources,
     adbPath: String,
     scrCpyPath: String,
     devices: List<DeviceDetails>,
@@ -40,6 +42,7 @@ fun DeviceView(
         ) {
             items(devices) { device ->
                 DeviceCard(
+                    sources = sources,
                     adbPath = adbPath,
                     scrCpyPath = scrCpyPath,
                     device = device,

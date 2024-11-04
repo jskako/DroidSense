@@ -7,8 +7,17 @@ data class LogItem(
     val uuid: UUID,
     val date: String,
     val time: String,
+    val pid: Long,
+    val tid: Long,
     val tag: String,
-    val packageName: String,
-    val type: LogLevel,
-    val message: String,
-)
+    val level: LogLevel,
+    val text: String,
+    val isSelected: Boolean = false
+) {
+    override fun toString(): String {
+        return buildString {
+            appendLine("$level - $time")
+            appendLine(text)
+        }
+    }
+}

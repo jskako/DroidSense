@@ -20,10 +20,11 @@ class LogHistorySource(
         uuid = logItem.uuid.toString(),
         date = logItem.date,
         time = logItem.time,
+        pid = logItem.pid,
+        tid = logItem.tid,
         tag = logItem.tag,
-        packageName = logItem.packageName,
-        type = logItem.type.toString(),
-        message = logItem.message
+        level = logItem.level.toString(),
+        text = logItem.text
     )
 
     override fun uuids(context: CoroutineContext): Flow<List<UuidItem>> =

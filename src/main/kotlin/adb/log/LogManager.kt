@@ -1,6 +1,7 @@
 package adb.log
 
 import androidx.compose.runtime.mutableStateListOf
+import data.model.LogItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -15,8 +16,6 @@ import utils.LOG_MANAGER_NUMBER_OF_LINES
 import utils.copyToClipboard
 import utils.exportToFile
 import utils.getStringResource
-import utils.getTimeStamp
-import utils.logLevelRegex
 import utils.runCommand
 import java.util.UUID
 
@@ -26,10 +25,10 @@ class LogManager(
 ) : LogManagerInterface {
 
     private var monitorJob: Job? = null
-    private val _logs = mutableStateListOf<LogData>()
+    private val _logs = mutableStateListOf<LogItem>()
     private var currentProcess: Process? = null
 
-    val logs: List<LogData>
+    val logs: List<LogItem>
         get() = _logs
 
     val isActive: Boolean
@@ -104,17 +103,18 @@ class LogManager(
         stopMonitoring()
         clear()
         monitorJob = coroutineScope.launch {
-            try {
+            runCatching {
                 monitor(
                     packageName = packageName.takeUnless { it == getStringResource("info.log.starting.package") },
                     identifier = identifier,
                     onMessage = onMessage
                 )
-            } catch (e: Exception) {
-                LogData(
-                    time = getTimeStamp(LOGGER_TIMESTAMP),
-                    log = getStringResource("info.monitoring.stopped"),
-                    level = LogLevel.NONE
+            }.onFailure { e ->
+                onMessage(
+                    InfoManagerData(
+                        message = e.message ?: EMPTY_STRING,
+                        color = darkRed
+                    )
                 )
             }
         }
@@ -137,6 +137,7 @@ class LogManager(
     ) {
         withContext(Dispatchers.IO) {
             var pid = EMPTY_STRING
+            val uuid = UUID.randomUUID()
             if (!packageName.isNullOrEmpty()) {
                 pid = getPid(
                     identifier = identifier,
@@ -166,9 +167,35 @@ class LogManager(
                 logcatProcess.inputStream.bufferedReader().useLines { lines ->
                     lines.forEach { line ->
                         if (line.isNotEmpty()) {
-                            val time = line.split(" ")[1].trim()
-                            val (logType, text) = extractInfo(line) ?: (LogLevel.NONE to "")
-                            _logs.add(LogData(time = time, log = text, level = logType))
+
+                            val components = line.split("\\s+".toRegex(), 6)
+                            if (components.size < 6) return@forEach
+
+                            val (tag, text) = components.getOrNull(5)?.split(":", limit = 2)?.let {
+                                it.getOrElse(0) { "" }.trim() to it.getOrElse(1) { "" }.trim()
+                            } ?: ("" to "")
+
+                            _logs.add(
+                                LogItem(
+                                    uuid = uuid,
+                                    date = components.getOrElse(index = 0, defaultValue = { "" }),
+                                    time = components.getOrElse(index = 1, defaultValue = { "" }),
+                                    pid = components.getOrNull(index = 2)?.toLongOrNull() ?: 0L,
+                                    tid = components.getOrNull(index = 3)?.toLongOrNull() ?: 0L,
+                                    level = components.getOrNull(4)?.let {
+                                        when (it.first()) {
+                                            LogLevel.INFO.simplified() -> LogLevel.INFO
+                                            LogLevel.ERROR.simplified() -> LogLevel.ERROR
+                                            LogLevel.WARN.simplified() -> LogLevel.WARN
+                                            LogLevel.VERBOSE.simplified() -> LogLevel.VERBOSE
+                                            LogLevel.DEBUG.simplified() -> LogLevel.DEBUG
+                                            else -> LogLevel.NONE
+                                        }
+                                    } ?: LogLevel.NONE,
+                                    tag = tag,
+                                    text = text,
+                                )
+                            )
                         }
 
                         if (_logs.size > LOG_MANAGER_NUMBER_OF_LINES) {
@@ -196,24 +223,4 @@ class LogManager(
         packageName: String
     ) =
         "$adbPath -s $identifier shell pidof -s $packageName".runCommand()?.trim() ?: EMPTY_STRING
-
-    private fun extractInfo(log: String): Pair<LogLevel, String>? {
-        val matchResult = logLevelRegex.find(log)
-
-        return matchResult?.let { result ->
-            val logLevel = when (result.value.first()) {
-                LogLevel.INFO.simplified() -> LogLevel.INFO
-                LogLevel.ERROR.simplified() -> LogLevel.ERROR
-                LogLevel.WARN.simplified() -> LogLevel.WARN
-                LogLevel.VERBOSE.simplified() -> LogLevel.VERBOSE
-                LogLevel.DEBUG.simplified() -> LogLevel.DEBUG
-                else -> LogLevel.NONE
-            }
-
-            val restOfLog = log.substring(result.range.last + 1).trim()
-            logLevel to restOfLog
-        }
-    }
 }
-
-private const val LOGGER_TIMESTAMP = "hh:mm:ss:SSS"

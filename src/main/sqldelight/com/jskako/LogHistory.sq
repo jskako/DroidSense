@@ -3,10 +3,11 @@ CREATE TABLE LogHistory (
     uuid TEXT NOT NULL,
     date TEXT NOT NULL,
     time TEXT NOT NULL,
+    pid INTEGER NOT NULL,
+    tid INTEGER NOT NULL,
     tag TEXT NOT NULL,
-    packageName TEXT NOT NULL,
-    type TEXT NOT NULL,
-    message TEXT NOT NULL
+    level TEXT NOT NULL,
+    text TEXT NOT NULL
 );
 
 getUUIDs:
@@ -21,8 +22,8 @@ WHERE uuid = :uuid
 ORDER BY id ASC;
 
 insert:
-INSERT OR REPLACE INTO LogHistory(uuid, date, time, tag, packageName, type, message)
-VALUES(?,?,?,?,?,?,?);
+INSERT OR REPLACE INTO LogHistory(uuid, date, time, pid, tid, tag, level, text)
+VALUES(?,?,?,?,?,?,?, ?);
 
 deleteBy:
 DELETE FROM LogHistory

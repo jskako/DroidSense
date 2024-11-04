@@ -17,9 +17,10 @@ fun LogHistory.toLogItem(): LogItem {
         uuid = UUID.fromString(this.uuid),
         date = this.date,
         time = this.time,
+        pid = this.pid,
+        tid = this.tid,
         tag = this.tag,
-        packageName = this.packageName,
-        type = LogLevel.valueOf(this.type),
-        message = this.message
+        level = LogLevel.valueOf(this.level),
+        text = this.text
     )
 }
