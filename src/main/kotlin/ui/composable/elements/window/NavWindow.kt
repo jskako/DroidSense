@@ -13,6 +13,7 @@ import androidx.compose.ui.window.Window
 import com.jskako.DSDatabase
 import data.createDriver
 import data.repository.log.LogHistorySource
+import data.repository.name.NameSource
 import data.repository.phone.PhoneSource
 import data.repository.settings.SettingsSource
 import ui.application.WindowState
@@ -46,6 +47,7 @@ fun NavWindow(
                 settingsSource = SettingsSource(dsDatabase.settingsQueries),
                 logHistorySource = LogHistorySource(dsDatabase.logHistoryQueries),
                 phoneSource = PhoneSource(dsDatabase.phoneInfoQueries),
+                nameSource = NameSource(dsDatabase.customNameQueries)
             )
         )
     }

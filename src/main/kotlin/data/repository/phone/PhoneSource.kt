@@ -1,8 +1,13 @@
 package data.repository.phone
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.jskako.PhoneInfoQueries
 import data.model.items.PhoneItem
 import data.model.mappers.toPhoneItem
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlin.coroutines.CoroutineContext
 
 class PhoneSource(
     private val phoneDao: PhoneInfoQueries,
@@ -16,6 +21,13 @@ class PhoneSource(
     )
 
     override fun by(serialNumber: String) = phoneDao.getPhoneInfoBy(serialNumber).executeAsOneOrNull()?.toPhoneItem()
+
+    override fun by(context: CoroutineContext, serialNumber: String): Flow<List<PhoneItem>> =
+        phoneDao.getPhoneInfoBy(serialNumber).asFlow().mapToList(context).map {
+            it.map { phoneInfo ->
+                phoneInfo.toPhoneItem()
+            }
+        }
 
     override suspend fun deleteBy(serialNumber: String) {
         phoneDao.deleteBy(serialNumber)

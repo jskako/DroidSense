@@ -7,6 +7,10 @@ getNameBy:
 SELECT * FROM CustomName
 WHERE uuid = :uuid;
 
+insert:
+INSERT OR REPLACE INTO CustomName(uuid, name)
+VALUES(?,?);
+
 updateName:
 UPDATE CustomName
 SET name = :name
@@ -15,3 +19,6 @@ WHERE uuid = :uuid;
 deleteBy:
 DELETE FROM CustomName
 WHERE uuid = :uuid;
+
+nukeTable:
+DELETE FROM CustomName;
