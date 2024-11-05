@@ -111,6 +111,7 @@ fun LogScreen(
             onSearchTextChanged = {
                 filteredText = it
             },
+            isRunning = isRunning,
             onIsRunning = {
                 isRunning = it
             },

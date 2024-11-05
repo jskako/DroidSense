@@ -46,12 +46,12 @@ fun LogStatusSection(
     onMessage: (InfoManagerData) -> Unit,
     onLogLevelSelected: (LogLevel) -> Unit,
     onSearchTextChanged: (String) -> Unit,
+    isRunning: Boolean,
     onIsRunning: (Boolean) -> Unit,
     onPackageSelected: (String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var selectedPackage by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
-    var isRunning by remember { mutableStateOf(false) }
     var selectedLogLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
 
@@ -92,8 +92,7 @@ fun LogStatusSection(
                                         logManager.stopMonitoring()
                                     }
                                 }
-                                isRunning = !isRunning
-                                onIsRunning(isRunning)
+                                onIsRunning(!isRunning)
                             }
                         }
                     },
