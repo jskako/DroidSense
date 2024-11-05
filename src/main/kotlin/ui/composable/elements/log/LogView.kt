@@ -29,7 +29,6 @@ import java.util.UUID
 @Composable
 fun LogView(
     logHistorySource: LogHistorySource,
-    nameSource: NameSource,
     logs: List<LogItem>,
     logLevel: LogLevel,
     filteredText: String,
@@ -51,10 +50,6 @@ fun LogView(
     val filteredLogs = logs.filter { log ->
         log.level.ordinal <= logLevel.ordinal &&
                 (filteredText.isEmpty() || log.text.contains(filteredText, ignoreCase = true))
-    }
-
-    LaunchedEffect(filteredLogs.size, ) {
-
     }
 
     Box(

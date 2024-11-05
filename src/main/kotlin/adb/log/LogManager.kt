@@ -102,7 +102,7 @@ class LogManager(
         onMessage: (InfoManagerData) -> Unit
     ) {
         stopMonitoring()
-        clear()
+        clear(identifier = identifier)
         monitorJob = coroutineScope.launch {
             runCatching {
                 monitor(
@@ -127,8 +127,8 @@ class LogManager(
         currentProcess?.destroy()
     }
 
-    override suspend fun clear() {
-        clearAdbCache()
+    override suspend fun clear(identifier: String) {
+        clearAdbCache(identifier = identifier)
         _logs.clear()
     }
 
@@ -155,7 +155,7 @@ class LogManager(
                             packageName = packageName
                         )
                     }
-                    clear()
+                    clear(identifier = identifier)
                 }
             }
             val logcatProcess = ProcessBuilder(adbPath, "-s", identifier, "logcat").apply {
@@ -218,8 +218,8 @@ class LogManager(
         }
     }
 
-    private fun clearAdbCache() {
-        "$adbPath logcat -c".runCommand()
+    private fun clearAdbCache(identifier: String) {
+        ("$adbPath -s $identifier logcat -c").runCommand()
     }
 
     private fun getPid(

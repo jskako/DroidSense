@@ -136,7 +136,7 @@ fun LogScreen(
                 MainButtonsSection(
                     onClearLogs = {
                         scope.launch {
-                            logManager.clear()
+                            logManager.clear(identifier = deviceIdentifier)
                             showMessage(getStringResource("info.logs.cleared"))
                         }
                     },
