@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,7 +58,7 @@ fun LogScreen(
     var isRunning by remember { mutableStateOf(false) }
     var exportInProgress by remember { mutableStateOf(false) }
     var selectedPackage by remember { mutableStateOf(EMPTY_STRING) }
-    val logs by remember { mutableStateOf(logManager.logs) }
+    val logs by logManager.logs.collectAsState()
     val scope = rememberCoroutineScope()
     val selectedCount = logs.count { it.isSelected }
     val hasSelectedLogs = selectedCount > 0

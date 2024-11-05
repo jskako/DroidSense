@@ -1,11 +1,12 @@
 package adb.log
 
-import androidx.compose.runtime.mutableStateListOf
 import data.model.items.LogItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import notifications.ExportData
@@ -25,14 +26,25 @@ class LogManager(
 ) : LogManagerInterface {
 
     private var monitorJob: Job? = null
-    private val _logs = mutableStateListOf<LogItem>()
     private var currentProcess: Process? = null
 
-    val logs: List<LogItem>
-        get() = _logs
+    private val _logs = MutableStateFlow<List<LogItem>>(emptyList())
+    val logs: StateFlow<List<LogItem>> = _logs
 
     val isActive: Boolean
         get() = monitorJob?.isActive == true
+
+    private fun addLog(log: LogItem) {
+        _logs.value += log
+    }
+
+    private fun removeFirstLog() {
+        _logs.value = _logs.value.drop(1)
+    }
+
+    private fun clearLogs() {
+        _logs.value = emptyList()
+    }
 
     suspend fun export(
         exportOption: ExportOption = ExportOption.ALL,
@@ -61,11 +73,16 @@ class LogManager(
         }
 
         withContext(Dispatchers.Default) {
-            _logs.forEachIndexed { index, log ->
+            val updatedLogs = _logs.value.map { log ->
                 if (log.isSelected != isSelectedValue) {
-                    _logs[index] = log.copy(isSelected = isSelectedValue)
+                    log.copy(isSelected = isSelectedValue)
+                } else {
+                    log
                 }
             }
+
+            _logs.value = updatedLogs
+
             onSelectDone()
         }
     }
@@ -73,7 +90,7 @@ class LogManager(
     private fun buildString(exportOption: ExportOption): String {
         return buildString {
             val logsToExport = when (exportOption) {
-                ExportOption.ALL -> logs
+                ExportOption.ALL -> logs.value
                 ExportOption.SELECTED -> getSelected()
             }
 
@@ -83,15 +100,17 @@ class LogManager(
         }
     }
 
-    private fun getSelected() = logs.filter { it.isSelected }
+    private fun getSelected(): List<LogItem> = logs.value.filter { it.isSelected }
 
     fun isSelected(uuid: UUID) {
-        runCatching {
-            val logData = _logs.find { it.uuid == uuid } ?: throw NoSuchElementException("Log entry not found")
-            val index = _logs.indexOf(logData)
-            _logs[index] = logData.copy(isSelected = !logData.isSelected)
-        }.onFailure { exception ->
+        val updatedLogs = _logs.value.map { logItem ->
+            if (logItem.uuid == uuid) {
+                logItem.copy(isSelected = !logItem.isSelected)
+            } else {
+                logItem
+            }
         }
+        _logs.value = updatedLogs
     }
 
     override suspend fun startMonitoring(
@@ -129,7 +148,7 @@ class LogManager(
 
     override suspend fun clear(identifier: String) {
         clearAdbCache(identifier = identifier)
-        _logs.clear()
+        clearLogs()
     }
 
     private suspend fun monitor(
@@ -178,7 +197,7 @@ class LogManager(
                                 it.getOrElse(0) { "" }.trim() to it.getOrElse(1) { "" }.trim()
                             } ?: ("" to "")
 
-                            _logs.add(
+                            addLog(
                                 LogItem(
                                     uuid = uuid,
                                     phoneSerialNumber = serialNumber,
@@ -202,8 +221,8 @@ class LogManager(
                             )
                         }
 
-                        if (_logs.size > LOG_MANAGER_NUMBER_OF_LINES) {
-                            _logs.removeFirst()
+                        if (_logs.value.size > LOG_MANAGER_NUMBER_OF_LINES) {
+                            removeFirstLog()
                         }
                     }
                 }
