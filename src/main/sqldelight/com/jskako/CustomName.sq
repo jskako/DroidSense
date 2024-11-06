@@ -7,6 +7,9 @@ getNameBy:
 SELECT * FROM CustomName
 WHERE uuid = :uuid;
 
+names:
+SELECT * FROM CustomName;
+
 insert:
 INSERT OR REPLACE INTO CustomName(uuid, name)
 VALUES(?,?);

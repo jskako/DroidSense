@@ -3,7 +3,7 @@ package data.model.items
 import adb.log.LogLevel
 import java.util.UUID
 
-data class LogItem (
+data class LogItem(
     val uuid: UUID,
     val phoneSerialNumber: String,
     val date: String,

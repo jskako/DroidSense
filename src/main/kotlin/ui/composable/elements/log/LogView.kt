@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import data.model.items.LogItem
 import data.repository.log.LogHistorySource
-import data.repository.name.NameSource
 import kotlinx.coroutines.launch
 import java.util.UUID
 
