@@ -25,7 +25,6 @@ import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
-import utils.capitalizeFirstChar
 import utils.getStringResource
 
 @Composable
