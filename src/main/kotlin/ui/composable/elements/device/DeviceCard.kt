@@ -280,8 +280,7 @@ fun DeviceCard(
                                             LogScreen(
                                                 sources = sources,
                                                 adbPath = adbPath,
-                                                deviceIdentifier = device.deviceIdentifier,
-                                                serialNumber = device.serialNumber,
+                                                device = device,
                                                 logManager = logManager
                                             )
                                         },

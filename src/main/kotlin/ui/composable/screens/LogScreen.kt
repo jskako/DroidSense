@@ -1,5 +1,6 @@
 package ui.composable.screens
 
+import adb.DeviceDetails
 import adb.log.ExportOption
 import adb.log.LogLevel
 import adb.log.LogManager
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.model.items.NameItem
+import data.model.items.PhoneItem
 import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
@@ -43,13 +45,13 @@ import utils.capitalizeFirstChar
 import utils.getStringResource
 import utils.getTimeStamp
 import utils.openFolderAtPath
+import java.util.UUID
 
 @Composable
 fun LogScreen(
     adbPath: String,
     logManager: LogManager,
-    deviceIdentifier: String,
-    serialNumber: String,
+    device: DeviceDetails,
     sources: Sources
 ) {
 
@@ -69,6 +71,7 @@ fun LogScreen(
     var selectionInProgress by remember { mutableStateOf(false) }
     val infoManager = remember { InfoManager() }
     var exportPath by remember { mutableStateOf<String?>(null) }
+    var currentUuid by remember { mutableStateOf(UUID(0, 0)) }
 
     fun showMessage(message: String) {
         infoManager.showMessage(
@@ -83,6 +86,19 @@ fun LogScreen(
         infoManager.showMessage(
             infoManagerData = infoManagerData,
             scope = scope
+        )
+    }
+
+    suspend fun addName() {
+        sources.nameSource.add(
+            nameItem = NameItem(
+                uuid = currentUuid,
+                name = "${device.manufacturer?.capitalizeFirstChar()}_${device.model}_${device.serialNumber}_${
+                    getTimeStamp(
+                        NAME_TIMESTAMP
+                    )
+                }"
+            )
         )
     }
 
@@ -107,9 +123,9 @@ fun LogScreen(
 
         LogStatusSection(
             adbPath = adbPath,
-            identifier = deviceIdentifier,
+            identifier = device.deviceIdentifier,
             logManager = logManager,
-            serialNumber = serialNumber,
+            serialNumber = device.serialNumber,
             onLogLevelSelected = {
                 logLevel = it
             },
@@ -128,25 +144,30 @@ fun LogScreen(
             },
             onUuidCreated = { uuid ->
                 if (saveToDatabase) {
+                    currentUuid = uuid
                     scope.launch {
-                        val phone = sources.phoneSource.by(serialNumber = serialNumber)
-                        sources.nameSource.add(
-                            nameItem = NameItem(
-                                uuid = uuid,
-                                name = "${phone?.manufacturer?.capitalizeFirstChar()}_${phone?.model}_${phone?.serialNumber}_${
-                                    getTimeStamp(
-                                        NAME_TIMESTAMP
-                                    )
-                                }"
-                            )
-                        )
+                        addName()
                     }
                 }
             },
             onLastLog = { log ->
-                //TODO - Check if phone exists, if not add
                 if (saveToDatabase) {
                     scope.launch {
+                        if (sources.nameSource.by(currentUuid) == null) {
+                            addName()
+                        }
+                        sources.phoneSource.let {
+                            if (it.by(serialNumber = device.serialNumber) == null) {
+                                it.add(
+                                    phoneItem = PhoneItem(
+                                        serialNumber = device.serialNumber,
+                                        model = device.model,
+                                        manufacturer = device.manufacturer,
+                                        brand = device.brand,
+                                    )
+                                )
+                            }
+                        }
                         sources.logHistorySource.add(log)
                     }
                 }
@@ -167,7 +188,7 @@ fun LogScreen(
                 MainButtonsSection(
                     onClearLogs = {
                         scope.launch {
-                            logManager.clear(identifier = deviceIdentifier)
+                            logManager.clear(identifier = device.deviceIdentifier)
                             showMessage(getStringResource("info.logs.cleared"))
                         }
                     },
