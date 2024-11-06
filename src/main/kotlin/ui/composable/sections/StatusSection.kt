@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ScreenShare
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.RunCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
@@ -35,6 +34,7 @@ import ui.composable.elements.TooltipTextButton
 import ui.composable.elements.iconButtons.IconClickableText
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.Sources
+import ui.composable.screens.HistoryScreen
 import ui.composable.screens.SettingsScreen
 import utils.Colors.darkGreen
 import utils.Colors.darkRed
@@ -137,7 +137,22 @@ fun StatusSection(
                 icon = Icons.Default.History,
                 tooltip = getStringResource("info.history"),
                 function = {
-
+                    windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                        newWindow(
+                            WindowData(
+                                title = getStringResource("info.history"),
+                                icon = Icons.Default.History,
+                                windowExtra = WindowExtra(
+                                    screen = {
+                                        HistoryScreen(
+                                            sources = sources
+                                        )
+                                    },
+                                    onClose = {}
+                                )
+                            )
+                        )
+                    }
                 }
             )
 
@@ -149,7 +164,7 @@ fun StatusSection(
                         newWindow(
                             WindowData(
                                 title = getStringResource("info.settings"),
-                                icon = Icons.Default.Info,
+                                icon = Icons.Default.Settings,
                                 windowExtra = WindowExtra(
                                     screen = {
                                         SettingsScreen(
