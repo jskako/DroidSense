@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,8 +30,11 @@ import data.repository.log.LogHistorySource
 import data.repository.name.NameSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import ui.composable.elements.DividerColored
 import ui.composable.elements.history.NameCard
 import ui.composable.elements.window.TextDialog
+import utils.Colors.transparentTextFieldDefault
+import utils.EMPTY_STRING
 import utils.getStringResource
 import java.util.UUID
 
@@ -52,6 +58,13 @@ fun LogHistorySection(
     var deleteInProgress by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     var showDialog by remember { mutableStateOf(false) }
+    var searchText by remember { mutableStateOf(EMPTY_STRING) }
+
+    val filteredNames = nameItems.filter { nameItem ->
+        searchText.isEmpty()
+                || nameItem.name.contains(searchText, ignoreCase = true)
+                || nameItem.uuid.toString().contains(searchText, ignoreCase = true)
+    }
 
     if (showDialog) {
         TextDialog(
@@ -77,10 +90,27 @@ fun LogHistorySection(
 
     Column(
         modifier = Modifier
-            .padding(vertical = 16.dp)
+            .padding(
+                horizontal = 4.dp,
+                vertical = 16.dp
+            )
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        TextField(
+            value = searchText,
+            colors = transparentTextFieldDefault,
+            singleLine = true,
+            onValueChange = {
+                searchText = it
+            },
+            placeholder = { Text(getStringResource("info.search")) },
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+
+        DividerColored()
 
         Box(
             modifier = Modifier.fillMaxSize()
@@ -90,7 +120,7 @@ fun LogHistorySection(
                 modifier = Modifier.padding(top = 8.dp),
                 state = listState
             ) {
-                items(nameItems) { nameItem ->
+                items(filteredNames) { nameItem ->
                     NameCard(
                         nameItem = nameItem,
                         onClick = {

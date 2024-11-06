@@ -23,6 +23,7 @@ import notifications.InfoManager
 import notifications.InfoManagerData
 import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
+import ui.composable.elements.DividerColored
 import ui.composable.elements.device.DeviceView
 import ui.composable.elements.window.Sources
 import ui.composable.sections.StatusSection
@@ -117,11 +118,8 @@ fun MainScreen(
             },
             adbPath = adbPath
         )
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 1.dp,
-            color = Color.Gray
-        )
+        DividerColored()
+
         CircularProgressBar(
             text = getStringResource("info.waiting.device"),
             isVisible = filteredDevices.isEmpty()
