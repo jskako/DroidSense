@@ -40,49 +40,10 @@ import utils.getStringResource
 @Composable
 fun DevicesHistorySection(
     sources: Sources,
-    onMessage: (InfoManagerData) -> Unit
-) {
-
-    var selectedScreen by remember { mutableStateOf(DeviceSectionScreen.DEVICES) }
-    var phoneItem by remember { mutableStateOf(emptyPhoneItem) }
-
-    when (selectedScreen) {
-        DeviceSectionScreen.LOG -> {
-            LogHistorySection(
-                nameSource = sources.nameSource,
-                logHistorySource = sources.logHistorySource,
-                phoneItem = phoneItem,
-                onMessage = {
-
-                },
-                onNavigateBack = {
-                    selectedScreen = DeviceSectionScreen.DEVICES
-                }
-            )
-        }
-
-        DeviceSectionScreen.DEVICES -> {
-            DeviceScreen(
-                sources = sources,
-                onMessage = onMessage,
-                onPhoneItem = {
-                    phoneItem = it
-                },
-                onSelectedScreen = {
-                    selectedScreen = it
-                }
-            )
-        }
-    }
-}
-
-@Composable
-private fun DeviceScreen(
-    sources: Sources,
     onMessage: (InfoManagerData) -> Unit,
-    onPhoneItem: (PhoneItem) -> Unit,
-    onSelectedScreen: (DeviceSectionScreen) -> Unit
+    onPhoneItemClicked: (PhoneItem) -> Unit,
 ) {
+
     val scope = rememberCoroutineScope()
     val phoneItems by sources.phoneSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
@@ -169,8 +130,7 @@ private fun DeviceScreen(
                     PhoneCard(
                         phoneItem = phoneItem,
                         onClick = {
-                            onPhoneItem(phoneItem)
-                            onSelectedScreen(DeviceSectionScreen.LOG)
+                            onPhoneItemClicked(phoneItem)
                         },
                         onDelete = {
                             selectedPhoneItem = phoneItem
@@ -199,8 +159,4 @@ private fun DeviceScreen(
             )
         }
     }
-}
-
-enum class DeviceSectionScreen {
-    LOG, DEVICES
 }

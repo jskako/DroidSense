@@ -19,6 +19,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
 import androidx.compose.material.icons.automirrored.filled.NavigateBefore
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Deselect
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -53,7 +57,7 @@ fun LogHistorySection(
     logHistorySource: LogHistorySource,
     onMessage: (InfoManagerData) -> Unit,
     phoneItem: PhoneItem = PhoneItem.emptyPhoneItem,
-    onNavigateBack: (() -> Unit)? = null
+    onFilterClear: () -> Unit,
 ) {
 
     val scope = rememberCoroutineScope()
@@ -114,18 +118,16 @@ fun LogHistorySection(
             phoneItem.let {
                 if (it.serialNumber.isNotEmpty()) {
 
-                    TooltipIconButton(
-                        icon = Icons.AutoMirrored.Filled.NavigateBefore,
-                        tooltip = getStringResource("info.navigate.back"),
-                        function = {
-                            onNavigateBack?.invoke()
-                        }
-                    )
-
                     Text(
                         text = "$it (${it.serialNumber})",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray
+                    )
+
+                    TooltipIconButton(
+                        icon = Icons.Default.Close,
+                        tooltip = getStringResource("info.clear.filter"),
+                        function = onFilterClear
                     )
                 }
             }
