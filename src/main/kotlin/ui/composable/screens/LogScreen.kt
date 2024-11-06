@@ -97,7 +97,8 @@ fun LogScreen(
                     getTimeStamp(
                         NAME_TIMESTAMP
                     )
-                }"
+                }",
+                deviceSerialNumber = device.serialNumber
             )
         )
     }

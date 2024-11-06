@@ -42,6 +42,10 @@ class LogHistorySource(
             }
         }
 
+    override fun uuids(serialNumber: String): List<UUID> {
+        return logDao.getUUIDsBySerialNumber(serialNumber).executeAsList().map { UUID.fromString(it) }
+    }
+
     override suspend fun deleteBy(uuid: UUID) {
         logDao.deleteBy(uuid.toString())
     }

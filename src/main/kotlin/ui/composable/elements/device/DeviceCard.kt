@@ -340,6 +340,6 @@ fun DeviceCard(
 }
 
 @Composable
-fun addSpaceHeight(height: Dp = 5.dp) {
+private fun addSpaceHeight(height: Dp = 5.dp) {
     Spacer(modifier = Modifier.height(height))
 }

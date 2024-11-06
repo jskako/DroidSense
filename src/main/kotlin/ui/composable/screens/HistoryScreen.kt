@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import notifications.InfoManager
 import ui.composable.elements.window.Sources
+import ui.composable.sections.history.DevicesHistorySection
 import ui.composable.sections.history.LogHistorySection
 import ui.composable.sections.info.InfoSection
 
@@ -66,7 +67,14 @@ fun HistoryScreen(
                         )
                     }
 
-                    HistoryOption.DEVICES -> {}
+                    HistoryOption.DEVICES -> {
+                        DevicesHistorySection(
+                            sources = sources,
+                            onMessage = {
+
+                            }
+                        )
+                    }
                 }
             }
         )

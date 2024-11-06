@@ -15,7 +15,11 @@ class NameSource(
 ) : NameRepository {
 
     override suspend fun add(nameItem: NameItem) {
-        nameDao.insert(uuid = nameItem.uuid.toString(), name = nameItem.name)
+        nameDao.insert(
+            uuid = nameItem.uuid.toString(),
+            name = nameItem.name,
+            deviceSerialNumber = nameItem.deviceSerialNumber,
+        )
     }
 
     override fun by(uuid: UUID) = nameDao.getNameBy(uuid = uuid.toString()).executeAsOneOrNull()?.toNameItem()
@@ -26,6 +30,10 @@ class NameSource(
                 name.toNameItem()
             }
         }
+
+    override fun uuids(serialNumber: String): List<UUID> {
+        return nameDao.getNamesBySerialNumber(serialNumber).executeAsList().map { it.toNameItem().uuid }
+    }
 
     override fun update(uuid: UUID, name: String) {
         nameDao.updateName(uuid = uuid.toString(), name = name)

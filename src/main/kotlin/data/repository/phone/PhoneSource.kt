@@ -22,8 +22,8 @@ class PhoneSource(
 
     override fun by(serialNumber: String) = phoneDao.getPhoneInfoBy(serialNumber).executeAsOneOrNull()?.toPhoneItem()
 
-    override fun by(context: CoroutineContext, serialNumber: String): Flow<List<PhoneItem>> =
-        phoneDao.getPhoneInfoBy(serialNumber).asFlow().mapToList(context).map {
+    override fun by(context: CoroutineContext): Flow<List<PhoneItem>> =
+        phoneDao.phones().asFlow().mapToList(context).map {
             it.map { phoneInfo ->
                 phoneInfo.toPhoneItem()
             }

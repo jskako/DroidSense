@@ -1,6 +1,7 @@
 CREATE TABLE CustomName (
     uuid TEXT NOT NULL PRIMARY KEY,
-    name TEXT
+    name TEXT NOT NULL,
+    deviceSerialNumber TEXT NOT NULL
 );
 
 getNameBy:
@@ -11,8 +12,12 @@ names:
 SELECT * FROM CustomName;
 
 insert:
-INSERT OR REPLACE INTO CustomName(uuid, name)
-VALUES(?,?);
+INSERT OR REPLACE INTO CustomName(uuid, name, deviceSerialNumber)
+VALUES(?,?, ?);
+
+getNamesBySerialNumber:
+SELECT * FROM CustomName
+WHERE deviceSerialNumber = :deviceSerialNumber;
 
 updateName:
 UPDATE CustomName

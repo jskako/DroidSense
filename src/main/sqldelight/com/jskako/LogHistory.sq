@@ -17,6 +17,13 @@ FROM LogHistory
 GROUP BY uuid
 ORDER BY id ASC;
 
+getUUIDsBySerialNumber:
+SELECT uuid
+FROM LogHistory
+WHERE phoneSerialNumber = ?
+GROUP BY uuid
+ORDER BY id ASC;
+
 getDataBy:
 SELECT * FROM LogHistory
 WHERE uuid = :uuid

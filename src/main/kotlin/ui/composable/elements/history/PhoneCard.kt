@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import data.model.items.NameItem
+import data.model.items.PhoneItem
 import notifications.InfoManagerData
 import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
@@ -29,8 +29,8 @@ import utils.capitalizeFirstChar
 import utils.getStringResource
 
 @Composable
-fun NameCard(
-    nameItem: NameItem,
+fun PhoneCard(
+    phoneItem: PhoneItem,
     onClick: () -> Unit,
     onDelete: () -> Unit,
     deleteInProgress: Boolean,
@@ -58,7 +58,7 @@ fun NameCard(
             ) {
 
                 BasicText(
-                    value = nameItem.name.capitalizeFirstChar(),
+                    value = phoneItem.toString(),
                     fontSize = 16.sp,
                     isBold = true,
                 )
@@ -77,12 +77,21 @@ fun NameCard(
                 )
             }
 
-            addSpaceHeight(4.dp)
+            addSpaceHeight(8.dp)
 
             BasicTextCaption(
-                text1 = getStringResource("info.uuid.identifier"),
-                text2 = nameItem.uuid.toString()
+                text1 = getStringResource("info.serial.number"),
+                text2 = phoneItem.serialNumber
             )
+
+            phoneItem.brand?.let {
+                addSpaceHeight(8.dp)
+
+                BasicTextCaption(
+                    text1 = getStringResource("info.phone.brand"),
+                    text2 = it
+                )
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ interface PhoneRepository {
 
     suspend fun add(phoneItem: PhoneItem)
     fun by(serialNumber: String): PhoneItem?
-    fun by(context: CoroutineContext, serialNumber: String): Flow<List<PhoneItem>>
+    fun by(context: CoroutineContext): Flow<List<PhoneItem>>
     suspend fun deleteBy(serialNumber: String)
     suspend fun deleteAll()
 }

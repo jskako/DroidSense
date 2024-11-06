@@ -9,6 +9,9 @@ insert:
 INSERT OR REPLACE INTO PhoneInfo(serialNumber, model, manufacturer, brand)
 VALUES(?,?,?,?);
 
+phones:
+SELECT * FROM PhoneInfo;
+
 getPhoneInfoBy:
 SELECT * FROM PhoneInfo
 WHERE serialNumber = :serialNumber;
