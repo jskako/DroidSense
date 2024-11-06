@@ -42,6 +42,43 @@ fun DevicesHistorySection(
     onMessage: (InfoManagerData) -> Unit
 ) {
 
+    var selectedScreen by remember { mutableStateOf(DeviceSectionScreen.DEVICES) }
+    var serialNumber by remember { mutableStateOf("") }
+
+    when (selectedScreen) {
+        DeviceSectionScreen.LOG -> {
+            LogHistorySection(
+                nameSource = sources.nameSource,
+                logHistorySource = sources.logHistorySource,
+                serialNumber = serialNumber,
+                onMessage = {
+
+                }
+            )
+        }
+
+        DeviceSectionScreen.DEVICES -> {
+            DeviceScreen(
+                sources = sources,
+                onMessage = onMessage,
+                onSerialNumber = {
+                    serialNumber = it
+                },
+                onSelectedScreen = {
+                    selectedScreen = it
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun DeviceScreen(
+    sources: Sources,
+    onMessage: (InfoManagerData) -> Unit,
+    onSerialNumber: (String) -> Unit,
+    onSelectedScreen: (DeviceSectionScreen) -> Unit
+) {
     val scope = rememberCoroutineScope()
     val phoneItems by sources.phoneSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
@@ -128,7 +165,8 @@ fun DevicesHistorySection(
                     PhoneCard(
                         phoneItem = phoneItem,
                         onClick = {
-
+                            onSerialNumber(phoneItem.serialNumber)
+                            onSelectedScreen(DeviceSectionScreen.LOG)
                         },
                         onDelete = {
                             selectedPhoneItem = phoneItem
@@ -157,4 +195,8 @@ fun DevicesHistorySection(
             )
         }
     }
+}
+
+enum class DeviceSectionScreen {
+    LOG, DEVICES
 }
