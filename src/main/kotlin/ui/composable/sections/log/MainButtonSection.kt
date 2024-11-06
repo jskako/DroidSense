@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
-import utils.Colors.darkRed
 import utils.Colors.lightGray
 import utils.getStringResource
 
@@ -30,6 +29,7 @@ fun MainButtonsSection(
     onClearLogs: () -> Unit,
     isClearLogsEnabled: Boolean,
     onExportLogs: () -> Unit,
+    isRunning: Boolean,
     scrollToEnd: Boolean,
     onScrollToEnd: (Boolean) -> Unit,
     scrollToEndEnabled: Boolean,
@@ -94,14 +94,20 @@ fun MainButtonsSection(
         TooltipIconButton(
             modifier = Modifier
                 .background(
-                    color = if (saveToDatabase) darkRed else Color.Transparent,
+                    color = Color.Transparent,
                     shape = CircleShape
                 ),
-            isEnabled = false,
             icon = Icons.Default.Save,
             tooltip = getStringResource("info.save.database"),
-            tint = lightGray,
-            function = { onSaveToDatabase(!saveToDatabase) }
+            tint = when {
+                !isRunning && saveToDatabase -> darkBlue
+                else -> lightGray
+            },
+            function = {
+                if (!isRunning) {
+                    onSaveToDatabase(!saveToDatabase)
+                }
+            }
         )
         TooltipIconButton(
             isEnabled = isExportEnabled,

@@ -1,6 +1,7 @@
 package utils
 
 const val DEFAULT_TIMESTAMP: String = "HH:mm:ss"
+const val NAME_TIMESTAMP: String = "dd_MM_yyyy_HH_mm_ss"
 const val EMPTY_STRING: String = ""
 const val SYSTEM_OS_PROPERTY: String = "os.name"
 const val SYSTEM_OS_ARCH: String = "os.arch"

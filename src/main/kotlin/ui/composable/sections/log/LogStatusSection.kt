@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import data.model.items.LogItem
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,6 +37,7 @@ import utils.Colors.transparentTextFieldDefault
 import utils.DEVICE_PACKAGES
 import utils.EMPTY_STRING
 import utils.getStringResource
+import java.util.UUID
 
 @Composable
 fun LogStatusSection(
@@ -48,7 +50,9 @@ fun LogStatusSection(
     onSearchTextChanged: (String) -> Unit,
     isRunning: Boolean,
     onIsRunning: (Boolean) -> Unit,
-    onPackageSelected: (String) -> Unit
+    onPackageSelected: (String) -> Unit,
+    onUuidCreated: (UUID) -> Unit,
+    onLastLog: (LogItem) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var selectedPackage by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
@@ -84,7 +88,9 @@ fun LogStatusSection(
                                             packageName = selectedPackage,
                                             identifier = identifier,
                                             serialNumber = serialNumber,
-                                            onMessage = onMessage
+                                            onMessage = onMessage,
+                                            onLastLog = onLastLog,
+                                            onUuidCreated = onUuidCreated
                                         )
                                     }
 

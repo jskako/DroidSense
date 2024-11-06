@@ -118,7 +118,9 @@ class LogManager(
         packageName: String,
         identifier: String,
         serialNumber: String,
-        onMessage: (InfoManagerData) -> Unit
+        onMessage: (InfoManagerData) -> Unit,
+        onUuidCreated: (UUID) -> Unit,
+        onLastLog: (LogItem) -> Unit
     ) {
         stopMonitoring()
         clear(identifier = identifier)
@@ -128,7 +130,9 @@ class LogManager(
                     packageName = packageName.takeUnless { it == getStringResource("info.log.starting.package") },
                     identifier = identifier,
                     serialNumber = serialNumber,
-                    onMessage = onMessage
+                    onMessage = onMessage,
+                    onUuidCreated = onUuidCreated,
+                    onLastLog = onLastLog
                 )
             }.onFailure { e ->
                 onMessage(
@@ -155,11 +159,14 @@ class LogManager(
         packageName: String?,
         identifier: String,
         serialNumber: String,
-        onMessage: (InfoManagerData) -> Unit
+        onMessage: (InfoManagerData) -> Unit,
+        onUuidCreated: (UUID) -> Unit,
+        onLastLog: (LogItem) -> Unit
     ) {
         withContext(Dispatchers.IO) {
             var pid = EMPTY_STRING
-            val uuid = UUID.randomUUID()
+            val uuid = UUID.randomUUID().also(onUuidCreated)
+
             if (!packageName.isNullOrEmpty()) {
                 pid = getPid(
                     identifier = identifier,
@@ -197,28 +204,29 @@ class LogManager(
                                 it.getOrElse(0) { "" }.trim() to it.getOrElse(1) { "" }.trim()
                             } ?: ("" to "")
 
-                            addLog(
-                                LogItem(
-                                    uuid = uuid,
-                                    phoneSerialNumber = serialNumber,
-                                    date = components.getOrElse(index = 0, defaultValue = { "" }),
-                                    time = components.getOrElse(index = 1, defaultValue = { "" }),
-                                    pid = components.getOrNull(index = 2)?.toLongOrNull() ?: 0L,
-                                    tid = components.getOrNull(index = 3)?.toLongOrNull() ?: 0L,
-                                    level = components.getOrNull(4)?.let {
-                                        when (it.first()) {
-                                            LogLevel.INFO.simplified() -> LogLevel.INFO
-                                            LogLevel.ERROR.simplified() -> LogLevel.ERROR
-                                            LogLevel.WARN.simplified() -> LogLevel.WARN
-                                            LogLevel.VERBOSE.simplified() -> LogLevel.VERBOSE
-                                            LogLevel.DEBUG.simplified() -> LogLevel.DEBUG
-                                            else -> LogLevel.NONE
-                                        }
-                                    } ?: LogLevel.NONE,
-                                    tag = tag,
-                                    text = text,
-                                )
-                            )
+                            LogItem(
+                                uuid = uuid,
+                                phoneSerialNumber = serialNumber,
+                                date = components.getOrElse(index = 0, defaultValue = { "" }),
+                                time = components.getOrElse(index = 1, defaultValue = { "" }),
+                                pid = components.getOrNull(index = 2)?.toLongOrNull() ?: 0L,
+                                tid = components.getOrNull(index = 3)?.toLongOrNull() ?: 0L,
+                                level = components.getOrNull(4)?.let {
+                                    when (it.first()) {
+                                        LogLevel.INFO.simplified() -> LogLevel.INFO
+                                        LogLevel.ERROR.simplified() -> LogLevel.ERROR
+                                        LogLevel.WARN.simplified() -> LogLevel.WARN
+                                        LogLevel.VERBOSE.simplified() -> LogLevel.VERBOSE
+                                        LogLevel.DEBUG.simplified() -> LogLevel.DEBUG
+                                        else -> LogLevel.NONE
+                                    }
+                                } ?: LogLevel.NONE,
+                                tag = tag,
+                                text = text,
+                            ).also {
+                                addLog(it)
+                                onLastLog(it)
+                            }
                         }
 
                         if (_logs.value.size > LOG_MANAGER_NUMBER_OF_LINES) {

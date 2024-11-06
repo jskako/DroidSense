@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import data.model.items.NameItem
 import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
@@ -37,7 +38,10 @@ import ui.composable.sections.log.LogStatusSection
 import ui.composable.sections.log.MainButtonsSection
 import utils.EMPTY_STRING
 import utils.LOG_MANAGER_NUMBER_OF_LINES
+import utils.NAME_TIMESTAMP
+import utils.capitalizeFirstChar
 import utils.getStringResource
+import utils.getTimeStamp
 import utils.openFolderAtPath
 
 @Composable
@@ -121,6 +125,31 @@ fun LogScreen(
             },
             onMessage = {
                 showMessage(infoManagerData = it)
+            },
+            onUuidCreated = { uuid ->
+                if (saveToDatabase) {
+                    scope.launch {
+                        val phone = sources.phoneSource.by(serialNumber = serialNumber)
+                        sources.nameSource.add(
+                            nameItem = NameItem(
+                                uuid = uuid,
+                                name = "${phone?.manufacturer?.capitalizeFirstChar()}_${phone?.model}_${phone?.serialNumber}_${
+                                    getTimeStamp(
+                                        NAME_TIMESTAMP
+                                    )
+                                }"
+                            )
+                        )
+                    }
+                }
+            },
+            onLastLog = { log ->
+                //TODO - Check if phone exists, if not add
+                if (saveToDatabase) {
+                    scope.launch {
+                        sources.logHistorySource.add(log)
+                    }
+                }
             }
         )
 
@@ -146,6 +175,7 @@ fun LogScreen(
                     onScrollToEnd = {
                         scrollToEnd = it
                     },
+                    isRunning = isRunning,
                     reverseLogs = reverseLogs,
                     onReverseLogs = {
                         scrollToEnd = false

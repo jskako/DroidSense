@@ -1,7 +1,9 @@
 package adb.log
 
+import data.model.items.LogItem
 import kotlinx.coroutines.CoroutineScope
 import notifications.InfoManagerData
+import java.util.UUID
 
 interface LogManagerInterface {
     suspend fun startMonitoring(
@@ -9,7 +11,9 @@ interface LogManagerInterface {
         packageName: String,
         identifier: String,
         serialNumber: String,
-        onMessage: (InfoManagerData) -> Unit
+        onMessage: (InfoManagerData) -> Unit,
+        onUuidCreated: (UUID) -> Unit,
+        onLastLog: (LogItem) -> Unit
     )
 
     suspend fun stopMonitoring()
