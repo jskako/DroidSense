@@ -25,7 +25,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.model.items.PhoneItem.Companion.emptyPhone
+import data.model.items.PhoneItem
+import data.model.items.PhoneItem.Companion.emptyPhoneItem
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.composable.elements.DividerColored
@@ -43,16 +44,19 @@ fun DevicesHistorySection(
 ) {
 
     var selectedScreen by remember { mutableStateOf(DeviceSectionScreen.DEVICES) }
-    var serialNumber by remember { mutableStateOf("") }
+    var phoneItem by remember { mutableStateOf(emptyPhoneItem) }
 
     when (selectedScreen) {
         DeviceSectionScreen.LOG -> {
             LogHistorySection(
                 nameSource = sources.nameSource,
                 logHistorySource = sources.logHistorySource,
-                serialNumber = serialNumber,
+                phoneItem = phoneItem,
                 onMessage = {
 
+                },
+                onNavigateBack = {
+                    selectedScreen = DeviceSectionScreen.DEVICES
                 }
             )
         }
@@ -61,8 +65,8 @@ fun DevicesHistorySection(
             DeviceScreen(
                 sources = sources,
                 onMessage = onMessage,
-                onSerialNumber = {
-                    serialNumber = it
+                onPhoneItem = {
+                    phoneItem = it
                 },
                 onSelectedScreen = {
                     selectedScreen = it
@@ -76,14 +80,14 @@ fun DevicesHistorySection(
 private fun DeviceScreen(
     sources: Sources,
     onMessage: (InfoManagerData) -> Unit,
-    onSerialNumber: (String) -> Unit,
+    onPhoneItem: (PhoneItem) -> Unit,
     onSelectedScreen: (DeviceSectionScreen) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val phoneItems by sources.phoneSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
-    var selectedPhoneItem by remember { mutableStateOf(emptyPhone) }
+    var selectedPhoneItem by remember { mutableStateOf(emptyPhoneItem) }
     var showDialog by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
 
@@ -165,7 +169,7 @@ private fun DeviceScreen(
                     PhoneCard(
                         phoneItem = phoneItem,
                         onClick = {
-                            onSerialNumber(phoneItem.serialNumber)
+                            onPhoneItem(phoneItem)
                             onSelectedScreen(DeviceSectionScreen.LOG)
                         },
                         onDelete = {

@@ -1,9 +1,11 @@
 package ui.composable.sections.history
 
 import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +15,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
+import androidx.compose.material.icons.automirrored.filled.NavigateBefore
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -24,14 +31,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import data.model.items.NameItem.Companion.emptyNameItem
+import data.model.items.PhoneItem
 import data.repository.log.LogHistorySource
 import data.repository.name.NameSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.composable.elements.DividerColored
 import ui.composable.elements.history.NameCard
+import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.TextDialog
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
@@ -42,7 +52,8 @@ fun LogHistorySection(
     nameSource: NameSource,
     logHistorySource: LogHistorySource,
     onMessage: (InfoManagerData) -> Unit,
-    serialNumber: String = "",
+    phoneItem: PhoneItem = PhoneItem.emptyPhoneItem,
+    onNavigateBack: (() -> Unit)? = null
 ) {
 
     val scope = rememberCoroutineScope()
@@ -58,8 +69,8 @@ fun LogHistorySection(
                 nameItem.name.contains(searchText, ignoreCase = true) ||
                 nameItem.uuid.toString().contains(searchText, ignoreCase = true)
 
-        val matchesSerialNumber = serialNumber.isEmpty() ||
-                nameItem.deviceSerialNumber.contains(serialNumber, ignoreCase = true)
+        val matchesSerialNumber = phoneItem.serialNumber.isEmpty() ||
+                nameItem.deviceSerialNumber.contains(phoneItem.serialNumber, ignoreCase = true)
 
         matchesSearchText && matchesSerialNumber
     }
@@ -95,18 +106,42 @@ fun LogHistorySection(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
-        TextField(
-            value = searchText,
-            colors = transparentTextFieldDefault,
-            singleLine = true,
-            onValueChange = {
-                searchText = it
-            },
-            placeholder = { Text(getStringResource("info.search")) },
-            modifier = Modifier
-                .fillMaxWidth()
-        )
+            phoneItem.let {
+                if (it.serialNumber.isNotEmpty()) {
+
+                    TooltipIconButton(
+                        icon = Icons.AutoMirrored.Filled.NavigateBefore,
+                        tooltip = getStringResource("info.navigate.back"),
+                        function = {
+                            onNavigateBack?.invoke()
+                        }
+                    )
+
+                    Text(
+                        text = "$it (${it.serialNumber})",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
+                }
+            }
+
+            TextField(
+                value = searchText,
+                colors = transparentTextFieldDefault,
+                singleLine = true,
+                onValueChange = {
+                    searchText = it
+                },
+                placeholder = { Text(getStringResource("info.search")) },
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
 
         DividerColored()
 

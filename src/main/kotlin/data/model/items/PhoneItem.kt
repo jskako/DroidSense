@@ -14,7 +14,7 @@ data class PhoneItem(
     }
 
     companion object {
-        val emptyPhone = PhoneItem(
+        val emptyPhoneItem = PhoneItem(
             serialNumber = "",
             model = null,
             manufacturer = null,
