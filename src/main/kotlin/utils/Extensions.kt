@@ -60,23 +60,12 @@ fun String.exportToFile(
         )
     }
 
-    val result = runCatching {
+    return runCatching {
         val file = File(path)
         file.parentFile?.mkdirs()
         FileWriter(file, false).use { writer ->
             writer.write(this)
         }
-    }
-
-    return if (result.isFailure) {
-        ExportData(
-            infoManagerData = InfoManagerData(
-                message = getStringResource("error.export.general"),
-                color = darkRed
-            )
-        )
-
-    } else {
         ExportData(
             infoManagerData = InfoManagerData(
                 message = "${getStringResource("success.export.general")}: $path",
@@ -85,9 +74,15 @@ fun String.exportToFile(
             ),
             path = path
         )
+    }.getOrElse {
+        ExportData(
+            infoManagerData = InfoManagerData(
+                message = getStringResource("error.export.general"),
+                color = darkRed
+            )
+        )
     }
 }
-
 fun openFolderAtPath(path: String): InfoManagerData {
     val result = runCatching {
         val file = File(path)

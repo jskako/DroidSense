@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileDownload
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -28,16 +29,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import data.model.items.LogItem
-import kotlinx.coroutines.launch
 import notifications.InfoManager
 import ui.composable.elements.DividerColored
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.log.LogCard
+import ui.composable.sections.info.FunctionIconData
 import ui.composable.sections.info.InfoSection
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
 import utils.exportToFile
 import utils.getStringResource
+import utils.openFolderAtPath
 
 @Composable
 fun LogHistoryDetailsScreen(
@@ -48,7 +50,7 @@ fun LogHistoryDetailsScreen(
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
     val listState = rememberLazyListState()
     val infoManager = remember { InfoManager() }
-
+    var exportPath by remember { mutableStateOf<String?>(null) }
     val filteredLogs = logs.filter { log ->
         (searchText.isEmpty() || log.text.contains(searchText, ignoreCase = true))
     }
@@ -65,7 +67,19 @@ fun LogHistoryDetailsScreen(
         InfoSection(
             onCloseClicked = { infoManager.clearInfoMessage() },
             message = infoManager.infoManagerData.value.message,
-            color = infoManager.infoManagerData.value.color
+            color = infoManager.infoManagerData.value.color,
+            onExtraClicked = exportPath?.let {
+                FunctionIconData(
+                    function = {
+                        infoManager.showMessage(
+                            infoManagerData = openFolderAtPath(path = it),
+                            scope = scope
+                        )
+                    },
+                    icon = Icons.Default.FolderOpen
+                )
+            },
+            buttonVisible = infoManager.infoManagerData.value.buttonVisible
         )
 
         Row(
@@ -89,17 +103,16 @@ fun LogHistoryDetailsScreen(
                 icon = Icons.Default.FileDownload,
                 tooltip = getStringResource("info.export.logs"),
                 function = {
-                    scope.launch {
-                        buildString {
-                            logs.forEach { log ->
-                                appendLine(log.toString())
-                            }
-                        }.exportToFile().also {
-                            infoManager.showMessage(
-                                infoManagerData = it.infoManagerData,
-                                scope = scope
-                            )
+                    buildString {
+                        logs.forEach { log ->
+                            appendLine(log.toString())
                         }
+                    }.exportToFile().also {
+                        exportPath = it.path
+                        infoManager.showMessage(
+                            infoManagerData = it.infoManagerData,
+                            scope = scope
+                        )
                     }
                 }
             )
