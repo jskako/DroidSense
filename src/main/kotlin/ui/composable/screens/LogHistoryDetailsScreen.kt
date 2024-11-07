@@ -29,10 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import data.model.items.LogItem
 import kotlinx.coroutines.launch
-import notifications.InfoManagerData
+import notifications.InfoManager
 import ui.composable.elements.DividerColored
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.log.LogCard
+import ui.composable.sections.info.InfoSection
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
 import utils.exportToFile
@@ -41,12 +42,12 @@ import utils.getStringResource
 @Composable
 fun LogHistoryDetailsScreen(
     logs: List<LogItem>,
-    onMessage: (InfoManagerData) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
     val listState = rememberLazyListState()
+    val infoManager = remember { InfoManager() }
 
     val filteredLogs = logs.filter { log ->
         (searchText.isEmpty() || log.text.contains(searchText, ignoreCase = true))
@@ -60,6 +61,13 @@ fun LogHistoryDetailsScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        InfoSection(
+            onCloseClicked = { infoManager.clearInfoMessage() },
+            message = infoManager.infoManagerData.value.message,
+            color = infoManager.infoManagerData.value.color
+        )
+
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
@@ -87,7 +95,10 @@ fun LogHistoryDetailsScreen(
                                 appendLine(log.toString())
                             }
                         }.exportToFile().also {
-                            onMessage(it.infoManagerData)
+                            infoManager.showMessage(
+                                infoManagerData = it.infoManagerData,
+                                scope = scope
+                            )
                         }
                     }
                 }

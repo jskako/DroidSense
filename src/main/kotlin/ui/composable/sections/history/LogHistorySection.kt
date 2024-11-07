@@ -172,8 +172,7 @@ fun LogHistorySection(
                                                 ).collectAsState(initial = emptyList())
 
                                                 LogHistoryDetailsScreen(
-                                                    logs = logs,
-                                                    onMessage = onMessage
+                                                    logs = logs
                                                 )
                                             },
                                             onClose = {}
