@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -37,10 +38,14 @@ import data.repository.log.LogHistorySource
 import data.repository.name.NameSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import ui.application.WindowExtra
+import ui.application.WindowStateManager
+import ui.application.navigation.WindowData
 import ui.composable.elements.DividerColored
 import ui.composable.elements.history.NameCard
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.TextDialog
+import ui.composable.screens.LogHistoryDetailsScreen
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
 import utils.getStringResource
@@ -48,6 +53,7 @@ import utils.getStringResource
 @Composable
 fun LogHistorySection(
     nameSource: NameSource,
+    windowStateManager: WindowStateManager,
     logHistorySource: LogHistorySource,
     onMessage: (InfoManagerData) -> Unit,
     phoneItem: PhoneItem = PhoneItem.emptyPhoneItem,
@@ -153,7 +159,28 @@ fun LogHistorySection(
                     NameCard(
                         nameItem = nameItem,
                         onClick = {
+                            windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                                newWindow(
+                                    WindowData(
+                                        title = "${nameItem.name} (${nameItem.deviceSerialNumber})",
+                                        icon = Icons.Default.Info,
+                                        windowExtra = WindowExtra(
+                                            screen = {
+                                                val logs by logHistorySource.by(
+                                                    context = scope.coroutineContext,
+                                                    uuid = nameItem.uuid
+                                                ).collectAsState(initial = emptyList())
 
+                                                LogHistoryDetailsScreen(
+                                                    logs = logs,
+                                                    onMessage = onMessage
+                                                )
+                                            },
+                                            onClose = {}
+                                        )
+                                    )
+                                )
+                            }
                         },
                         onDelete = {
                             selectedNameItem = nameItem

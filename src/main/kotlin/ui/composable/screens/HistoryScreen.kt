@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import data.model.items.PhoneItem.Companion.emptyPhoneItem
 import notifications.InfoManager
+import ui.application.WindowStateManager
 import ui.composable.elements.window.Sources
 import ui.composable.sections.history.DevicesHistorySection
 import ui.composable.sections.history.LogHistorySection
@@ -24,6 +25,7 @@ import ui.composable.sections.info.InfoSection
 
 @Composable
 fun HistoryScreen(
+    windowStateManager: WindowStateManager,
     sources: Sources
 ) {
 
@@ -61,14 +63,18 @@ fun HistoryScreen(
                 when (selectedOption) {
                     HistoryOption.LOGS -> {
                         LogHistorySection(
+                            windowStateManager = windowStateManager,
                             nameSource = sources.nameSource,
                             logHistorySource = sources.logHistorySource,
                             phoneItem = phoneItem,
                             onFilterClear = {
                                 phoneItem = emptyPhoneItem
                             },
-                            onMessage = {
-
+                            onMessage = { infoManagerData ->
+                                infoManager.showMessage(
+                                    infoManagerData = infoManagerData,
+                                    scope = scope
+                                )
                             }
                         )
                     }

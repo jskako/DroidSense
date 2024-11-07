@@ -35,7 +35,6 @@ import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import utils.Colors.transparentTextFieldDefault
 import utils.DEVICE_PACKAGES
-import utils.EMPTY_STRING
 import utils.getStringResource
 import java.util.UUID
 
@@ -47,6 +46,7 @@ fun LogStatusSection(
     logManager: LogManager,
     onMessage: (InfoManagerData) -> Unit,
     onLogLevelSelected: (LogLevel) -> Unit,
+    searchText: String,
     onSearchTextChanged: (String) -> Unit,
     isRunning: Boolean,
     onIsRunning: (Boolean) -> Unit,
@@ -57,7 +57,6 @@ fun LogStatusSection(
     val scope = rememberCoroutineScope()
     var selectedPackage by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
     var selectedLogLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
-    var searchText by remember { mutableStateOf(EMPTY_STRING) }
 
     Box(
         modifier = Modifier
@@ -143,7 +142,6 @@ fun LogStatusSection(
                     colors = transparentTextFieldDefault,
                     singleLine = true,
                     onValueChange = {
-                        searchText = it
                         onSearchTextChanged(it)
                     },
                     placeholder = { Text(getStringResource("info.search")) },

@@ -14,31 +14,25 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import data.model.items.LogItem
-import data.repository.log.LogHistorySource
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 
 @Composable
 fun LogView(
-    logHistorySource: LogHistorySource,
     logs: List<LogItem>,
     logLevel: LogLevel,
     filteredText: String,
     scrollToEnd: Boolean,
-    saveToDatabase: Boolean,
     reversedLogs: Boolean,
     fontSize: TextUnit,
     onLogSelected: (UUID) -> Unit,
 ) {
     val listState = rememberLazyListState()
-    val scope = rememberCoroutineScope()
 
     if (scrollToEnd) {
         LaunchedEffect(logs.size) {
@@ -61,11 +55,6 @@ fun LogView(
             items(
                 if (reversedLogs) filteredLogs.reversed() else filteredLogs
             ) { item ->
-                if (saveToDatabase) {
-                    scope.launch {
-                        logHistorySource.add(item)
-                    }
-                }
                 LogCard(
                     item = item,
                     fontSize = fontSize,

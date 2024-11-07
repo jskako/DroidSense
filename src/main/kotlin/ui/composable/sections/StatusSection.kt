@@ -145,6 +145,7 @@ fun StatusSection(
                                 windowExtra = WindowExtra(
                                     screen = {
                                         HistoryScreen(
+                                            windowStateManager = windowStateManager,
                                             sources = sources
                                         )
                                     },

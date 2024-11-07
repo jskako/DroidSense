@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import data.model.items.LogItem
 import ui.composable.elements.BasicText
 import ui.composable.elements.TextBox
@@ -23,8 +24,8 @@ import utils.Colors.lightGray
 @Composable
 fun LogCard(
     item: LogItem,
-    fontSize: TextUnit,
-    onClicked: () -> Unit
+    fontSize: TextUnit = 13.sp,
+    onClicked: (() -> Unit)? = null
 ) {
 
     val (levelBackgroundColor, levelTextColor) = item.level.getLogColor()
@@ -32,7 +33,9 @@ fun LogCard(
     Column(
         modifier = Modifier
             .background(color = if (item.isSelected) lightGray else Color.Transparent)
-            .clickable { onClicked() }
+            .then(
+                onClicked?.let { Modifier.clickable { it() } } ?: Modifier
+            )
     ) {
         Row(
             horizontalArrangement = Arrangement.Start,

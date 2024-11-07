@@ -56,7 +56,7 @@ fun LogScreen(
 ) {
 
     var logLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
-    var filteredText by remember { mutableStateOf(EMPTY_STRING) }
+    var searchText by remember { mutableStateOf(EMPTY_STRING) }
     var reverseLogs by remember { mutableStateOf(false) }
     var scrollToEnd by remember { mutableStateOf(true) }
     var saveToDatabase by remember { mutableStateOf(true) }
@@ -130,8 +130,9 @@ fun LogScreen(
             onLogLevelSelected = {
                 logLevel = it
             },
+            searchText = searchText,
             onSearchTextChanged = {
-                filteredText = it
+                searchText = it
             },
             isRunning = isRunning,
             onIsRunning = {
@@ -289,15 +290,13 @@ fun LogScreen(
                     )
                 } else {
                     LogView(
-                        logHistorySource = sources.logHistorySource,
                         logs = logs.takeLast(
                             LOG_MANAGER_NUMBER_OF_LINES
                         ),
                         logLevel = logLevel,
-                        filteredText = filteredText,
+                        filteredText = searchText,
                         reversedLogs = reverseLogs,
                         scrollToEnd = scrollToEnd,
-                        saveToDatabase = saveToDatabase,
                         fontSize = fontSize,
                         onLogSelected = { uuid ->
                             if (!selectionInProgress) {
