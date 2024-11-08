@@ -7,7 +7,8 @@ import java.util.UUID
 
 fun LogHistory.toLogItem(): LogItem {
     return LogItem(
-        uuid = UUID.fromString(this.uuid),
+        sessionUuid = UUID.fromString(this.sessionUuid),
+        itemUuid = UUID.fromString(this.itemUuid),
         phoneSerialNumber = this.phoneSerialNumber,
         date = this.date,
         time = this.time,

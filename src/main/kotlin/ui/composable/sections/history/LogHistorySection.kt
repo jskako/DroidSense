@@ -71,7 +71,7 @@ fun LogHistorySection(
     val filteredNames = nameItems.filter { nameItem ->
         val matchesSearchText = searchText.isEmpty() ||
                 nameItem.name.contains(searchText, ignoreCase = true) ||
-                nameItem.uuid.toString().contains(searchText, ignoreCase = true)
+                nameItem.sessionUuid.toString().contains(searchText, ignoreCase = true)
 
         val matchesSerialNumber = phoneItem.serialNumber.isEmpty() ||
                 nameItem.deviceSerialNumber.contains(phoneItem.serialNumber, ignoreCase = true)
@@ -84,13 +84,13 @@ fun LogHistorySection(
             title = getStringResource("info.delete.log.title"),
             description = buildString {
                 appendLine(getStringResource("info.delete.log.description"))
-                appendLine(selectedNameItem.uuid)
+                appendLine(selectedNameItem.sessionUuid)
             },
             onConfirmRequest = {
                 showDialog = false
                 scope.launch {
-                    logHistorySource.deleteBy(selectedNameItem.uuid)
-                    nameSource.deleteBy(selectedNameItem.uuid)
+                    logHistorySource.deleteBy(selectedNameItem.sessionUuid)
+                    nameSource.deleteBy(selectedNameItem.sessionUuid)
                     deleteInProgress = false
                 }
             },
@@ -168,7 +168,7 @@ fun LogHistorySection(
                                             screen = {
                                                 val logs by logHistorySource.by(
                                                     context = scope.coroutineContext,
-                                                    uuid = nameItem.uuid
+                                                    sessionUuid = nameItem.sessionUuid
                                                 ).collectAsState(initial = emptyList())
 
                                                 LogHistoryDetailsScreen(

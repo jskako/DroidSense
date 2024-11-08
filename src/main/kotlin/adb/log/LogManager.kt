@@ -104,7 +104,7 @@ class LogManager(
 
     fun isSelected(uuid: UUID) {
         val updatedLogs = _logs.value.map { logItem ->
-            if (logItem.uuid == uuid) {
+            if (logItem.itemUuid == uuid) {
                 logItem.copy(isSelected = !logItem.isSelected)
             } else {
                 logItem
@@ -205,7 +205,8 @@ class LogManager(
                             } ?: ("" to "")
 
                             LogItem(
-                                uuid = uuid,
+                                sessionUuid = uuid,
+                                itemUuid = UUID.randomUUID(),
                                 phoneSerialNumber = serialNumber,
                                 date = components.getOrElse(index = 0, defaultValue = { "" }),
                                 time = components.getOrElse(index = 1, defaultValue = { "" }),

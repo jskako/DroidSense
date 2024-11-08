@@ -4,7 +4,8 @@ import adb.log.LogLevel
 import java.util.UUID
 
 data class LogItem(
-    val uuid: UUID,
+    val sessionUuid: UUID,
+    val itemUuid: UUID,
     val phoneSerialNumber: String,
     val date: String,
     val time: String,
@@ -17,7 +18,7 @@ data class LogItem(
 ) {
     override fun toString(): String {
         return buildString {
-            appendLine("$level - $time")
+            appendLine("$date $time $level $pid-$tid $tag")
             appendLine(text)
         }
     }

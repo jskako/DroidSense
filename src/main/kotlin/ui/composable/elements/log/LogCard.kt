@@ -43,7 +43,7 @@ fun LogCard(
         ) {
             TextBox(
                 startPadding = 0.dp,
-                text = item.time,
+                text = "${item.date} ${item.time}",
                 backgroundColor = Color.Transparent,
                 fontSize = fontSize,
             )
@@ -54,6 +54,20 @@ fun LogCard(
                 fontSize = fontSize,
                 backgroundColor = levelBackgroundColor,
                 textColor = levelTextColor,
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            TextBox(
+                startPadding = 0.dp,
+                text = "${item.pid} - ${item.tid}",
+                backgroundColor = Color.Transparent,
+                fontSize = fontSize,
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            TextBox(
+                startPadding = 0.dp,
+                text = item.tag,
+                backgroundColor = Color.Transparent,
+                fontSize = fontSize,
             )
         }
         BasicText(

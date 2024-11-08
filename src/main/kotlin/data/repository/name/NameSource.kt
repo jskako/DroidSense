@@ -16,13 +16,14 @@ class NameSource(
 
     override suspend fun add(nameItem: NameItem) {
         nameDao.insert(
-            uuid = nameItem.uuid.toString(),
+            sessionUuid = nameItem.sessionUuid.toString(),
             name = nameItem.name,
             deviceSerialNumber = nameItem.deviceSerialNumber,
         )
     }
 
-    override fun by(uuid: UUID) = nameDao.getNameBy(uuid = uuid.toString()).executeAsOneOrNull()?.toNameItem()
+    override fun by(sessionUuid: UUID) =
+        nameDao.getNameBy(sessionUuid = sessionUuid.toString()).executeAsOneOrNull()?.toNameItem()
 
     override fun by(context: CoroutineContext): Flow<List<NameItem>> =
         nameDao.names().asFlow().mapToList(context).map {
@@ -32,15 +33,15 @@ class NameSource(
         }
 
     override fun uuids(serialNumber: String): List<UUID> {
-        return nameDao.getNamesBySerialNumber(serialNumber).executeAsList().map { it.toNameItem().uuid }
+        return nameDao.getNamesBySerialNumber(serialNumber).executeAsList().map { it.toNameItem().sessionUuid }
     }
 
-    override fun update(uuid: UUID, name: String) {
-        nameDao.updateName(uuid = uuid.toString(), name = name)
+    override fun update(sessionUuid: UUID, name: String) {
+        nameDao.updateName(sessionUuid = sessionUuid.toString(), name = name)
     }
 
-    override suspend fun deleteBy(uuid: UUID) {
-        nameDao.deleteBy(uuid = uuid.toString())
+    override suspend fun deleteBy(sessionUuid: UUID) {
+        nameDao.deleteBy(sessionUuid = sessionUuid.toString())
     }
 
     override suspend fun deleteAll() = nameDao.nukeTable()

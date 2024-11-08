@@ -4,9 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.jskako.LogHistoryQueries
 import data.model.items.LogItem
-import data.model.items.UuidItem
 import data.model.mappers.toLogItem
-import data.model.mappers.toUuidItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -17,7 +15,8 @@ class LogHistorySource(
 ) : LogRepository {
 
     override suspend fun add(logItem: LogItem) = logDao.insert(
-        uuid = logItem.uuid.toString(),
+        sessionUuid = logItem.sessionUuid.toString(),
+        itemUuid = logItem.itemUuid.toString(),
         phoneSerialNumber = logItem.phoneSerialNumber,
         date = logItem.date,
         time = logItem.time,
@@ -28,15 +27,8 @@ class LogHistorySource(
         text = logItem.text
     )
 
-    override fun uuids(context: CoroutineContext): Flow<List<UuidItem>> =
-        logDao.getUUIDs().asFlow().mapToList(context).map {
-            it.map { getUUIDs ->
-                getUUIDs.toUuidItem()
-            }
-        }
-
-    override fun by(context: CoroutineContext, uuid: UUID): Flow<List<LogItem>> =
-        logDao.getDataBy(uuid.toString()).asFlow().mapToList(context).map {
+    override fun by(context: CoroutineContext, sessionUuid: UUID): Flow<List<LogItem>> =
+        logDao.getDataBy(sessionUuid.toString()).asFlow().mapToList(context).map {
             it.map { logHistory ->
                 logHistory.toLogItem()
             }
@@ -46,8 +38,8 @@ class LogHistorySource(
         return logDao.getUUIDsBySerialNumber(serialNumber).executeAsList().map { UUID.fromString(it) }
     }
 
-    override suspend fun deleteBy(uuid: UUID) {
-        logDao.deleteBy(uuid.toString())
+    override suspend fun deleteBy(sessionUuid: UUID) {
+        logDao.deleteBy(sessionUuid.toString())
     }
 
     override suspend fun deleteAll() = logDao.nukeTable()

@@ -83,6 +83,7 @@ fun String.exportToFile(
         )
     }
 }
+
 fun openFolderAtPath(path: String): InfoManagerData {
     val result = runCatching {
         val file = File(path)

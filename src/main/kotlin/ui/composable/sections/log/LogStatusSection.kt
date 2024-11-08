@@ -51,7 +51,7 @@ fun LogStatusSection(
     isRunning: Boolean,
     onIsRunning: (Boolean) -> Unit,
     onPackageSelected: (String) -> Unit,
-    onUuidCreated: (UUID) -> Unit,
+    onSessionUuidCreated: (UUID) -> Unit,
     onLastLog: (LogItem) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -89,7 +89,7 @@ fun LogStatusSection(
                                             serialNumber = serialNumber,
                                             onMessage = onMessage,
                                             onLastLog = onLastLog,
-                                            onUuidCreated = onUuidCreated
+                                            onUuidCreated = onSessionUuidCreated
                                         )
                                     }
 

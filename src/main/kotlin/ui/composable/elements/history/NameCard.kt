@@ -81,7 +81,7 @@ fun NameCard(
 
             BasicTextCaption(
                 text1 = getStringResource("info.uuid.identifier"),
-                text2 = nameItem.uuid.toString()
+                text2 = nameItem.sessionUuid.toString()
             )
         }
     }

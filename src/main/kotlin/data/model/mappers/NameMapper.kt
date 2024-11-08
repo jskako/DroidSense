@@ -6,7 +6,7 @@ import java.util.UUID
 
 fun CustomName.toNameItem(): NameItem {
     return NameItem(
-        uuid = UUID.fromString(this.uuid),
+        sessionUuid = UUID.fromString(this.sessionUuid),
         name = this.name,
         deviceSerialNumber = this.deviceSerialNumber,
     )

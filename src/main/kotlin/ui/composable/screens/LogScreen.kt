@@ -71,7 +71,7 @@ fun LogScreen(
     var selectionInProgress by remember { mutableStateOf(false) }
     val infoManager = remember { InfoManager() }
     var exportPath by remember { mutableStateOf<String?>(null) }
-    var currentUuid by remember { mutableStateOf(UUID(0, 0)) }
+    var currentSessionUuid by remember { mutableStateOf(UUID(0, 0)) }
 
     fun showMessage(message: String) {
         infoManager.showMessage(
@@ -92,7 +92,7 @@ fun LogScreen(
     suspend fun addName() {
         sources.nameSource.add(
             nameItem = NameItem(
-                uuid = currentUuid,
+                sessionUuid = currentSessionUuid,
                 name = "${device.manufacturer?.capitalizeFirstChar()}_${device.model}_${device.serialNumber}_${
                     getTimeStamp(
                         NAME_TIMESTAMP
@@ -144,9 +144,9 @@ fun LogScreen(
             onMessage = {
                 showMessage(infoManagerData = it)
             },
-            onUuidCreated = { uuid ->
+            onSessionUuidCreated = { sessionUuid ->
                 if (saveToDatabase) {
-                    currentUuid = uuid
+                    currentSessionUuid = sessionUuid
                     scope.launch {
                         addName()
                     }
@@ -155,7 +155,7 @@ fun LogScreen(
             onLastLog = { log ->
                 if (saveToDatabase) {
                     scope.launch {
-                        if (sources.nameSource.by(currentUuid) == null) {
+                        if (sources.nameSource.by(currentSessionUuid) == null) {
                             addName()
                         }
                         sources.phoneSource.let {

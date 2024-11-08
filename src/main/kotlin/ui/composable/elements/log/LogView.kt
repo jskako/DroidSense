@@ -59,7 +59,7 @@ fun LogView(
                     item = item,
                     fontSize = fontSize,
                     onClicked = {
-                        onLogSelected(item.uuid)
+                        onLogSelected(item.itemUuid)
                     }
                 )
             }

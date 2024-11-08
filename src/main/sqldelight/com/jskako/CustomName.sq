@@ -1,18 +1,18 @@
 CREATE TABLE CustomName (
-    uuid TEXT NOT NULL PRIMARY KEY,
+    sessionUuid TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     deviceSerialNumber TEXT NOT NULL
 );
 
 getNameBy:
 SELECT * FROM CustomName
-WHERE uuid = :uuid;
+WHERE sessionUuid = :sessionUuid;
 
 names:
 SELECT * FROM CustomName;
 
 insert:
-INSERT OR REPLACE INTO CustomName(uuid, name, deviceSerialNumber)
+INSERT OR REPLACE INTO CustomName(sessionUuid, name, deviceSerialNumber)
 VALUES(?,?, ?);
 
 getNamesBySerialNumber:
@@ -22,11 +22,11 @@ WHERE deviceSerialNumber = :deviceSerialNumber;
 updateName:
 UPDATE CustomName
 SET name = :name
-WHERE uuid = :uuid;
+WHERE sessionUuid = :sessionUuid;
 
 deleteBy:
 DELETE FROM CustomName
-WHERE uuid = :uuid;
+WHERE sessionUuid = :sessionUuid;
 
 nukeTable:
 DELETE FROM CustomName;

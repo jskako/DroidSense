@@ -1,6 +1,7 @@
 CREATE TABLE LogHistory (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    uuid TEXT NOT NULL,
+    sessionUuid TEXT NOT NULL,
+    itemUuid TEXT NOT NULL,
     phoneSerialNumber TEXT NOT NULL,
     date TEXT NOT NULL,
     time TEXT NOT NULL,
@@ -12,30 +13,30 @@ CREATE TABLE LogHistory (
 );
 
 getUUIDs:
-SELECT uuid, MIN(time) AS "time"
+SELECT sessionUuid, MIN(time) AS "time"
 FROM LogHistory
-GROUP BY uuid
+GROUP BY sessionUuid
 ORDER BY id ASC;
 
 getUUIDsBySerialNumber:
-SELECT uuid
+SELECT sessionUuid
 FROM LogHistory
 WHERE phoneSerialNumber = ?
-GROUP BY uuid
+GROUP BY sessionUuid
 ORDER BY id ASC;
 
 getDataBy:
 SELECT * FROM LogHistory
-WHERE uuid = :uuid
+WHERE sessionUuid = :sessionUuid
 ORDER BY id ASC;
 
 insert:
-INSERT OR REPLACE INTO LogHistory(uuid, phoneSerialNumber, date, time, pid, tid, tag, level, text)
-VALUES(?,?,?,?,?,?,?, ?, ?);
+INSERT OR REPLACE INTO LogHistory(sessionUuid, itemUuid, phoneSerialNumber, date, time, pid, tid, tag, level, text)
+VALUES(?,?,?,?,?,?,?, ?, ?, ?);
 
 deleteBy:
 DELETE FROM LogHistory
-WHERE uuid = :uuid;
+WHERE sessionUuid = :sessionUuid;
 
 nukeTable:
 DELETE FROM LogHistory;
