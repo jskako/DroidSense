@@ -13,6 +13,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,9 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import kotlinx.coroutines.launch
-import ui.composable.utils.defaultPositionProvider
 import utils.Colors.darkBlue
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -47,23 +46,21 @@ fun TooltipIconButton(
 
     BasicTooltipBox(
         tooltip = {
-            Popup {
-                Surface(
-                    modifier = Modifier.padding(start = 4.dp),
-                    color = darkBlue,
-                    shape = MaterialTheme.shapes.small
-                ) {
-                    Text(
-                        text = tooltip,
-                        modifier = Modifier
-                            .padding(8.dp),
-                        color = Color.White
-                    )
-                }
+            Surface(
+                modifier = Modifier.padding(start = 4.dp),
+                color = darkBlue,
+                shape = MaterialTheme.shapes.small
+            ) {
+                Text(
+                    text = tooltip,
+                    modifier = Modifier
+                        .padding(8.dp),
+                    color = Color.White
+                )
             }
         },
         state = tooltipState,
-        positionProvider = defaultPositionProvider
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()
     ) {
         IconButton(
             enabled = isEnabled,
