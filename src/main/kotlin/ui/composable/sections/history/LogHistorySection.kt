@@ -157,6 +157,7 @@ fun LogHistorySection(
             ) {
                 items(filteredNames) { nameItem ->
                     NameCard(
+                        nameSource = nameSource,
                         nameItem = nameItem,
                         onClick = {
                             windowStateManager.windowState?.openNewWindow?.let { newWindow ->
