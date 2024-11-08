@@ -2,10 +2,11 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     kotlin("jvm") version libs.versions.kotlin.get()
-    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.about.libraries)
-    alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.sql.delight)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "com.jskako"
@@ -28,6 +29,10 @@ dependencies {
     implementation(libs.sl4j)
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
     implementation(libs.compose.resource)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.json)
 }
 
 compose.desktop {

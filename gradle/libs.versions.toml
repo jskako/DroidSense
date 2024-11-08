@@ -7,6 +7,8 @@ compose-plugin = "1.7.0"
 sl4j = "2.0.16"
 material3-adaptive-navigation-suite = "1.7.0"
 compose-resource = "1.7.0"
+ktor = "3.0.1"
+serialization = "2.0.21"
 
 [libraries]
 material-icons = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "material" }
@@ -18,9 +20,14 @@ sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", 
 sl4j = { module = "org.slf4j:slf4j-reload4j", version.ref = "sl4j" }
 androidx-compose-material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3-adaptive-navigation-suite" }
 compose-resource = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-resource" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 [plugins]
 about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about-libraries" }
-sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+sql-delight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
