@@ -8,6 +8,7 @@ fun CustomName.toNameItem(): NameItem {
     return NameItem(
         sessionUuid = UUID.fromString(this.sessionUuid),
         name = this.name,
+        dateTime = this.dateTime,
         deviceSerialNumber = this.deviceSerialNumber,
     )
 }

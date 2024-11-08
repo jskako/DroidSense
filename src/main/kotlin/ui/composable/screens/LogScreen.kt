@@ -38,9 +38,10 @@ import ui.composable.sections.log.FontSize
 import ui.composable.sections.log.LogSelectedButtonSection
 import ui.composable.sections.log.LogStatusSection
 import ui.composable.sections.log.MainButtonsSection
+import utils.DATABASE_DATETIME
 import utils.EMPTY_STRING
+import utils.EXPORT_NAME_TIMESTAMP
 import utils.LOG_MANAGER_NUMBER_OF_LINES
-import utils.NAME_TIMESTAMP
 import utils.capitalizeFirstChar
 import utils.getStringResource
 import utils.getTimeStamp
@@ -95,9 +96,10 @@ fun LogScreen(
                 sessionUuid = currentSessionUuid,
                 name = "${device.manufacturer?.capitalizeFirstChar()}_${device.model}_${device.serialNumber}_${
                     getTimeStamp(
-                        NAME_TIMESTAMP
+                        EXPORT_NAME_TIMESTAMP
                     )
                 }",
+                dateTime = getTimeStamp(DATABASE_DATETIME),
                 deviceSerialNumber = device.serialNumber
             )
         )

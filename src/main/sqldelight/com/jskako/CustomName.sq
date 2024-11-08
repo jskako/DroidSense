@@ -1,6 +1,7 @@
 CREATE TABLE CustomName (
     sessionUuid TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
+    dateTime TEXT NOT NULL,
     deviceSerialNumber TEXT NOT NULL
 );
 
@@ -12,8 +13,8 @@ names:
 SELECT * FROM CustomName;
 
 insert:
-INSERT OR REPLACE INTO CustomName(sessionUuid, name, deviceSerialNumber)
-VALUES(?,?, ?);
+INSERT OR REPLACE INTO CustomName(sessionUuid, name, dateTime, deviceSerialNumber)
+VALUES(?,?, ?, ?);
 
 getNamesBySerialNumber:
 SELECT * FROM CustomName

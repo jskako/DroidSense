@@ -18,6 +18,7 @@ class NameSource(
         nameDao.insert(
             sessionUuid = nameItem.sessionUuid.toString(),
             name = nameItem.name,
+            dateTime = nameItem.dateTime,
             deviceSerialNumber = nameItem.deviceSerialNumber,
         )
     }
