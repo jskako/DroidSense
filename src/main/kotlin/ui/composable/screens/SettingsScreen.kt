@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import notifications.InfoManager
 import ui.composable.elements.window.Sources
 import ui.composable.sections.info.InfoSection
+import ui.composable.sections.settings.AISection
 import ui.composable.sections.settings.DatabaseSection
 import ui.composable.sections.settings.GeneralSection
 import ui.composable.sections.settings.InfoSection
@@ -74,7 +75,15 @@ fun SettingsScreen(
                         logHistorySource = sources.logHistorySource
                     )
 
-                    SettingsOption.AI -> {}
+                    SettingsOption.AI -> AISection(
+                        settingsSource = sources.settingsSource,
+                        onMessage = {
+                            infoManager.showMessage(
+                                infoManagerData = it,
+                                scope = scope
+                            )
+                        }
+                    )
                     SettingsOption.INFO -> InfoSection()
                 }
             }

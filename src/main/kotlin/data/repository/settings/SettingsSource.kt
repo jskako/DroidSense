@@ -19,7 +19,7 @@ class SettingsSource(private val settingsDao: SettingsQueries) :
         .get(identifier = identifier)
         .asFlow()
         .map { query ->
-            query.executeAsOne()
+            query.executeAsOneOrNull() ?: ""
         }
 
     override suspend fun delete(identifier: String) = settingsDao.delete(identifier = identifier)

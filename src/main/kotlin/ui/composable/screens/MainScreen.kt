@@ -40,7 +40,7 @@ fun MainScreen(
 
     val deviceManager = remember(adbPath) {
         DeviceManager(
-            adbPath = adbPath
+            adbPath = adbPath ?: EMPTY_STRING
         )
     }
 
