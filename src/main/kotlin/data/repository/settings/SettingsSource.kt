@@ -28,4 +28,6 @@ class SettingsSource(private val settingsDao: SettingsQueries) :
         settingsDao.isValid(SettingsKey.ADB.name)
             .executeAsOneOrNull() ?: false && settingsDao.isValid(SettingsKey.SCRCPY.name)
             .executeAsOneOrNull() ?: false
+
+    override suspend fun deleteAll() = settingsDao.nukeTable()
 }

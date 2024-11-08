@@ -72,6 +72,7 @@ fun SettingsScreen(
                     )
 
                     SettingsOption.DATABASE -> DatabaseSection(
+                        sources = sources,
                         onMessage = {
                             infoManager.showMessage(
                                 infoManagerData = it,
@@ -89,6 +90,7 @@ fun SettingsScreen(
                             )
                         }
                     )
+
                     SettingsOption.INFO -> InfoSection()
                 }
             }

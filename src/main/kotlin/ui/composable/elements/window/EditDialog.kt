@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
-import utils.Colors.transparentTextFieldDefault
 import utils.getStringResource
 
 @Composable

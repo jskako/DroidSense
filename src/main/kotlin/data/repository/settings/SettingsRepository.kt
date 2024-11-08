@@ -9,4 +9,5 @@ interface SettingsRepository {
     fun get(identifier: String): Flow<String>
     suspend fun delete(identifier: String)
     suspend fun isValid(): Boolean
+    suspend fun deleteAll()
 }

@@ -25,3 +25,6 @@ isValid:
 SELECT (TRIM(value) != '') AS isValid
 FROM Settings
 WHERE identifier = :yourIdentifier;
+
+nukeTable:
+DELETE FROM Settings;
