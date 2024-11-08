@@ -32,6 +32,7 @@ import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.Sources
 import ui.composable.elements.window.TextDialog
 import utils.Colors.darkBlue
+import utils.Colors.darkRed
 import utils.getStringResource
 import utils.openFolderAtPath
 import kotlin.io.path.Path
@@ -134,6 +135,7 @@ private fun NukeDatabaseControll(
     ) {
         OutlinedButton(
             text = getStringResource("info.remove.settings.title"),
+            contentColor = darkRed,
             onClick = {
                 dialogTitle = getStringResource("info.remove.settings.title")
                 dialogDescription = getStringResource("info.remove.settings.description")
@@ -154,6 +156,7 @@ private fun NukeDatabaseControll(
 
         OutlinedButton(
             text = getStringResource("info.remove.devices.title"),
+            contentColor = darkRed,
             onClick = {
                 dialogTitle = getStringResource("info.remove.devices.title")
                 dialogDescription = getStringResource("info.remove.devices.description")
@@ -176,6 +179,7 @@ private fun NukeDatabaseControll(
 
         OutlinedButton(
             text = getStringResource("info.remove.logs.title"),
+            contentColor = darkRed,
             onClick = {
                 dialogTitle = getStringResource("info.remove.logs.title")
                 dialogDescription = getStringResource("info.remove.logs.description")
