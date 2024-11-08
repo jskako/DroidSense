@@ -155,7 +155,7 @@ fun LogHistorySection(
                 modifier = Modifier.padding(top = 8.dp),
                 state = listState
             ) {
-                items(filteredNames) { nameItem ->
+                items(filteredNames.reversed()) { nameItem ->
                     NameCard(
                         nameSource = nameSource,
                         nameItem = nameItem,

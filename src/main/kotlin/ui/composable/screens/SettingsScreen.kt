@@ -72,7 +72,12 @@ fun SettingsScreen(
                     )
 
                     SettingsOption.DATABASE -> DatabaseSection(
-                        logHistorySource = sources.logHistorySource
+                        onMessage = {
+                            infoManager.showMessage(
+                                infoManagerData = it,
+                                scope = scope
+                            )
+                        }
                     )
 
                     SettingsOption.AI -> AISection(

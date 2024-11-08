@@ -12,10 +12,12 @@ internal fun OutlinedText(
     modifier: Modifier = Modifier,
     text: String,
     hintText: String,
+    readOnly: Boolean = false,
     onValueChanged: (String) -> Unit
 ) {
     OutlinedTextField(
         value = text,
+        readOnly = readOnly,
         onValueChange = {
             onValueChanged(it)
         },

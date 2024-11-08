@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,7 +38,6 @@ fun AISection(
 ) {
 
     val scope = rememberCoroutineScope()
-    val settingsToSave = remember { mutableStateMapOf<AISetting, () -> Unit>() }
 
     var chatGPTAPIkey by remember { mutableStateOf("") }
     val chatGPTAPIkeyDatabase by settingsSource.get(AIKey.CHATGPT.name).collectAsState(initial = "")
@@ -59,7 +57,7 @@ fun AISection(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedText(
                 modifier = Modifier
@@ -68,27 +66,6 @@ fun AISection(
                 hintText = getStringResource("info.chat.gpt.hint"),
                 onValueChanged = { changedPath ->
                     chatGPTAPIkey = changedPath
-                    changedPath.trim().also {
-                        if (chatGPTAPIkeyDatabase != it) {
-                            settingsToSave[AISetting.CHAT_GPT] = {
-                                scope.launch {
-                                    if (chatGPTAPIkeyDatabase.isEmpty()) {
-                                        settingsSource.add(
-                                            identifier = AIKey.CHATGPT.name,
-                                            value = it
-                                        )
-                                    } else {
-                                        settingsSource.update(
-                                            identifier = AIKey.CHATGPT.name,
-                                            value = it
-                                        )
-                                    }
-                                }
-                            }
-                        } else {
-                            settingsToSave.remove(AISetting.CHAT_GPT)
-                        }
-                    }
                 }
             )
 
@@ -103,7 +80,19 @@ fun AISection(
                     "info.enable.chat.gpt"
                 ),
                 function = {
-                    settingsToSave[AISetting.CHAT_GPT]?.invoke()
+                    scope.launch {
+                        if (chatGPTAPIkeyDatabase.isEmpty()) {
+                            settingsSource.add(
+                                identifier = AIKey.CHATGPT.name,
+                                value = chatGPTAPIkey
+                            )
+                        } else {
+                            settingsSource.update(
+                                identifier = AIKey.CHATGPT.name,
+                                value = chatGPTAPIkey
+                            )
+                        }
+                    }
                     onMessage(
                         InfoManagerData(
                             message = getStringResource("info.message.edit.chat.gpt")
@@ -133,8 +122,4 @@ fun AISection(
             }
         }
     }
-}
-
-private enum class AISetting {
-    CHAT_GPT
 }

@@ -25,4 +25,4 @@ fun createDriver(): SqlDriver {
     return driver
 }
 
-private const val DATABASE_NAME = "DSDatabase.db"
+const val DATABASE_NAME = "DSDatabase.db"
