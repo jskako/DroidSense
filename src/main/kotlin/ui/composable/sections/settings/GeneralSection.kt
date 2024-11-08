@@ -57,12 +57,12 @@ fun GeneralSection(
             onConfirmRequest = {
                 showDialog = false
                 scope.launch {
-                    settingsSource.update(
+                    settingsSource.add(
                         identifier = SettingsKey.ADB.name,
                         value = ADB_PACKAGE.findPath()
                     )
 
-                    settingsSource.update(
+                    settingsSource.add(
                         identifier = SettingsKey.SCRCPY.name,
                         value = SCRCPY_PACKAGE.findPath()
                     )

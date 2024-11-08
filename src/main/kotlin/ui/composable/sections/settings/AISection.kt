@@ -81,17 +81,10 @@ fun AISection(
                 ),
                 function = {
                     scope.launch {
-                        if (chatGPTAPIkeyDatabase.isEmpty()) {
-                            settingsSource.add(
-                                identifier = AIKey.CHATGPT.name,
-                                value = chatGPTAPIkey
-                            )
-                        } else {
-                            settingsSource.update(
-                                identifier = AIKey.CHATGPT.name,
-                                value = chatGPTAPIkey
-                            )
-                        }
+                        settingsSource.add(
+                            identifier = AIKey.CHATGPT.name,
+                            value = chatGPTAPIkey
+                        )
                     }
                     onMessage(
                         InfoManagerData(
