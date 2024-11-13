@@ -5,6 +5,7 @@ sqldelight = "2.0.2"
 kotlin = "2.0.21"
 compose-plugin = "1.7.0"
 sl4j = "2.0.16"
+sl4j-logback = "1.5.12"
 material3-adaptive-navigation-suite = "1.7.0"
 compose-resource = "1.7.0"
 ktor = "3.0.1"
@@ -17,13 +18,16 @@ about-libraries-core = { module = "com.mikepenz:aboutlibraries-core", version.re
 about-libraries-compose = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "about-libraries" }
 sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
-sl4j = { module = "org.slf4j:slf4j-reload4j", version.ref = "sl4j" }
+sl4j-api = { module = "org.slf4j:slf4j-api", version.ref = "sl4j" }
+sl4j-logback = { module = "ch.qos.logback:logback-classic", version.ref = "sl4j-logback" }
 androidx-compose-material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3-adaptive-navigation-suite" }
 compose-resource = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-resource" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 
 [plugins]
 about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about-libraries" }

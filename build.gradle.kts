@@ -26,13 +26,16 @@ dependencies {
     implementation(libs.about.libraries.compose)
     implementation(libs.sqldelight.coroutines)
     implementation(libs.sqldelight.jvm)
-    implementation(libs.sl4j)
+    implementation(libs.sl4j.api)
+    implementation(libs.sl4j.logback)
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
     implementation(libs.compose.resource)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.json)
+    implementation(libs.ktor.logging)
+    implementation(libs.ktor.auth)
 }
 
 compose.desktop {

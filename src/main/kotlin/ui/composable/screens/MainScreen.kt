@@ -37,15 +37,15 @@ fun MainScreen(
     val scrcpyPath by sources.settingsSource.get(SettingsKey.SCRCPY.name).collectAsState(initial = "")
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
     val phoneSource by remember { mutableStateOf(sources.phoneSource) }
+    val scope = rememberCoroutineScope()
 
     val deviceManager = remember(adbPath) {
         DeviceManager(
-            adbPath = adbPath ?: EMPTY_STRING
+            adbPath = adbPath
         )
     }
 
     val infoManager = remember { InfoManager() }
-    val scope = rememberCoroutineScope()
     val devices by remember(deviceManager.devices.value) { mutableStateOf(deviceManager.devices.value) }
 
     val filteredDevices = devices.filter { device ->
