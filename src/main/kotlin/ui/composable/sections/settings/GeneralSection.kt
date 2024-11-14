@@ -87,7 +87,7 @@ fun GeneralSection(
 
     Column(
         modifier = Modifier
-            .padding(vertical = 16.dp)
+            .padding(vertical = 32.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
