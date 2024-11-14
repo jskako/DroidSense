@@ -47,7 +47,7 @@ fun DatabaseSection(
     Column(
         modifier = Modifier
             .padding(top = 32.dp)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 32.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -111,8 +111,8 @@ private fun NukeDatabaseControll(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 48.dp)
-            .padding(horizontal = 16.dp)
+            .padding(top = 36.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         OutlinedButton(
             text = getStringResource("info.remove.settings.title"),

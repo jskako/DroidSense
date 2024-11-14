@@ -36,7 +36,8 @@ fun <T> SettingRow(
     removeTooltip: String,
     editMessage: String,
     removeMessage: String,
-    onMessage: (InfoManagerData) -> Unit
+    onMessage: (InfoManagerData) -> Unit,
+    onKeyFound: (String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var keyInput by remember { mutableStateOf("") }
@@ -45,6 +46,7 @@ fun <T> SettingRow(
 
     LaunchedEffect(keyDatabase) {
         keyInput = keyDatabase
+        onKeyFound(keyDatabase)
     }
 
     Row(

@@ -27,7 +27,10 @@ fun AISection(
 
     Column(
         modifier = Modifier
-            .padding(vertical = 16.dp)
+            .padding(
+                vertical = 16.dp,
+                horizontal = 32.dp
+            )
             .fillMaxSize()
     ) {
 
