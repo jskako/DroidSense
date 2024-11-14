@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.keys.AIKey
 import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
@@ -28,8 +27,8 @@ import utils.Colors.darkRed
 import utils.Colors.lightGray
 
 @Composable
-fun SettingRow(
-    key: AIKey,
+fun <T> SettingRow(
+    key: T,
     settingsSource: SettingsSource,
     hintText: String,
     saveTooltip: String,
@@ -41,7 +40,7 @@ fun SettingRow(
 ) {
     val scope = rememberCoroutineScope()
     var keyInput by remember { mutableStateOf("") }
-    val keyDatabase by settingsSource.get(key.name).collectAsState(initial = "")
+    val keyDatabase by settingsSource.get(key.toString()).collectAsState(initial = "")
     val isButtonEnabled = keyInput.trim().isNotEmpty() && keyInput.trim() != keyDatabase.trim()
 
     LaunchedEffect(keyDatabase) {
@@ -71,7 +70,7 @@ fun SettingRow(
             tooltip = if (keyDatabase.isNotEmpty()) saveTooltip else enableTooltip,
             function = {
                 scope.launch {
-                    settingsSource.add(identifier = key.name, value = keyInput)
+                    settingsSource.add(identifier = key.toString(), value = keyInput)
                 }
                 onMessage(InfoManagerData(message = editMessage))
             }
@@ -85,7 +84,7 @@ fun SettingRow(
                 tooltip = removeTooltip,
                 function = {
                     scope.launch {
-                        settingsSource.delete(key.name)
+                        settingsSource.delete(key.toString())
                         onMessage(InfoManagerData(message = removeMessage, color = darkRed))
                     }
                 }
