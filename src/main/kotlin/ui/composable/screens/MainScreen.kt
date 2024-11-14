@@ -13,6 +13,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import data.keys.SettingsKey
+import data.network.NetworkModule
+import data.repository.ai.ollama.OllamaRepositoryImpl
+import domain.ollama.usecases.OllamaResponseUseCase
 import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
@@ -43,6 +46,13 @@ fun MainScreen(
         DeviceManager(
             adbPath = adbPath
         )
+    }
+
+    LaunchedEffect(Unit) {
+        val httpClient = NetworkModule.provideHttpClient()
+        val chatGPTRepository = OllamaRepositoryImpl(httpClient)
+        val getResponseUseCase = OllamaResponseUseCase(chatGPTRepository)
+        println("OpenAI answer: ${getResponseUseCase.invoke("gemma2", "Tell me more about this error 2024-11-13 13:25:00.922 java[71645:930204] +[IMKClient subclass]: chose IMKClient_Modern")}")
     }
 
     val infoManager = remember { InfoManager() }
