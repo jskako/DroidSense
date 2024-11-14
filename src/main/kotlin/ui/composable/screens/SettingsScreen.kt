@@ -20,10 +20,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import notifications.InfoManager
 import ui.composable.elements.window.Sources
 import ui.composable.sections.info.InfoSection
-import ui.composable.sections.settings.AISection
 import ui.composable.sections.settings.DatabaseSection
 import ui.composable.sections.settings.GeneralSection
 import ui.composable.sections.settings.InfoSection
+import ui.composable.sections.settings.ai.AISection
 
 @Composable
 fun SettingsScreen(

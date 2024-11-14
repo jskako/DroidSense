@@ -1,5 +1,5 @@
 package data.keys
 
 enum class AIKey {
-    CHATGPT
+    OPEN_API, OLLAMA
 }

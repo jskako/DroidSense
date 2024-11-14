@@ -13,11 +13,13 @@ internal fun OutlinedText(
     text: String,
     hintText: String,
     readOnly: Boolean = false,
+    enabled: Boolean = true,
     onValueChanged: (String) -> Unit
 ) {
     OutlinedTextField(
         value = text,
         readOnly = readOnly,
+        enabled = enabled,
         onValueChange = {
             onValueChanged(it)
         },

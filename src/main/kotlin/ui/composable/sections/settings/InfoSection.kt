@@ -1,9 +1,8 @@
 package ui.composable.sections.settings
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
@@ -51,9 +50,9 @@ fun InfoSection() {
             }
         )
 
-        DividerColored()
-
-        Spacer(Modifier.height(16.dp))
+        DividerColored(
+            paddingValues = PaddingValues(bottom = 16.dp),
+        )
 
         when (selectedInfoType) {
             InfoType.COPYRIGHT -> CopyrightScreen()

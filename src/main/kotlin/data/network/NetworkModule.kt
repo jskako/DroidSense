@@ -17,7 +17,7 @@ import kotlinx.serialization.json.Json
 
 object NetworkModule {
     fun provideHttpClient(
-        bearerToken: String? = null,
+        bearerToken: BearerTokens? = null,
         networkTimeout: NetworkTimeout = NetworkTimeout()
     ): HttpClient {
         return HttpClient(CIO) {
@@ -44,8 +44,8 @@ object NetworkModule {
                     bearer {
                         loadTokens {
                             BearerTokens(
-                                accessToken = it,
-                                refreshToken = ""
+                                accessToken = bearerToken.accessToken,
+                                refreshToken = bearerToken.refreshToken
                             )
                         }
                     }

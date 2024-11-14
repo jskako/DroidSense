@@ -52,7 +52,14 @@ fun MainScreen(
         val httpClient = NetworkModule.provideHttpClient()
         val chatGPTRepository = OllamaRepositoryImpl(httpClient)
         val getResponseUseCase = OllamaResponseUseCase(chatGPTRepository)
-        println("OpenAI answer: ${getResponseUseCase.invoke("gemma2", "Tell me more about this error 2024-11-13 13:25:00.922 java[71645:930204] +[IMKClient subclass]: chose IMKClient_Modern")}")
+        println(
+            "OpenAI answer: ${
+                getResponseUseCase.invoke(
+                    "gemma2",
+                    "Tell me more about this error 2024-11-13 13:25:00.922 java[71645:930204] +[IMKClient subclass]: chose IMKClient_Modern"
+                )
+            }"
+        )
     }
 
     val infoManager = remember { InfoManager() }
