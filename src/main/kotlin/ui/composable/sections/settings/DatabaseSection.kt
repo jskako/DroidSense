@@ -2,7 +2,6 @@ package ui.composable.sections.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -51,28 +50,25 @@ fun DatabaseSection(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            OutlinedText(
-                modifier = Modifier.weight(1f),
-                readOnly = true,
-                text = databasePath,
-                hintText = getStringResource("info.database.location"),
-                onValueChanged = {}
-            )
 
-            TooltipIconButton(
-                modifier = Modifier.padding(end = 16.dp),
-                tint = darkBlue,
-                icon = Icons.Default.FolderOpen,
-                tooltip = getStringResource("info.show.folder"),
-                function = {
-                    openFolderAtPath(databasePath.substringBeforeLast("/"))
-                }
-            )
-        }
+        OutlinedText(
+            modifier = Modifier.fillMaxWidth(),
+            text = databasePath,
+            hintText = getStringResource("info.database.location"),
+            onValueChanged = {},
+            readOnly = true,
+            trailingIcon = {
+                TooltipIconButton(
+                    modifier = Modifier.padding(end = 16.dp),
+                    tint = darkBlue,
+                    icon = Icons.Default.FolderOpen,
+                    tooltip = getStringResource("info.show.folder"),
+                    function = {
+                        openFolderAtPath(databasePath.substringBeforeLast("/"))
+                    }
+                )
+            }
+        )
 
         NukeDatabaseControll(
             sources = sources,

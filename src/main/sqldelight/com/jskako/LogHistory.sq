@@ -12,12 +12,6 @@ CREATE TABLE LogHistory (
     text TEXT NOT NULL
 );
 
-getUUIDs:
-SELECT sessionUuid, MIN(time) AS "time"
-FROM LogHistory
-GROUP BY sessionUuid
-ORDER BY id ASC;
-
 getUUIDsBySerialNumber:
 SELECT sessionUuid
 FROM LogHistory

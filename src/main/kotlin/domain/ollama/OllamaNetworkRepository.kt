@@ -1,5 +1,5 @@
 package domain.ollama
 
-interface OllamaRepository {
+interface OllamaNetworkRepository {
     suspend fun getChatResponse(model: String, prompt: String): Result<String>
 }

@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS OllamaUrl (
+    url TEXT NOT NULL PRIMARY KEY
+);
+
+insert:
+INSERT OR REPLACE INTO OllamaUrl(url)
+VALUES(?);
+
+delete:
+DELETE FROM OllamaUrl
+WHERE url IS :url;
+
+get:
+SELECT url
+FROM OllamaUrl
+ORDER BY url ASC;
+
+nukeTable:
+DELETE FROM OllamaUrl;

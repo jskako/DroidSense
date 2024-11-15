@@ -1,0 +1,23 @@
+CREATE TABLE OllamaModels (
+    url TEXT NOT NULL,
+    model TEXT NOT NULL,
+    PRIMARY KEY (url, model)
+);
+
+insert:
+INSERT OR REPLACE INTO OllamaModels(url, model)
+VALUES(?, ?);
+
+delete:
+DELETE FROM OllamaModels
+WHERE url IS :url AND model IS :model;
+
+getModels:
+SELECT model
+FROM OllamaModels
+WHERE url = ?
+GROUP BY url
+ORDER BY model ASC;
+
+nukeTable:
+DELETE FROM OllamaModels;

@@ -2,7 +2,7 @@ package data.repository.ai.ollama
 
 import data.model.ai.ollama.OllamaRequest
 import data.model.ai.ollama.OllamaResponse
-import domain.ollama.OllamaRepository
+import domain.ollama.OllamaNetworkRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -14,10 +14,10 @@ import io.ktor.http.headers
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class OllamaRepositoryImpl(
+class OllamaNetworkRepositoryImpl(
     private val client: HttpClient,
     private val apiUrl: String = "http://localhost:11434/api/generate"
-) : OllamaRepository {
+) : OllamaNetworkRepository {
 
     private val json = Json { encodeDefaults = true }
 

@@ -14,7 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import data.keys.SettingsKey
 import data.network.NetworkModule
-import data.repository.ai.ollama.OllamaRepositoryImpl
+import data.repository.ai.ollama.OllamaNetworkRepositoryImpl
 import domain.ollama.usecases.OllamaResponseUseCase
 import kotlinx.coroutines.launch
 import notifications.InfoManager
@@ -50,7 +50,7 @@ fun MainScreen(
 
     LaunchedEffect(Unit) {
         val httpClient = NetworkModule.provideHttpClient()
-        val chatGPTRepository = OllamaRepositoryImpl(httpClient)
+        val chatGPTRepository = OllamaNetworkRepositoryImpl(httpClient)
         val getResponseUseCase = OllamaResponseUseCase(chatGPTRepository)
         println(
             "OpenAI answer: ${

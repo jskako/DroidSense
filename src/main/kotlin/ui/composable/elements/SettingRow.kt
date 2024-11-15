@@ -49,48 +49,48 @@ fun <T> SettingRow(
         onKeyFound(keyDatabase)
     }
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        OutlinedText(
-            modifier = Modifier.weight(1f),
-            text = keyInput,
-            hintText = hintText,
-            onValueChanged = { changedValue ->
-                keyInput = changedValue
-            }
-        )
-
-        TooltipIconButton(
-            modifier = Modifier.then(
-                if (keyDatabase.isNotEmpty()) Modifier else Modifier.padding(end = 8.dp),
-            ),
-            isEnabled = isButtonEnabled,
-            tint = if (isButtonEnabled) darkBlue else lightGray,
-            icon = if (keyDatabase.isNotEmpty()) Icons.Default.Save else Icons.Default.Add,
-            tooltip = if (keyDatabase.isNotEmpty()) saveTooltip else enableTooltip,
-            function = {
-                scope.launch {
-                    settingsSource.add(identifier = key.toString(), value = keyInput)
-                }
-                onMessage(InfoManagerData(message = editMessage))
-            }
-        )
-
-        if (keyDatabase.isNotEmpty()) {
-            TooltipIconButton(
-                modifier = Modifier.padding(end = 8.dp),
-                tint = darkBlue,
-                icon = Icons.Default.Remove,
-                tooltip = removeTooltip,
-                function = {
-                    scope.launch {
-                        settingsSource.delete(key.toString())
-                        onMessage(InfoManagerData(message = removeMessage, color = darkRed))
+    OutlinedText(
+        text = keyInput,
+        hintText = hintText,
+        onValueChanged = { changedValue ->
+            keyInput = changedValue
+        },
+        trailingIcon = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                TooltipIconButton(
+                    modifier = Modifier.then(
+                        if (keyDatabase.isNotEmpty()) Modifier else Modifier.padding(end = 8.dp),
+                    ),
+                    isEnabled = isButtonEnabled,
+                    tint = if (isButtonEnabled) darkBlue else lightGray,
+                    icon = if (keyDatabase.isNotEmpty()) Icons.Default.Save else Icons.Default.Add,
+                    tooltip = if (keyDatabase.isNotEmpty()) saveTooltip else enableTooltip,
+                    function = {
+                        scope.launch {
+                            settingsSource.add(identifier = key.toString(), value = keyInput)
+                        }
+                        onMessage(InfoManagerData(message = editMessage))
                     }
+                )
+
+                if (keyDatabase.isNotEmpty()) {
+                    TooltipIconButton(
+                        modifier = Modifier.padding(end = 8.dp),
+                        tint = darkBlue,
+                        icon = Icons.Default.Remove,
+                        tooltip = removeTooltip,
+                        function = {
+                            scope.launch {
+                                settingsSource.delete(key.toString())
+                                onMessage(InfoManagerData(message = removeMessage, color = darkRed))
+                            }
+                        }
+                    )
                 }
-            )
+            }
         }
-    }
+    )
 }

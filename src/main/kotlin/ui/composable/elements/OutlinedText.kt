@@ -14,21 +14,23 @@ internal fun OutlinedText(
     hintText: String,
     readOnly: Boolean = false,
     enabled: Boolean = true,
-    onValueChanged: (String) -> Unit
+    onValueChanged: (String) -> Unit,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
     OutlinedTextField(
+        modifier = modifier,
         value = text,
         readOnly = readOnly,
         enabled = enabled,
         onValueChange = {
             onValueChanged(it)
         },
+        trailingIcon = trailingIcon,
         label = { HintText(hintText) },
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Done
-        ),
-        modifier = modifier
+        )
     )
 }
