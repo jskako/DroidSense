@@ -12,8 +12,7 @@ WHERE url IS :url;
 
 get:
 SELECT url
-FROM OllamaUrl
-ORDER BY url ASC;
+FROM OllamaUrl;
 
 nukeTable:
 DELETE FROM OllamaUrl;

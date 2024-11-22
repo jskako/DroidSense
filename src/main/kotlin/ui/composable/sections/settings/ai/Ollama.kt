@@ -2,91 +2,148 @@ package ui.composable.sections.settings.ai
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.keys.AIKey
-import data.repository.settings.SettingsSource
+import data.model.ai.ollama.OllamaModelItem
+import data.repository.ai.ollama.model.OllamaModelSource
+import data.repository.ai.ollama.url.OllamaUrlSource
+import kotlinx.coroutines.launch
 import notifications.InfoManagerData
-import ui.composable.elements.OutlinedText
-import ui.composable.elements.SettingRow
+import ui.composable.elements.ButtonRow
+import ui.composable.elements.ListWithScrollbar
+import ui.composable.elements.settings.ButtonRowCard
 import utils.getStringResource
 
 @Composable
-fun Ollama(settingsSource: SettingsSource, onMessage: (InfoManagerData) -> Unit) {
+fun Ollama(
+    ollamaUrlSource: OllamaUrlSource,
+    ollamaModelSource: OllamaModelSource,
+    onMessage: (InfoManagerData) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    var selectedURL by remember { mutableStateOf("") }
 
-    var ollamaURL by remember { mutableStateOf("") }
+    val urls by ollamaUrlSource.get(context = scope.coroutineContext).collectAsState(initial = emptyList())
+    val models by ollamaModelSource.by(url = selectedURL, context = scope.coroutineContext)
+        .collectAsState(initial = emptyList())
 
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Column(
+        UrlColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
-        ) {
-            SettingRow(
-                key = AIKey.OLLAMA,
-                settingsSource = settingsSource,
-                hintText = getStringResource("info.ollama.url.hint"),
-                saveTooltip = getStringResource("info.save.ollama.url"),
-                enableTooltip = getStringResource("info.enable.ollama.url"),
-                removeTooltip = getStringResource("info.disable.ollama.url"),
-                editMessage = getStringResource("info.message.edit.ollama.url"),
-                removeMessage = getStringResource("info.message.remove.ollama.url"),
-                onMessage = onMessage,
-                onKeyFound = { key ->
-                    ollamaURL = key
-                }
-            )
+                .weight(1f),
+            urls = urls,
+            selectedURL = selectedURL,
+            onUrlAdd = { input ->
+                scope.launch { ollamaUrlSource.add(url = input) }
+            },
+            onUrlSelect = { url -> selectedURL = url },
+            onMessage = onMessage
+        )
 
-            OutlinedText(
-                modifier = Modifier.weight(1f),
-                readOnly = true,
-                enabled = ollamaURL.trim().isNotEmpty(),
-                text = "TextTes",
-                hintText = getStringResource("info.database.location"),
-                onValueChanged = {}
-            )
-        }
-
-        Column(
+        ModelColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
-        ) {
-            SettingRow(
-                key = AIKey.OLLAMA,
-                settingsSource = settingsSource,
-                hintText = getStringResource("info.ollama.url.hint"),
-                saveTooltip = getStringResource("info.save.ollama.url"),
-                enableTooltip = getStringResource("info.enable.ollama.url"),
-                removeTooltip = getStringResource("info.disable.ollama.url"),
-                editMessage = getStringResource("info.message.edit.ollama.url"),
-                removeMessage = getStringResource("info.message.remove.ollama.url"),
-                onMessage = onMessage,
-                onKeyFound = { key ->
-                    ollamaURL = key
+                .weight(1f),
+            models = models,
+            selectedURL = selectedURL,
+            onModelAdd = { input ->
+                scope.launch {
+                    ollamaModelSource.add(
+                        ollamaModelItem = OllamaModelItem(
+                            url = selectedURL,
+                            model = input
+                        )
+                    )
                 }
-            )
+            },
+            onMessage = onMessage
+        )
+    }
+}
 
-            OutlinedText(
-                modifier = Modifier.weight(1f),
-                readOnly = true,
-                enabled = ollamaURL.trim().isNotEmpty(),
-                text = "TextTes",
-                hintText = getStringResource("info.database.location"),
-                onValueChanged = {}
-            )
-        }
+@Composable
+private fun UrlColumn(
+    modifier: Modifier,
+    urls: List<String>,
+    selectedURL: String,
+    onUrlAdd: (String) -> Unit,
+    onUrlSelect: (String) -> Unit,
+    onMessage: (InfoManagerData) -> Unit
+) {
+    Column(
+        modifier = modifier
+    ) {
+        ButtonRow(
+            modifier = Modifier.fillMaxWidth(),
+            hintText = getStringResource("info.url.add"),
+            onClick = onUrlAdd
+        )
+
+        ListWithScrollbar(
+            contentPadding = PaddingValues(end = 20.dp),
+            content = {
+                items(urls) { url ->
+                    ButtonRowCard(
+                        text = url,
+                        onEdit = {},
+                        onDelete = {},
+                        onSelected = { onUrlSelect(url) },
+                        isSelected = url == selectedURL,
+                        onMessage = onMessage
+                    )
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun ModelColumn(
+    modifier: Modifier,
+    models: List<String>,
+    selectedURL: String,
+    onModelAdd: (String) -> Unit,
+    onMessage: (InfoManagerData) -> Unit
+) {
+    Column(
+        modifier = modifier
+    ) {
+        ButtonRow(
+            modifier = Modifier.fillMaxWidth(),
+            hintText = getStringResource("info.model.add"),
+            enabled = selectedURL.isNotBlank(),
+            onClick = onModelAdd
+        )
+
+        ListWithScrollbar(
+            contentPadding = PaddingValues(end = 20.dp),
+            content = {
+                items(models) { model ->
+                    ButtonRowCard(
+                        text = model,
+                        onEdit = {},
+                        onDelete = {},
+                        onSelected = {},
+                        isSelected = false,
+                        onMessage = onMessage
+                    )
+                }
+            }
+        )
     }
 }

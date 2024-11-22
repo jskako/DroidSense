@@ -11,6 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import data.repository.ai.ollama.model.OllamaModelSource
+import data.repository.ai.ollama.url.OllamaUrlSource
 import data.repository.settings.SettingsSource
 import notifications.InfoManagerData
 import ui.composable.elements.DividerColored
@@ -20,6 +22,8 @@ import utils.getStringResource
 @Composable
 fun AISection(
     settingsSource: SettingsSource,
+    ollamaModelSource: OllamaModelSource,
+    ollamaUrlSource: OllamaUrlSource,
     onMessage: (InfoManagerData) -> Unit
 ) {
 
@@ -52,7 +56,8 @@ fun AISection(
 
         when (selectedInfoType) {
             AIType.OLLAMA -> Ollama(
-                settingsSource = settingsSource,
+                ollamaModelSource = ollamaModelSource,
+                ollamaUrlSource = ollamaUrlSource,
                 onMessage = onMessage
             )
 

@@ -4,9 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.jskako.OllamaModelsQueries
 import data.model.ai.ollama.OllamaModelItem
-import data.model.mappers.toLogItem
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlin.coroutines.CoroutineContext
 
 class OllamaModelSource(

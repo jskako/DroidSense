@@ -4,20 +4,12 @@ import adb.application.AppData
 import adb.application.ApplicationManager
 import adb.application.ApplicationType
 import adb.getAvailableSpaces
-import androidx.compose.foundation.VerticalScrollbar
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -41,6 +33,7 @@ import notifications.InfoManagerData
 import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
+import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.SelectableRow
 import ui.composable.elements.SelectionDialog
 import ui.composable.sections.info.InfoSection
@@ -65,7 +58,6 @@ fun AppsView(
     onAppInstalled: () -> Unit,
 ) {
 
-    val listState = rememberLazyListState()
     var selectedApplicationType by remember { mutableStateOf(ApplicationType.USER) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
     var showDialog by remember { mutableStateOf(false) }
@@ -192,19 +184,15 @@ fun AppsView(
             )
 
             if (filteredApps.isNotEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    LazyColumn(
-                        state = listState,
-                        contentPadding = PaddingValues(
-                            start = 16.dp,
-                            end = 16.dp,
-                            top = 8.dp,
-                            bottom = 80.dp
-                        ),
-                        modifier = Modifier.padding(top = 8.dp),
-                    ) {
+                ListWithScrollbar(
+                    lazyModifier = Modifier.padding(top = 8.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 8.dp,
+                        bottom = 80.dp
+                    ),
+                    content = {
                         items(filteredApps) { app ->
                             AppCard(
                                 windowStateManager = windowStateManager,
@@ -221,17 +209,7 @@ fun AppsView(
                             )
                         }
                     }
-                    VerticalScrollbar(
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .fillMaxHeight()
-                            .padding(end = 5.dp)
-                            .width(15.dp),
-                        adapter = rememberScrollbarAdapter(
-                            scrollState = listState
-                        )
-                    )
-                }
+                )
             }
         }
     }

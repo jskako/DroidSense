@@ -1,20 +1,12 @@
 package ui.composable.sections.history
 
-import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
@@ -42,6 +34,7 @@ import ui.application.WindowExtra
 import ui.application.WindowStateManager
 import ui.application.navigation.WindowData
 import ui.composable.elements.DividerColored
+import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.history.NameCard
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.TextDialog
@@ -64,7 +57,6 @@ fun LogHistorySection(
     val nameItems by nameSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var selectedNameItem by remember { mutableStateOf(emptyNameItem) }
     var deleteInProgress by remember { mutableStateOf(false) }
-    val listState = rememberLazyListState()
     var showDialog by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
 
@@ -147,14 +139,9 @@ fun LogHistorySection(
 
         DividerColored()
 
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            LazyColumn(
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                modifier = Modifier.padding(top = 8.dp),
-                state = listState
-            ) {
+        ListWithScrollbar(
+            lazyModifier = Modifier.padding(top = 8.dp),
+            content = {
                 items(filteredNames.reversed()) { nameItem ->
                     NameCard(
                         nameSource = nameSource,
@@ -196,17 +183,6 @@ fun LogHistorySection(
                     )
                 }
             }
-
-            VerticalScrollbar(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .fillMaxHeight()
-                    .padding(end = 5.dp)
-                    .width(15.dp),
-                adapter = rememberScrollbarAdapter(
-                    scrollState = listState
-                )
-            )
-        }
+        )
     }
 }

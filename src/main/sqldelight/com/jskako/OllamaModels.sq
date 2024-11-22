@@ -15,9 +15,7 @@ WHERE url IS :url AND model IS :model;
 getModels:
 SELECT model
 FROM OllamaModels
-WHERE url = ?
-GROUP BY url
-ORDER BY model ASC;
+WHERE url = ?;
 
 nukeTable:
 DELETE FROM OllamaModels;

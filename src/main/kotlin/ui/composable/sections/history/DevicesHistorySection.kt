@@ -1,18 +1,10 @@
 package ui.composable.sections.history
 
-import androidx.compose.foundation.VerticalScrollbar
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -30,6 +22,7 @@ import data.model.items.PhoneItem.Companion.emptyPhoneItem
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.composable.elements.DividerColored
+import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.history.PhoneCard
 import ui.composable.elements.window.Sources
 import ui.composable.elements.window.TextDialog
@@ -47,7 +40,6 @@ fun DevicesHistorySection(
     val scope = rememberCoroutineScope()
     val phoneItems by sources.phoneSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
-    val listState = rememberLazyListState()
     var selectedPhoneItem by remember { mutableStateOf(emptyPhoneItem) }
     var showDialog by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
@@ -118,14 +110,9 @@ fun DevicesHistorySection(
 
         DividerColored()
 
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            LazyColumn(
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                modifier = Modifier.padding(top = 8.dp),
-                state = listState
-            ) {
+        ListWithScrollbar(
+            lazyModifier = Modifier.padding(top = 8.dp),
+            content = {
                 items(filteredPhones) { phoneItem ->
                     PhoneCard(
                         phoneItem = phoneItem,
@@ -146,17 +133,6 @@ fun DevicesHistorySection(
                     )
                 }
             }
-
-            VerticalScrollbar(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .fillMaxHeight()
-                    .padding(end = 5.dp)
-                    .width(15.dp),
-                adapter = rememberScrollbarAdapter(
-                    scrollState = listState
-                )
-            )
-        }
+        )
     }
 }
