@@ -33,7 +33,7 @@ import utils.getStringResource
 fun DeleteEditRowCard(
     text: String,
     editTitle: String,
-    onEdit: () -> Unit,
+    onEdit: (String) -> Unit,
     onSelected: (() -> Unit)? = null,
     onDelete: () -> Unit,
     isSelected: Boolean = false
@@ -47,7 +47,7 @@ fun DeleteEditRowCard(
             text = text,
             onConfirmRequest = {
                 showDialog = false
-                onEdit()
+                onEdit(it)
             },
             onDismissRequest = {
                 showDialog = false

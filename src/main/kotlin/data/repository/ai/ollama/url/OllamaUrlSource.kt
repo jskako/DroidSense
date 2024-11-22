@@ -14,6 +14,11 @@ class OllamaUrlSource(
         url = url
     )
 
+    override suspend fun update(url: String, value: String) = urlDao.update(
+        url = url,
+        value = value
+    )
+
     override fun get(context: CoroutineContext): Flow<List<String>> =
         urlDao.get().asFlow().mapToList(context)
 

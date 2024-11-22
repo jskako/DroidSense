@@ -16,6 +16,17 @@ class OllamaModelSource(
         model = ollamaModelItem.model
     )
 
+    override suspend fun update(url: String, model: String, value: String) = modelDao.update(
+        url = url,
+        model = model,
+        value = value
+    )
+
+    override suspend fun updateUrls(url: String, value: String) = modelDao.updateUrls(
+        url = url,
+        value = value
+    )
+
     override fun by(context: CoroutineContext, url: String): Flow<List<String>> =
         modelDao.getModels(url).asFlow().mapToList(context)
 

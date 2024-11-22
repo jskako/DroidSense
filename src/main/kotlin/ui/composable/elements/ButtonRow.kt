@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
+import utils.Colors.lightGray
 import utils.getStringResource
 
 @Composable
@@ -38,7 +39,8 @@ fun ButtonRow(
         trailingIcon = {
             TooltipIconButton(
                 modifier = Modifier.padding(end = 8.dp),
-                tint = darkBlue,
+                isEnabled = enabled,
+                tint = if(enabled) darkBlue else lightGray,
                 icon = icon,
                 tooltip = tooltipText,
                 function = {

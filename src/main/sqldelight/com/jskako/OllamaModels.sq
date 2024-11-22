@@ -8,6 +8,17 @@ insert:
 INSERT OR REPLACE INTO OllamaModels(url, model)
 VALUES(?, ?);
 
+update:
+UPDATE OllamaModels
+SET model = :value
+WHERE url IS :url AND model IS :model;
+
+updateUrls:
+UPDATE OllamaModels
+SET url = :value
+WHERE url IS :url;
+
+
 delete:
 DELETE FROM OllamaModels
 WHERE url IS :url AND model IS :model;

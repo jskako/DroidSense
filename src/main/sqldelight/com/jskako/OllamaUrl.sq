@@ -14,5 +14,10 @@ get:
 SELECT url
 FROM OllamaUrl;
 
+update:
+UPDATE OllamaUrl
+SET url = :value
+WHERE url IS :url;
+
 nukeTable:
 DELETE FROM OllamaUrl;

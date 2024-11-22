@@ -44,6 +44,7 @@ fun Ollama(
     ) {
         UrlColumn(
             ollamaUrlSource = ollamaUrlSource,
+            ollamaModelSource = ollamaModelSource,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -81,6 +82,7 @@ fun Ollama(
 @Composable
 private fun UrlColumn(
     ollamaUrlSource: OllamaUrlSource,
+    ollamaModelSource: OllamaModelSource,
     modifier: Modifier,
     urls: List<String>,
     selectedURL: String,
@@ -88,6 +90,8 @@ private fun UrlColumn(
     onUrlSelect: (String) -> Unit,
     onMessage: (InfoManagerData) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+
     Column(
         modifier = modifier
     ) {
@@ -105,7 +109,21 @@ private fun UrlColumn(
                         text = url,
                         editTitle = getStringResource("info.edit.url"),
                         onEdit = {
-                            ollamaUrlSource
+                            scope.launch {
+                                ollamaUrlSource.update(
+                                    url = url,
+                                    value = it
+                                )
+                                ollamaModelSource.updateUrls(
+                                    url = url,
+                                    value = it
+                                )
+                                onMessage(
+                                    InfoManagerData(
+                                        message = "${getStringResource("info.modify.url.message")} $url -> $it",
+                                    )
+                                )
+                            }
                         },
                         onDelete = {},
                         onSelected = { onUrlSelect(url) },
@@ -126,6 +144,9 @@ private fun ModelColumn(
     onModelAdd: (String) -> Unit,
     onMessage: (InfoManagerData) -> Unit
 ) {
+
+    val scope = rememberCoroutineScope()
+
     Column(
         modifier = modifier
     ) {
@@ -143,7 +164,20 @@ private fun ModelColumn(
                     DeleteEditRowCard(
                         text = model,
                         editTitle = getStringResource("info.edit.model"),
-                        onEdit = {},
+                        onEdit = {
+                            scope.launch {
+                                ollamaModelSource.update(
+                                    url = selectedURL,
+                                    model = model,
+                                    value = it
+                                )
+                                onMessage(
+                                    InfoManagerData(
+                                        message = "${getStringResource("info.modify.model.message")} $model -> $it",
+                                    )
+                                )
+                            }
+                        },
                         onDelete = {}
                     )
                 }
