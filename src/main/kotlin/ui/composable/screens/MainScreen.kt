@@ -13,6 +13,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import data.keys.SettingsKey
+import data.model.ai.ollama.OllamaMessage
+import data.model.ai.ollama.OllamaRole
+import data.network.NetworkModule
+import data.repository.ai.ollama.OllamaNetworkRepositoryImpl
+import domain.ollama.usecases.OllamaResponseUseCase
 import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
@@ -45,7 +50,7 @@ fun MainScreen(
         )
     }
 
-    /*LaunchedEffect(Unit) {
+    LaunchedEffect(Unit) {
         val httpClient = NetworkModule.provideHttpClient()
         val chatGPTRepository = OllamaNetworkRepositoryImpl(httpClient)
         val getResponseUseCase = OllamaResponseUseCase(chatGPTRepository)
@@ -53,11 +58,24 @@ fun MainScreen(
             "OpenAI answer: ${
                 getResponseUseCase.invoke(
                     "gemma2",
-                    "Tell me more about this error 2024-11-13 13:25:00.922 java[71645:930204] +[IMKClient subclass]: chose IMKClient_Modern"
+                    arrayOf(
+                        OllamaMessage(
+                            role = OllamaRole.USER,
+                            content = "Call me Josip."
+                        ),
+                        OllamaMessage(
+                            role = OllamaRole.ASSISTANT,
+                            content = "Sure, from now on I'll call you Josip."
+                        ),
+                        OllamaMessage(
+                            role = OllamaRole.USER,
+                            content = "What is my name? Are you able to generate image from it?"
+                        ),
+                    )
                 )
             }"
         )
-    }*/
+    }
 
     val infoManager = remember { InfoManager() }
     val devices by remember(deviceManager.devices.value) { mutableStateOf(deviceManager.devices.value) }

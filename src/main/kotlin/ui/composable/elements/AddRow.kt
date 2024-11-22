@@ -1,14 +1,20 @@
 package ui.composable.elements
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import ui.composable.elements.iconButtons.TooltipIconButton
@@ -23,7 +29,8 @@ fun AddRow(
     icon: ImageVector = Icons.Default.Add,
     tooltipText: String = getStringResource("info.add"),
     enabled: Boolean = true,
-    onClick: (String) -> Unit
+    onClick: (String) -> Unit,
+    additionalText: String? = null,
 ) {
 
     var input by remember { mutableStateOf("") }
@@ -37,17 +44,29 @@ fun AddRow(
             input = changedValue
         },
         trailingIcon = {
-            TooltipIconButton(
-                modifier = Modifier.padding(end = 8.dp),
-                isEnabled = enabled,
-                tint = if (enabled) darkBlue else lightGray,
-                icon = icon,
-                tooltip = tooltipText,
-                function = {
-                    onClick(input)
-                    input = ""
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                additionalText?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
                 }
-            )
+                TooltipIconButton(
+                    modifier = Modifier.padding(end = 8.dp),
+                    isEnabled = enabled,
+                    tint = if (enabled) darkBlue else lightGray,
+                    icon = icon,
+                    tooltip = tooltipText,
+                    function = {
+                        onClick(input)
+                        input = ""
+                    }
+                )
+            }
         }
     )
 }

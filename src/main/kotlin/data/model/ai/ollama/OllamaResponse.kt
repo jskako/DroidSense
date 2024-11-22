@@ -10,13 +10,12 @@ data class OllamaResponse(
     @SerialName("created_at")
     val createdAt: String,
 
-    val response: String,
-    val done: Boolean,
-
     @SerialName("done_reason")
     val doneReason: String? = null,
 
-    val context: List<Int>? = null,
+    val message: OllamaMessage,
+
+    val done: Boolean,
 
     @SerialName("total_duration")
     val totalDuration: Long? = null,

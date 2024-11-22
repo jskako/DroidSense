@@ -23,6 +23,7 @@ import notifications.InfoManagerData
 import ui.composable.elements.AddRow
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.settings.DeleteEditRowCard
+import utils.OLLAMA_DEFAULT_API
 import utils.getStringResource
 
 @Composable
@@ -56,7 +57,7 @@ fun Ollama(
             onUrlAdd = { input ->
                 if (input.isNotBlank()) {
                     scope.launch {
-                        ollamaUrlSource.add(url = input)
+                        ollamaUrlSource.add(url = "$input$OLLAMA_DEFAULT_API")
                     }
                 } else {
                     onMessage(
@@ -120,7 +121,8 @@ private fun UrlColumn(
         AddRow(
             modifier = Modifier.fillMaxWidth(),
             hintText = getStringResource("info.url.add"),
-            onClick = onUrlAdd
+            onClick = onUrlAdd,
+            additionalText = OLLAMA_DEFAULT_API
         )
 
         ListWithScrollbar(

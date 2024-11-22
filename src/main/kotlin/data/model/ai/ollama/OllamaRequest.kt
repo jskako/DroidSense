@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class OllamaRequest(
     val model: String,
-    val prompt: String,
+    val messages: Array<OllamaMessage>,
     val stream: Boolean = false
 )
-

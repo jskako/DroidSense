@@ -18,6 +18,7 @@ const val MIN_WINDOW_WIDTH = 800
 const val MIN_WINDOW_HEIGHT = 600
 const val ADB_DEVICE_OFFLINE = "offline"
 const val PRIVATE_SPACE_KEY = "Private Space"
+const val OLLAMA_DEFAULT_API = "/api/chat -d"
 
 private const val GET_PROPERTY: String = "getprop"
 const val DEVICE_MODEL_PROPERTY: String = "$GET_PROPERTY ro.product.model"

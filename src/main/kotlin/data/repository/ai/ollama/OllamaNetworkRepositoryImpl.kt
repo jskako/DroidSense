@@ -1,5 +1,6 @@
 package data.repository.ai.ollama
 
+import data.model.ai.ollama.OllamaMessage
 import data.model.ai.ollama.OllamaRequest
 import data.model.ai.ollama.OllamaResponse
 import domain.ollama.OllamaNetworkRepository
@@ -16,16 +17,16 @@ import kotlinx.serialization.json.Json
 
 class OllamaNetworkRepositoryImpl(
     private val client: HttpClient,
-    private val apiUrl: String
+    private val apiUrl: String = "http://localhost:11434/api/chat"
 ) : OllamaNetworkRepository {
 
     private val json = Json { encodeDefaults = true }
 
     override suspend fun getChatResponse(
         model: String,
-        prompt: String
-    ): Result<String> {
-        val requestBody = json.encodeToString(OllamaRequest(model, prompt))
+        messages: Array<OllamaMessage>
+    ): Result<OllamaMessage> {
+        val requestBody = json.encodeToString(OllamaRequest(model, messages))
 
         return runCatching {
             val response: HttpResponse = client.post(apiUrl) {
@@ -33,7 +34,7 @@ class OllamaNetworkRepositoryImpl(
                 setBody(requestBody)
             }
 
-            json.decodeFromString<OllamaResponse>(response.bodyAsText()).response
+            json.decodeFromString<OllamaResponse>(response.bodyAsText()).message
         }.onFailure {
             it.message
         }
