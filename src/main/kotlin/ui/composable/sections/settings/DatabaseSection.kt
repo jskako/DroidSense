@@ -119,6 +119,11 @@ private fun NukeDatabaseControll(
                 onDialogConfirm = {
                     scope.launch {
                         sources.settingsSource.deleteAll()
+                        sources.logHistorySource.deleteAll()
+                        sources.nameSource.deleteAll()
+                        sources.phoneSource.deleteAll()
+                        sources.ollamaModelSource.deleteAll()
+                        sources.ollamaUrlSource.deleteAll()
                         onMessage(
                             InfoManagerData(
                                 message = getStringResource("info.remove.settings.success"),

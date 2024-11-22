@@ -37,6 +37,10 @@ class OllamaModelSource(
         )
     }
 
+    override suspend fun deleteByUrl(url: String) {
+        modelDao.deleteByUrl(url = url)
+    }
+
     override suspend fun deleteAll() = modelDao.nukeTable()
 
 }

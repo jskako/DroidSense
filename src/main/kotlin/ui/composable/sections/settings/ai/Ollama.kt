@@ -20,7 +20,7 @@ import data.repository.ai.ollama.model.OllamaModelSource
 import data.repository.ai.ollama.url.OllamaUrlSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
-import ui.composable.elements.ButtonRow
+import ui.composable.elements.AddRow
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.settings.DeleteEditRowCard
 import utils.getStringResource
@@ -45,13 +45,26 @@ fun Ollama(
         UrlColumn(
             ollamaUrlSource = ollamaUrlSource,
             ollamaModelSource = ollamaModelSource,
+            onDelete = {
+                selectedURL = ""
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
             urls = urls,
             selectedURL = selectedURL,
             onUrlAdd = { input ->
-                scope.launch { ollamaUrlSource.add(url = input) }
+                if (input.isNotBlank()) {
+                    scope.launch {
+                        ollamaUrlSource.add(url = input)
+                    }
+                } else {
+                    onMessage(
+                        InfoManagerData(
+                            message = getStringResource("error.input"),
+                        )
+                    )
+                }
             },
             onUrlSelect = { url -> selectedURL = url },
             onMessage = onMessage
@@ -65,11 +78,19 @@ fun Ollama(
             models = models,
             selectedURL = selectedURL,
             onModelAdd = { input ->
-                scope.launch {
-                    ollamaModelSource.add(
-                        ollamaModelItem = OllamaModelItem(
-                            url = selectedURL,
-                            model = input
+                if (input.isNotBlank()) {
+                    scope.launch {
+                        ollamaModelSource.add(
+                            ollamaModelItem = OllamaModelItem(
+                                url = selectedURL,
+                                model = input
+                            )
+                        )
+                    }
+                } else {
+                    onMessage(
+                        InfoManagerData(
+                            message = getStringResource("error.input"),
                         )
                     )
                 }
@@ -88,6 +109,7 @@ private fun UrlColumn(
     selectedURL: String,
     onUrlAdd: (String) -> Unit,
     onUrlSelect: (String) -> Unit,
+    onDelete: () -> Unit,
     onMessage: (InfoManagerData) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -95,7 +117,7 @@ private fun UrlColumn(
     Column(
         modifier = modifier
     ) {
-        ButtonRow(
+        AddRow(
             modifier = Modifier.fillMaxWidth(),
             hintText = getStringResource("info.url.add"),
             onClick = onUrlAdd
@@ -108,6 +130,7 @@ private fun UrlColumn(
                     DeleteEditRowCard(
                         text = url,
                         editTitle = getStringResource("info.edit.url"),
+                        deleteDialogDescription = "${getStringResource("info.delete.url.description")} $url",
                         onEdit = {
                             scope.launch {
                                 ollamaUrlSource.update(
@@ -125,7 +148,18 @@ private fun UrlColumn(
                                 )
                             }
                         },
-                        onDelete = {},
+                        onDelete = {
+                            scope.launch {
+                                ollamaModelSource.deleteByUrl(url)
+                                ollamaUrlSource.deleteBy(url)
+                                onDelete()
+                                onMessage(
+                                    InfoManagerData(
+                                        message = "${getStringResource("info.delete.url.message")} ($url)",
+                                    )
+                                )
+                            }
+                        },
                         onSelected = { onUrlSelect(url) },
                         isSelected = url == selectedURL
                     )
@@ -150,7 +184,7 @@ private fun ModelColumn(
     Column(
         modifier = modifier
     ) {
-        ButtonRow(
+        AddRow(
             modifier = Modifier.fillMaxWidth(),
             hintText = getStringResource("info.model.add"),
             enabled = selectedURL.isNotBlank(),
@@ -164,6 +198,7 @@ private fun ModelColumn(
                     DeleteEditRowCard(
                         text = model,
                         editTitle = getStringResource("info.edit.model"),
+                        deleteDialogDescription = "${getStringResource("info.delete.model.description")} $selectedURL / $model",
                         onEdit = {
                             scope.launch {
                                 ollamaModelSource.update(
@@ -173,12 +208,24 @@ private fun ModelColumn(
                                 )
                                 onMessage(
                                     InfoManagerData(
-                                        message = "${getStringResource("info.modify.model.message")} $model -> $it",
+                                        message = "${getStringResource("info.modify.model.message")} $selectedURL / $model -> $selectedURL / $it",
                                     )
                                 )
                             }
                         },
-                        onDelete = {}
+                        onDelete = {
+                            scope.launch {
+                                ollamaModelSource.deleteBy(
+                                    url = selectedURL,
+                                    model = model
+                                )
+                                onMessage(
+                                    InfoManagerData(
+                                        message = "${getStringResource("info.model.url.message")} ($selectedURL / $model)",
+                                    )
+                                )
+                            }
+                        }
                     )
                 }
             }

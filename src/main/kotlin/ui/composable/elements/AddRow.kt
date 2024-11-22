@@ -17,7 +17,7 @@ import utils.Colors.lightGray
 import utils.getStringResource
 
 @Composable
-fun ButtonRow(
+fun AddRow(
     modifier: Modifier = Modifier,
     hintText: String,
     icon: ImageVector = Icons.Default.Add,
@@ -40,7 +40,7 @@ fun ButtonRow(
             TooltipIconButton(
                 modifier = Modifier.padding(end = 8.dp),
                 isEnabled = enabled,
-                tint = if(enabled) darkBlue else lightGray,
+                tint = if (enabled) darkBlue else lightGray,
                 icon = icon,
                 tooltip = tooltipText,
                 function = {

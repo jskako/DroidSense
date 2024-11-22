@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import ui.composable.elements.BasicText
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.EditDialog
+import ui.composable.elements.window.TextDialog
 import utils.Colors.darkBlue
 import utils.getStringResource
 
@@ -33,21 +34,37 @@ import utils.getStringResource
 fun DeleteEditRowCard(
     text: String,
     editTitle: String,
+    deleteDialogDescription: String,
     onEdit: (String) -> Unit,
     onSelected: (() -> Unit)? = null,
     onDelete: () -> Unit,
     isSelected: Boolean = false
 ) {
 
+    var showEditDialog by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
 
-    if (showDialog) {
+    if (showEditDialog) {
         EditDialog(
             title = editTitle,
             text = text,
             onConfirmRequest = {
-                showDialog = false
+                showEditDialog = false
                 onEdit(it)
+            },
+            onDismissRequest = {
+                showEditDialog = false
+            }
+        )
+    }
+
+    if (showDialog) {
+        TextDialog(
+            title = getStringResource("info.delete.log.title"),
+            description = deleteDialogDescription,
+            onConfirmRequest = {
+                showDialog = false
+                onDelete()
             },
             onDismissRequest = {
                 showDialog = false
@@ -86,7 +103,7 @@ fun DeleteEditRowCard(
                     icon = Icons.Default.Edit,
                     tooltip = editTitle,
                     function = {
-                        showDialog = true
+                        showEditDialog = true
                     }
                 )
 
@@ -96,7 +113,9 @@ fun DeleteEditRowCard(
                     tint = darkBlue,
                     icon = Icons.Default.Delete,
                     tooltip = getStringResource("info.delete"),
-                    function = onDelete
+                    function = {
+                        showDialog = true
+                    }
                 )
             }
         }

@@ -18,10 +18,13 @@ UPDATE OllamaModels
 SET url = :value
 WHERE url IS :url;
 
-
 delete:
 DELETE FROM OllamaModels
 WHERE url IS :url AND model IS :model;
+
+deleteByUrl:
+DELETE FROM OllamaModels
+WHERE url IS :url;
 
 getModels:
 SELECT model

@@ -11,5 +11,6 @@ interface OllamaModelRepository {
     suspend fun updateUrls(url: String, value: String)
     fun by(context: CoroutineContext, url: String): Flow<List<String>>
     suspend fun deleteBy(url: String, model: String)
+    suspend fun deleteByUrl(url: String)
     suspend fun deleteAll()
 }
