@@ -16,7 +16,7 @@ import kotlinx.serialization.json.Json
 
 class OllamaNetworkRepositoryImpl(
     private val client: HttpClient,
-    private val apiUrl: String = "http://localhost:11434/api/generate"
+    private val apiUrl: String
 ) : OllamaNetworkRepository {
 
     private val json = Json { encodeDefaults = true }

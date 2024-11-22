@@ -13,9 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import data.keys.SettingsKey
-import data.network.NetworkModule
-import data.repository.ai.ollama.OllamaNetworkRepositoryImpl
-import domain.ollama.usecases.OllamaResponseUseCase
 import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
@@ -48,7 +45,7 @@ fun MainScreen(
         )
     }
 
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         val httpClient = NetworkModule.provideHttpClient()
         val chatGPTRepository = OllamaNetworkRepositoryImpl(httpClient)
         val getResponseUseCase = OllamaResponseUseCase(chatGPTRepository)
@@ -60,7 +57,7 @@ fun MainScreen(
                 )
             }"
         )
-    }
+    }*/
 
     val infoManager = remember { InfoManager() }
     val devices by remember(deviceManager.devices.value) { mutableStateOf(deviceManager.devices.value) }

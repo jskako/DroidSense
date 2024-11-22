@@ -1,12 +1,15 @@
 package ui.composable.elements.settings
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -17,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -30,6 +32,7 @@ import ui.composable.elements.window.TextDialog
 import utils.Colors.darkBlue
 import utils.getStringResource
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DeleteEditRowCard(
     text: String,
@@ -87,36 +90,39 @@ fun DeleteEditRowCard(
         Column(
             modifier = Modifier.padding(8.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                verticalArrangement = Arrangement.Center
             ) {
                 BasicText(
+                    modifier = Modifier.wrapContentSize(),
                     value = text,
                     fontSize = 16.sp,
                     isBold = true,
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
 
-                TooltipIconButton(
-                    tint = darkBlue,
-                    icon = Icons.Default.Edit,
-                    tooltip = editTitle,
-                    function = {
-                        showEditDialog = true
-                    }
-                )
+                    TooltipIconButton(
+                        tint = darkBlue,
+                        icon = Icons.Default.Edit,
+                        tooltip = editTitle,
+                        function = {
+                            showEditDialog = true
+                        }
+                    )
 
-                addSpaceHeight(4.dp)
+                    addSpaceHeight(4.dp)
 
-                TooltipIconButton(
-                    tint = darkBlue,
-                    icon = Icons.Default.Delete,
-                    tooltip = getStringResource("info.delete"),
-                    function = {
-                        showDialog = true
-                    }
-                )
+                    TooltipIconButton(
+                        tint = darkBlue,
+                        icon = Icons.Default.Delete,
+                        tooltip = getStringResource("info.delete"),
+                        function = {
+                            showDialog = true
+                        }
+                    )
+                }
             }
         }
     }
