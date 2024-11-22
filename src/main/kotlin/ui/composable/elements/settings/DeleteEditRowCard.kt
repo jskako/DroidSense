@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import notifications.InfoManagerData
 import ui.composable.elements.BasicText
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.EditDialog
@@ -31,20 +30,21 @@ import utils.Colors.darkBlue
 import utils.getStringResource
 
 @Composable
-fun ButtonRowCard(
+fun DeleteEditRowCard(
     text: String,
+    editTitle: String,
     onEdit: () -> Unit,
-    onSelected: () -> Unit,
+    onSelected: (() -> Unit)? = null,
     onDelete: () -> Unit,
-    isSelected: Boolean,
-    onMessage: (InfoManagerData) -> Unit
+    isSelected: Boolean = false
 ) {
 
     var showDialog by remember { mutableStateOf(false) }
 
     if (showDialog) {
         EditDialog(
-            text = "",
+            title = editTitle,
+            text = text,
             onConfirmRequest = {
                 showDialog = false
                 onEdit()
@@ -57,9 +57,9 @@ fun ButtonRowCard(
 
     Card(
         modifier = Modifier
-            .clickable {
-                onSelected()
-            }
+            .then(
+                if (onSelected != null) Modifier.clickable { onSelected() } else Modifier
+            )
             .fillMaxWidth()
             .padding(4.dp),
         colors = CardDefaults.cardColors(
@@ -73,7 +73,6 @@ fun ButtonRowCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 BasicText(
                     value = text,
                     fontSize = 16.sp,
@@ -85,7 +84,7 @@ fun ButtonRowCard(
                 TooltipIconButton(
                     tint = darkBlue,
                     icon = Icons.Default.Edit,
-                    tooltip = getStringResource("info.edit.name"),
+                    tooltip = editTitle,
                     function = {
                         showDialog = true
                     }

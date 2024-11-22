@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.composable.elements.ButtonRow
 import ui.composable.elements.ListWithScrollbar
-import ui.composable.elements.settings.ButtonRowCard
+import ui.composable.elements.settings.DeleteEditRowCard
 import utils.getStringResource
 
 @Composable
@@ -43,6 +43,7 @@ fun Ollama(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         UrlColumn(
+            ollamaUrlSource = ollamaUrlSource,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -56,6 +57,7 @@ fun Ollama(
         )
 
         ModelColumn(
+            ollamaModelSource = ollamaModelSource,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -78,6 +80,7 @@ fun Ollama(
 
 @Composable
 private fun UrlColumn(
+    ollamaUrlSource: OllamaUrlSource,
     modifier: Modifier,
     urls: List<String>,
     selectedURL: String,
@@ -98,13 +101,15 @@ private fun UrlColumn(
             contentPadding = PaddingValues(end = 20.dp),
             content = {
                 items(urls) { url ->
-                    ButtonRowCard(
+                    DeleteEditRowCard(
                         text = url,
-                        onEdit = {},
+                        editTitle = getStringResource("info.edit.url"),
+                        onEdit = {
+                            ollamaUrlSource
+                        },
                         onDelete = {},
                         onSelected = { onUrlSelect(url) },
-                        isSelected = url == selectedURL,
-                        onMessage = onMessage
+                        isSelected = url == selectedURL
                     )
                 }
             }
@@ -114,6 +119,7 @@ private fun UrlColumn(
 
 @Composable
 private fun ModelColumn(
+    ollamaModelSource: OllamaModelSource,
     modifier: Modifier,
     models: List<String>,
     selectedURL: String,
@@ -134,13 +140,11 @@ private fun ModelColumn(
             contentPadding = PaddingValues(end = 20.dp),
             content = {
                 items(models) { model ->
-                    ButtonRowCard(
+                    DeleteEditRowCard(
                         text = model,
+                        editTitle = getStringResource("info.edit.model"),
                         onEdit = {},
-                        onDelete = {},
-                        onSelected = {},
-                        isSelected = false,
-                        onMessage = onMessage
+                        onDelete = {}
                     )
                 }
             }
