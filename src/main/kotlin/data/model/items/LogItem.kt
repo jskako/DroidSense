@@ -6,7 +6,7 @@ import java.util.UUID
 data class LogItem(
     val sessionUuid: UUID,
     val itemUuid: UUID,
-    val phoneSerialNumber: String,
+    val deviceSerialNumber: String,
     val date: String,
     val time: String,
     val pid: Long,

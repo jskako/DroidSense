@@ -14,9 +14,9 @@ import com.jskako.DSDatabase
 import data.createDriver
 import data.repository.ai.ollama.model.OllamaModelSource
 import data.repository.ai.ollama.url.OllamaUrlSource
+import data.repository.device.DeviceSource
 import data.repository.log.LogHistorySource
 import data.repository.name.NameSource
-import data.repository.phone.PhoneSource
 import data.repository.settings.SettingsSource
 import ui.application.WindowState
 import ui.application.WindowStateManager
@@ -48,7 +48,7 @@ fun NavWindow(
             Sources(
                 settingsSource = SettingsSource(dsDatabase.settingsQueries),
                 logHistorySource = LogHistorySource(dsDatabase.logHistoryQueries),
-                phoneSource = PhoneSource(dsDatabase.phoneInfoQueries),
+                deviceSource = DeviceSource(dsDatabase.deviceInfoQueries),
                 nameSource = NameSource(dsDatabase.customNameQueries),
                 ollamaModelSource = OllamaModelSource(dsDatabase.ollamaModelsQueries),
                 ollamaUrlSource = OllamaUrlSource(dsDatabase.ollamaUrlQueries)

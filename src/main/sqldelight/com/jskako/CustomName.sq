@@ -2,7 +2,8 @@ CREATE TABLE CustomName (
     sessionUuid TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     dateTime TEXT NOT NULL,
-    deviceSerialNumber TEXT NOT NULL
+    deviceSerialNumber TEXT NOT NULL,
+    FOREIGN KEY (deviceSerialNumber) REFERENCES DeviceInfo(serialNumber)
 );
 
 getNameBy:

@@ -121,7 +121,7 @@ private fun NukeDatabaseControll(
                         sources.settingsSource.deleteAll()
                         sources.logHistorySource.deleteAll()
                         sources.nameSource.deleteAll()
-                        sources.phoneSource.deleteAll()
+                        sources.deviceSource.deleteAll()
                         sources.ollamaModelSource.deleteAll()
                         sources.ollamaUrlSource.deleteAll()
                         onMessage(
@@ -146,7 +146,7 @@ private fun NukeDatabaseControll(
                     scope.launch {
                         sources.logHistorySource.deleteAll()
                         sources.nameSource.deleteAll()
-                        sources.phoneSource.deleteAll()
+                        sources.deviceSource.deleteAll()
                         onMessage(
                             InfoManagerData(
                                 message = getStringResource("info.remove.devices.success"),

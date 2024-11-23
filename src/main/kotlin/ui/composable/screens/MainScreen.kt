@@ -13,11 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import data.keys.SettingsKey
-import data.model.ai.ollama.OllamaMessage
-import data.model.ai.ollama.OllamaRole
-import data.network.NetworkModule
-import data.repository.ai.ollama.OllamaNetworkRepositoryImpl
-import domain.ollama.usecases.OllamaResponseUseCase
 import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
@@ -41,39 +36,12 @@ fun MainScreen(
     val adbPath by sources.settingsSource.get(SettingsKey.ADB.name).collectAsState(initial = "")
     val scrcpyPath by sources.settingsSource.get(SettingsKey.SCRCPY.name).collectAsState(initial = "")
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
-    val phoneSource by remember { mutableStateOf(sources.phoneSource) }
+    val deviceSource by remember { mutableStateOf(sources.deviceSource) }
     val scope = rememberCoroutineScope()
 
     val deviceManager = remember(adbPath) {
         DeviceManager(
             adbPath = adbPath
-        )
-    }
-
-    LaunchedEffect(Unit) {
-        val httpClient = NetworkModule.provideHttpClient()
-        val chatGPTRepository = OllamaNetworkRepositoryImpl(httpClient)
-        val getResponseUseCase = OllamaResponseUseCase(chatGPTRepository)
-        println(
-            "OpenAI answer: ${
-                getResponseUseCase.invoke(
-                    "gemma2",
-                    arrayOf(
-                        OllamaMessage(
-                            role = OllamaRole.USER,
-                            content = "Call me Josip."
-                        ),
-                        OllamaMessage(
-                            role = OllamaRole.ASSISTANT,
-                            content = "Sure, from now on I'll call you Josip."
-                        ),
-                        OllamaMessage(
-                            role = OllamaRole.USER,
-                            content = "What is my name? Are you able to generate image from it?"
-                        ),
-                    )
-                )
-            }"
         )
     }
 
@@ -104,8 +72,8 @@ fun MainScreen(
                 },
                 onDeviceFound = { device ->
                     scope.launch {
-                        if (phoneSource.by(device.serialNumber) == null) {
-                            phoneSource.add(device)
+                        if (deviceSource.by(device.serialNumber) == null) {
+                            deviceSource.add(device)
                         }
                     }
                 }

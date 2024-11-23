@@ -24,8 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import data.model.items.DeviceItem
 import data.model.items.NameItem.Companion.emptyNameItem
-import data.model.items.PhoneItem
 import data.repository.log.LogHistorySource
 import data.repository.name.NameSource
 import kotlinx.coroutines.launch
@@ -49,7 +49,7 @@ fun LogHistorySection(
     windowStateManager: WindowStateManager,
     logHistorySource: LogHistorySource,
     onMessage: (InfoManagerData) -> Unit,
-    phoneItem: PhoneItem = PhoneItem.emptyPhoneItem,
+    deviceItem: DeviceItem = DeviceItem.emptyDeviceItem,
     onFilterClear: () -> Unit,
 ) {
 
@@ -65,8 +65,8 @@ fun LogHistorySection(
                 nameItem.name.contains(searchText, ignoreCase = true) ||
                 nameItem.sessionUuid.toString().contains(searchText, ignoreCase = true)
 
-        val matchesSerialNumber = phoneItem.serialNumber.isEmpty() ||
-                nameItem.deviceSerialNumber.contains(phoneItem.serialNumber, ignoreCase = true)
+        val matchesSerialNumber = deviceItem.serialNumber.isEmpty() ||
+                nameItem.deviceSerialNumber.contains(deviceItem.serialNumber, ignoreCase = true)
 
         matchesSearchText && matchesSerialNumber
     }
@@ -107,7 +107,7 @@ fun LogHistorySection(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            phoneItem.let {
+            deviceItem.let {
                 if (it.serialNumber.isNotEmpty()) {
 
                     Text(

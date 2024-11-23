@@ -1,0 +1,24 @@
+CREATE TABLE DeviceInfo (
+    serialNumber TEXT NOT NULL PRIMARY KEY,
+    model TEXT,
+    manufacturer TEXT,
+    brand TEXT
+);
+
+insert:
+INSERT OR REPLACE INTO DeviceInfo(serialNumber, model, manufacturer, brand)
+VALUES(?,?,?,?);
+
+devices:
+SELECT * FROM DeviceInfo;
+
+getDeviceInfoBy:
+SELECT * FROM DeviceInfo
+WHERE serialNumber = :serialNumber;
+
+deleteBy:
+DELETE FROM DeviceInfo
+WHERE serialNumber = :serialNumber;
+
+nukeTable:
+DELETE FROM DeviceInfo;

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ScreenShare
+import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.RunCircle
 import androidx.compose.material.icons.filled.Settings
@@ -34,6 +35,7 @@ import ui.composable.elements.TooltipTextButton
 import ui.composable.elements.iconButtons.IconClickableText
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.Sources
+import ui.composable.screens.AIScreen
 import ui.composable.screens.HistoryScreen
 import ui.composable.screens.SettingsScreen
 import utils.Colors.darkGreen
@@ -55,7 +57,7 @@ fun StatusSection(
     searchText: String,
 ) {
     val scope = rememberCoroutineScope()
-    val phoneSource by remember { mutableStateOf(sources.phoneSource) }
+    val deviceSource by remember { mutableStateOf(sources.deviceSource) }
 
     Box(
         modifier = Modifier
@@ -82,8 +84,8 @@ fun StatusSection(
                             onMessage = onMessage,
                             onDeviceFound = { device ->
                                 scope.launch {
-                                    if (phoneSource.by(device.serialNumber) == null) {
-                                        phoneSource.add(device)
+                                    if (deviceSource.by(device.serialNumber) == null) {
+                                        deviceSource.add(device)
                                     }
                                 }
                             }
@@ -132,6 +134,30 @@ fun StatusSection(
                     }
                 )
             }
+
+            TooltipIconButton(
+                icon = Icons.Default.Android,
+                tooltip = getStringResource("info.ai"),
+                function = {
+                    windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                        newWindow(
+                            WindowData(
+                                title = getStringResource("info.ai"),
+                                icon = Icons.Default.Android,
+                                windowExtra = WindowExtra(
+                                    screen = {
+                                        AIScreen(
+                                            windowStateManager = windowStateManager,
+                                            sources = sources
+                                        )
+                                    },
+                                    onClose = {}
+                                )
+                            )
+                        )
+                    }
+                }
+            )
 
             TooltipIconButton(
                 icon = Icons.Default.History,

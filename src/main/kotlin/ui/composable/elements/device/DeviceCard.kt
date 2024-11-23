@@ -50,7 +50,7 @@ import ui.composable.screens.LogScreen
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import utils.Colors.lightGray
-import utils.DEFAULT_PHONE_IMAGE
+import utils.DEFAULT_DEVICE_IMAGE
 import utils.EMPTY_STRING
 import utils.IMAGES_DIRECTORY
 import utils.capitalizeFirstChar
@@ -88,7 +88,7 @@ fun DeviceCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                bitmap = getImageBitmap("$IMAGES_DIRECTORY/$DEFAULT_PHONE_IMAGE"),
+                bitmap = getImageBitmap("$IMAGES_DIRECTORY/$DEFAULT_DEVICE_IMAGE"),
                 contentDescription = EMPTY_STRING,
                 modifier = Modifier.size(48.dp)
             )

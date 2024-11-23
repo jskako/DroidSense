@@ -17,13 +17,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.model.items.PhoneItem
-import data.model.items.PhoneItem.Companion.emptyPhoneItem
+import data.model.items.DeviceItem
+import data.model.items.DeviceItem.Companion.emptyDeviceItem
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
-import ui.composable.elements.history.PhoneCard
+import ui.composable.elements.history.DeviceCard
 import ui.composable.elements.window.Sources
 import ui.composable.elements.window.TextDialog
 import utils.Colors.transparentTextFieldDefault
@@ -34,22 +34,22 @@ import utils.getStringResource
 fun DevicesHistorySection(
     sources: Sources,
     onMessage: (InfoManagerData) -> Unit,
-    onPhoneItemClicked: (PhoneItem) -> Unit,
+    onDeviceItemClicked: (DeviceItem) -> Unit,
 ) {
 
     val scope = rememberCoroutineScope()
-    val phoneItems by sources.phoneSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
+    val deviceItems by sources.deviceSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
-    var selectedPhoneItem by remember { mutableStateOf(emptyPhoneItem) }
+    var selectedDeviceItem by remember { mutableStateOf(emptyDeviceItem) }
     var showDialog by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
 
-    val filteredPhones = phoneItems.filter { phoneItem ->
+    val filteredDevices = deviceItems.filter { deviceItem ->
         searchText.isEmpty() ||
-                phoneItem.brand?.contains(searchText, ignoreCase = true) == true ||
-                phoneItem.model.toString().contains(searchText, ignoreCase = true) ||
-                phoneItem.manufacturer.toString().contains(searchText, ignoreCase = true) ||
-                phoneItem.serialNumber.contains(searchText, ignoreCase = true)
+                deviceItem.brand?.contains(searchText, ignoreCase = true) == true ||
+                deviceItem.model.toString().contains(searchText, ignoreCase = true) ||
+                deviceItem.manufacturer.toString().contains(searchText, ignoreCase = true) ||
+                deviceItem.serialNumber.contains(searchText, ignoreCase = true)
     }
 
     if (showDialog) {
@@ -57,11 +57,11 @@ fun DevicesHistorySection(
             title = getStringResource("info.delete.device.title"),
             description = buildString {
                 appendLine(getStringResource("info.delete.device.description"))
-                appendLine("$selectedPhoneItem ${selectedPhoneItem.serialNumber}")
+                appendLine("$selectedDeviceItem ${selectedDeviceItem.serialNumber}")
             },
             onConfirmRequest = {
                 showDialog = false
-                val serialNumber = selectedPhoneItem.serialNumber
+                val serialNumber = selectedDeviceItem.serialNumber
                 scope.launch {
                     sources.logHistorySource.let { logSource ->
                         logSource.uuids(serialNumber = serialNumber).forEach { uuid ->
@@ -74,7 +74,7 @@ fun DevicesHistorySection(
                             nameSource.deleteBy(uuid)
                         }
                     }
-                    sources.phoneSource.deleteBy(serialNumber = serialNumber)
+                    sources.deviceSource.deleteBy(serialNumber = serialNumber)
 
                     deleteInProgress = false
                 }
@@ -113,14 +113,14 @@ fun DevicesHistorySection(
         ListWithScrollbar(
             lazyModifier = Modifier.padding(top = 8.dp),
             content = {
-                items(filteredPhones) { phoneItem ->
-                    PhoneCard(
-                        phoneItem = phoneItem,
+                items(filteredDevices) { deviceItem ->
+                    DeviceCard(
+                        deviceItem = deviceItem,
                         onClick = {
-                            onPhoneItemClicked(phoneItem)
+                            onDeviceItemClicked(deviceItem)
                         },
                         onDelete = {
-                            selectedPhoneItem = phoneItem
+                            selectedDeviceItem = deviceItem
                             showDialog = true
                         },
                         onMessage = {

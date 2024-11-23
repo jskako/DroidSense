@@ -1,12 +1,14 @@
 CREATE TABLE OllamaModels (
     url TEXT NOT NULL,
     model TEXT NOT NULL,
-    PRIMARY KEY (url, model)
+    key TEXT NOT NULL,
+    PRIMARY KEY (url, model),
+    FOREIGN KEY (url) REFERENCES OllamaUrl(url)
 );
 
 insert:
-INSERT OR REPLACE INTO OllamaModels(url, model)
-VALUES(?, ?);
+INSERT OR REPLACE INTO OllamaModels(url, model, key)
+VALUES(?, ?, ?);
 
 update:
 UPDATE OllamaModels

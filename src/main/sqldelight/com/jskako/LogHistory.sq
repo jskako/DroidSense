@@ -2,20 +2,21 @@ CREATE TABLE LogHistory (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     sessionUuid TEXT NOT NULL,
     itemUuid TEXT NOT NULL,
-    phoneSerialNumber TEXT NOT NULL,
+    deviceSerialNumber TEXT NOT NULL,
     date TEXT NOT NULL,
     time TEXT NOT NULL,
     pid INTEGER NOT NULL,
     tid INTEGER NOT NULL,
     tag TEXT NOT NULL,
     level TEXT NOT NULL,
-    text TEXT NOT NULL
+    text TEXT NOT NULL,
+    FOREIGN KEY (deviceSerialNumber) REFERENCES DeviceInfo(serialNumber)
 );
 
 getUUIDsBySerialNumber:
 SELECT sessionUuid
 FROM LogHistory
-WHERE phoneSerialNumber = ?
+WHERE deviceSerialNumber = ?
 GROUP BY sessionUuid
 ORDER BY id ASC;
 
@@ -25,7 +26,7 @@ WHERE sessionUuid = :sessionUuid
 ORDER BY id ASC;
 
 insert:
-INSERT OR REPLACE INTO LogHistory(sessionUuid, itemUuid, phoneSerialNumber, date, time, pid, tid, tag, level, text)
+INSERT OR REPLACE INTO LogHistory(sessionUuid, itemUuid, deviceSerialNumber, date, time, pid, tid, tag, level, text)
 VALUES(?,?,?,?,?,?,?, ?, ?, ?);
 
 deleteBy:

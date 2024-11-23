@@ -17,7 +17,7 @@ class LogHistorySource(
     override suspend fun add(logItem: LogItem) = logDao.insert(
         sessionUuid = logItem.sessionUuid.toString(),
         itemUuid = logItem.itemUuid.toString(),
-        phoneSerialNumber = logItem.phoneSerialNumber,
+        deviceSerialNumber = logItem.deviceSerialNumber,
         date = logItem.date,
         time = logItem.time,
         pid = logItem.pid,

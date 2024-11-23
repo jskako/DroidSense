@@ -2,7 +2,7 @@ package data.model.items
 
 import utils.capitalizeFirstChar
 
-data class PhoneItem(
+data class DeviceItem(
     val serialNumber: String,
     val model: String?,
     val manufacturer: String?,
@@ -14,7 +14,7 @@ data class PhoneItem(
     }
 
     companion object {
-        val emptyPhoneItem = PhoneItem(
+        val emptyDeviceItem = DeviceItem(
             serialNumber = "",
             model = null,
             manufacturer = null,

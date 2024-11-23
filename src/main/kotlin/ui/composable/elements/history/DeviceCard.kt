@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import data.model.items.PhoneItem
+import data.model.items.DeviceItem
 import notifications.InfoManagerData
 import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
@@ -28,8 +28,8 @@ import utils.Colors.lightGray
 import utils.getStringResource
 
 @Composable
-fun PhoneCard(
-    phoneItem: PhoneItem,
+fun DeviceCard(
+    deviceItem: DeviceItem,
     onClick: () -> Unit,
     onDelete: () -> Unit,
     deleteInProgress: Boolean,
@@ -57,7 +57,7 @@ fun PhoneCard(
             ) {
 
                 BasicText(
-                    value = phoneItem.toString(),
+                    value = deviceItem.toString(),
                     fontSize = 16.sp,
                     isBold = true,
                 )
@@ -80,14 +80,14 @@ fun PhoneCard(
 
             BasicTextCaption(
                 text1 = getStringResource("info.serial.number"),
-                text2 = phoneItem.serialNumber
+                text2 = deviceItem.serialNumber
             )
 
-            phoneItem.brand?.let {
+            deviceItem.brand?.let {
                 addSpaceHeight(8.dp)
 
                 BasicTextCaption(
-                    text1 = getStringResource("info.phone.brand"),
+                    text1 = getStringResource("info.device.brand"),
                     text2 = it
                 )
             }

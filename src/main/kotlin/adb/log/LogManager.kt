@@ -207,7 +207,7 @@ class LogManager(
                             LogItem(
                                 sessionUuid = uuid,
                                 itemUuid = UUID.randomUUID(),
-                                phoneSerialNumber = serialNumber,
+                                deviceSerialNumber = serialNumber,
                                 date = components.getOrElse(index = 0, defaultValue = { "" }),
                                 time = components.getOrElse(index = 1, defaultValue = { "" }),
                                 pid = components.getOrNull(index = 2)?.toLongOrNull() ?: 0L,

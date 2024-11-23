@@ -1,10 +1,10 @@
 package data.model.mappers
 
-import com.jskako.PhoneInfo
-import data.model.items.PhoneItem
+import com.jskako.DeviceInfo
+import data.model.items.DeviceItem
 
-fun PhoneInfo.toPhoneItem(): PhoneItem {
-    return PhoneItem(
+fun DeviceInfo.toDeviceItem(): DeviceItem {
+    return DeviceItem(
         serialNumber = this.serialNumber,
         model = this.model,
         manufacturer = this.manufacturer,

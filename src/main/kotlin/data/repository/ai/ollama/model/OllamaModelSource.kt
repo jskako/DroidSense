@@ -13,7 +13,8 @@ class OllamaModelSource(
 
     override suspend fun add(ollamaModelItem: OllamaModelItem) = modelDao.insert(
         url = ollamaModelItem.url,
-        model = ollamaModelItem.model
+        model = ollamaModelItem.model,
+        key = ollamaModelItem.key
     )
 
     override suspend fun update(url: String, model: String, value: String) = modelDao.update(

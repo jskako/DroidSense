@@ -9,7 +9,7 @@ fun LogHistory.toLogItem(): LogItem {
     return LogItem(
         sessionUuid = UUID.fromString(this.sessionUuid),
         itemUuid = UUID.fromString(this.itemUuid),
-        phoneSerialNumber = this.phoneSerialNumber,
+        deviceSerialNumber = this.deviceSerialNumber,
         date = this.date,
         time = this.time,
         pid = this.pid,

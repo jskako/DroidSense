@@ -2,7 +2,7 @@ package adb
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import data.model.items.PhoneItem
+import data.model.items.DeviceItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
@@ -44,7 +44,7 @@ class DeviceManager(
     private fun startListening(
         onMessage: (InfoManagerData) -> Unit,
         coroutineScope: CoroutineScope,
-        onDeviceFound: (PhoneItem) -> Unit
+        onDeviceFound: (DeviceItem) -> Unit
     ) {
         monitorJob?.cancel()
         monitorJob = coroutineScope.launch {
@@ -72,7 +72,7 @@ class DeviceManager(
         monitorStatus: MonitorStatus,
         scope: CoroutineScope,
         onMessage: (InfoManagerData) -> Unit,
-        onDeviceFound: (PhoneItem) -> Unit
+        onDeviceFound: (DeviceItem) -> Unit
     ) {
         if (_monitoringStatus.value == MonitoringStatus.MONITORING) {
             stopListening(
@@ -103,7 +103,7 @@ class DeviceManager(
         adbPath: String,
         onMessage: (InfoManagerData) -> Unit,
         scope: CoroutineScope,
-        onDeviceFound: (PhoneItem) -> Unit
+        onDeviceFound: (DeviceItem) -> Unit
     ) {
         withContext(Default) {
             while (true) {
@@ -183,14 +183,14 @@ class DeviceManager(
     private fun addDevice(
         identifier: String,
         onMessage: (InfoManagerData) -> Unit,
-        onDeviceFound: (PhoneItem) -> Unit
+        onDeviceFound: (DeviceItem) -> Unit
     ) {
         getDeviceInfo(
             identifier = identifier
         ).also {
             _devices.value += it
             onDeviceFound(
-                PhoneItem(
+                DeviceItem(
                     serialNumber = it.serialNumber,
                     model = it.model,
                     manufacturer = it.manufacturer,

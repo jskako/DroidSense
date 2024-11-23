@@ -15,7 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
-import data.model.items.PhoneItem.Companion.emptyPhoneItem
+import data.model.items.DeviceItem.Companion.emptyDeviceItem
 import notifications.InfoManager
 import ui.application.WindowStateManager
 import ui.composable.elements.window.Sources
@@ -32,7 +32,7 @@ fun HistoryScreen(
     val scope = rememberCoroutineScope()
     val infoManager = remember { InfoManager() }
     var selectedOption by rememberSaveable { mutableStateOf(HistoryOption.LOGS) }
-    var phoneItem by remember { mutableStateOf(emptyPhoneItem) }
+    var deviceItem by remember { mutableStateOf(emptyDeviceItem) }
 
     Column {
         InfoSection(
@@ -66,9 +66,9 @@ fun HistoryScreen(
                             windowStateManager = windowStateManager,
                             nameSource = sources.nameSource,
                             logHistorySource = sources.logHistorySource,
-                            phoneItem = phoneItem,
+                            deviceItem = deviceItem,
                             onFilterClear = {
-                                phoneItem = emptyPhoneItem
+                                deviceItem = emptyDeviceItem
                             },
                             onMessage = { infoManagerData ->
                                 infoManager.showMessage(
@@ -82,8 +82,8 @@ fun HistoryScreen(
                     HistoryOption.DEVICES -> {
                         DevicesHistorySection(
                             sources = sources,
-                            onPhoneItemClicked = {
-                                phoneItem = it
+                            onDeviceItemClicked = {
+                                deviceItem = it
                                 selectedOption = HistoryOption.LOGS
 
                             },

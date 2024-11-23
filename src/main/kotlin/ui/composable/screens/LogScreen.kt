@@ -23,8 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import data.model.items.DeviceItem
 import data.model.items.NameItem
-import data.model.items.PhoneItem
 import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
@@ -160,10 +160,10 @@ fun LogScreen(
                         if (sources.nameSource.by(currentSessionUuid) == null) {
                             addName()
                         }
-                        sources.phoneSource.let {
+                        sources.deviceSource.let {
                             if (it.by(serialNumber = device.serialNumber) == null) {
                                 it.add(
-                                    phoneItem = PhoneItem(
+                                    deviceItem = DeviceItem(
                                         serialNumber = device.serialNumber,
                                         model = device.model,
                                         manufacturer = device.manufacturer,
