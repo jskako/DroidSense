@@ -1,5 +1,6 @@
 package ui.composable.elements.window
 
+import data.repository.ai.AIHistorySource
 import data.repository.ai.model.ModelSource
 import data.repository.ai.ollama.url.OllamaUrlSource
 import data.repository.device.DeviceSource
@@ -13,5 +14,6 @@ data class Sources(
     val deviceSource: DeviceSource,
     val nameSource: NameSource,
     val modelSource: ModelSource,
-    val ollamaUrlSource: OllamaUrlSource
+    val ollamaUrlSource: OllamaUrlSource,
+    val aiHistorySource: AIHistorySource
 )
