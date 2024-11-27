@@ -1,37 +1,37 @@
-CREATE TABLE OllamaModels (
+CREATE TABLE Models (
     url TEXT NOT NULL,
     model TEXT NOT NULL,
-    key TEXT NOT NULL,
+    aiType TEXT NOT NULL,
     PRIMARY KEY (url, model),
     FOREIGN KEY (url) REFERENCES OllamaUrl(url)
 );
 
 insert:
-INSERT OR REPLACE INTO OllamaModels(url, model, key)
+INSERT OR REPLACE INTO Models(url, model, aiType)
 VALUES(?, ?, ?);
 
 update:
-UPDATE OllamaModels
+UPDATE Models
 SET model = :value
 WHERE url IS :url AND model IS :model;
 
 updateUrls:
-UPDATE OllamaModels
+UPDATE Models
 SET url = :value
 WHERE url IS :url;
 
 delete:
-DELETE FROM OllamaModels
+DELETE FROM Models
 WHERE url IS :url AND model IS :model;
 
 deleteByUrl:
-DELETE FROM OllamaModels
+DELETE FROM Models
 WHERE url IS :url;
 
 getModels:
 SELECT model
-FROM OllamaModels
+FROM Models
 WHERE url = ?;
 
 nukeTable:
-DELETE FROM OllamaModels;
+DELETE FROM Models;

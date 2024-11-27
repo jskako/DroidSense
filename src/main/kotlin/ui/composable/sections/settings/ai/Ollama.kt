@@ -15,8 +15,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.model.ai.ollama.OllamaModelItem
-import data.repository.ai.ollama.model.OllamaModelSource
+import data.model.ai.AIModelItem
+import data.model.ai.AIType
+import data.repository.ai.model.ModelSource
 import data.repository.ai.ollama.url.OllamaUrlSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
@@ -30,14 +31,14 @@ import java.util.UUID
 @Composable
 fun Ollama(
     ollamaUrlSource: OllamaUrlSource,
-    ollamaModelSource: OllamaModelSource,
+    modelSource: ModelSource,
     onMessage: (InfoManagerData) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var selectedURL by remember { mutableStateOf("") }
 
     val urls by ollamaUrlSource.get(context = scope.coroutineContext).collectAsState(initial = emptyList())
-    val models by ollamaModelSource.by(url = selectedURL, context = scope.coroutineContext)
+    val models by modelSource.by(url = selectedURL, context = scope.coroutineContext)
         .collectAsState(initial = emptyList())
 
     Row(
@@ -46,7 +47,7 @@ fun Ollama(
     ) {
         UrlColumn(
             ollamaUrlSource = ollamaUrlSource,
-            ollamaModelSource = ollamaModelSource,
+            modelSource = modelSource,
             onDelete = {
                 selectedURL = ""
             },
@@ -73,7 +74,7 @@ fun Ollama(
         )
 
         ModelColumn(
-            ollamaModelSource = ollamaModelSource,
+            modelSource = modelSource,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -82,11 +83,11 @@ fun Ollama(
             onModelAdd = { input ->
                 if (input.isNotBlank()) {
                     scope.launch {
-                        ollamaModelSource.add(
-                            ollamaModelItem = OllamaModelItem(
+                        modelSource.add(
+                            aiModelItem = AIModelItem(
                                 url = selectedURL,
                                 model = input,
-                                key = UUID.randomUUID().toString(),
+                                aiType = AIType.OLLAMA,
                             )
                         )
                     }
@@ -106,7 +107,7 @@ fun Ollama(
 @Composable
 private fun UrlColumn(
     ollamaUrlSource: OllamaUrlSource,
-    ollamaModelSource: OllamaModelSource,
+    modelSource: ModelSource,
     modifier: Modifier,
     urls: List<String>,
     selectedURL: String,
@@ -141,7 +142,7 @@ private fun UrlColumn(
                                     url = url,
                                     value = it
                                 )
-                                ollamaModelSource.updateUrls(
+                                modelSource.updateUrls(
                                     url = url,
                                     value = it
                                 )
@@ -154,7 +155,7 @@ private fun UrlColumn(
                         },
                         onDelete = {
                             scope.launch {
-                                ollamaModelSource.deleteByUrl(url)
+                                modelSource.deleteByUrl(url)
                                 ollamaUrlSource.deleteBy(url)
                                 onDelete()
                                 onMessage(
@@ -175,7 +176,7 @@ private fun UrlColumn(
 
 @Composable
 private fun ModelColumn(
-    ollamaModelSource: OllamaModelSource,
+    modelSource: ModelSource,
     modifier: Modifier,
     models: List<String>,
     selectedURL: String,
@@ -205,7 +206,7 @@ private fun ModelColumn(
                         deleteDialogDescription = "${getStringResource("info.delete.model.description")} $selectedURL / $model",
                         onEdit = {
                             scope.launch {
-                                ollamaModelSource.update(
+                                modelSource.update(
                                     url = selectedURL,
                                     model = model,
                                     value = it
@@ -219,7 +220,7 @@ private fun ModelColumn(
                         },
                         onDelete = {
                             scope.launch {
-                                ollamaModelSource.deleteBy(
+                                modelSource.deleteBy(
                                     url = selectedURL,
                                     model = model
                                 )

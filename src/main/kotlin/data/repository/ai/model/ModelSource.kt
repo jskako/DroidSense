@@ -1,20 +1,20 @@
-package data.repository.ai.ollama.model
+package data.repository.ai.model
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import com.jskako.OllamaModelsQueries
-import data.model.ai.ollama.OllamaModelItem
+import com.jskako.ModelsQueries
+import data.model.ai.AIModelItem
 import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.CoroutineContext
 
-class OllamaModelSource(
-    private val modelDao: OllamaModelsQueries,
-) : OllamaModelRepository {
+class ModelSource(
+    private val modelDao: ModelsQueries,
+) : ModelRepository {
 
-    override suspend fun add(ollamaModelItem: OllamaModelItem) = modelDao.insert(
-        url = ollamaModelItem.url,
-        model = ollamaModelItem.model,
-        key = ollamaModelItem.key
+    override suspend fun add(aiModelItem: AIModelItem) = modelDao.insert(
+        url = aiModelItem.url,
+        model = aiModelItem.model,
+        aiType = aiModelItem.aiType.name
     )
 
     override suspend fun update(url: String, model: String, value: String) = modelDao.update(

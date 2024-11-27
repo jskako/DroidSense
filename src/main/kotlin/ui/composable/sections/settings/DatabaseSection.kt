@@ -122,7 +122,7 @@ private fun NukeDatabaseControll(
                         sources.logHistorySource.deleteAll()
                         sources.nameSource.deleteAll()
                         sources.deviceSource.deleteAll()
-                        sources.ollamaModelSource.deleteAll()
+                        sources.modelSource.deleteAll()
                         sources.ollamaUrlSource.deleteAll()
                         onMessage(
                             InfoManagerData(

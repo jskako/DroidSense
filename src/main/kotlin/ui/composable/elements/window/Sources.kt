@@ -1,6 +1,6 @@
 package ui.composable.elements.window
 
-import data.repository.ai.ollama.model.OllamaModelSource
+import data.repository.ai.model.ModelSource
 import data.repository.ai.ollama.url.OllamaUrlSource
 import data.repository.device.DeviceSource
 import data.repository.log.LogHistorySource
@@ -12,6 +12,6 @@ data class Sources(
     val logHistorySource: LogHistorySource,
     val deviceSource: DeviceSource,
     val nameSource: NameSource,
-    val ollamaModelSource: OllamaModelSource,
+    val modelSource: ModelSource,
     val ollamaUrlSource: OllamaUrlSource
 )

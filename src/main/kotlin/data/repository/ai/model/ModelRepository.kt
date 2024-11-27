@@ -1,12 +1,12 @@
-package data.repository.ai.ollama.model
+package data.repository.ai.model
 
-import data.model.ai.ollama.OllamaModelItem
+import data.model.ai.AIModelItem
 import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.CoroutineContext
 
-interface OllamaModelRepository {
+interface ModelRepository {
 
-    suspend fun add(ollamaModelItem: OllamaModelItem)
+    suspend fun add(aiModelItem: AIModelItem)
     suspend fun update(url: String, model: String, value: String)
     suspend fun updateUrls(url: String, value: String)
     fun by(context: CoroutineContext, url: String): Flow<List<String>>

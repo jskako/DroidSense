@@ -11,7 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.repository.ai.ollama.model.OllamaModelSource
+import data.model.ai.AIType
+import data.repository.ai.model.ModelSource
 import data.repository.ai.ollama.url.OllamaUrlSource
 import data.repository.settings.SettingsSource
 import notifications.InfoManagerData
@@ -22,7 +23,7 @@ import utils.getStringResource
 @Composable
 fun AISection(
     settingsSource: SettingsSource,
-    ollamaModelSource: OllamaModelSource,
+    modelSource: ModelSource,
     ollamaUrlSource: OllamaUrlSource,
     onMessage: (InfoManagerData) -> Unit
 ) {
@@ -56,7 +57,7 @@ fun AISection(
 
         when (selectedInfoType) {
             AIType.OLLAMA -> Ollama(
-                ollamaModelSource = ollamaModelSource,
+                modelSource = modelSource,
                 ollamaUrlSource = ollamaUrlSource,
                 onMessage = onMessage
             )
@@ -67,8 +68,4 @@ fun AISection(
             )
         }
     }
-}
-
-private enum class AIType {
-    OLLAMA, OPEN_API
 }

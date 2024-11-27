@@ -84,7 +84,7 @@ fun SettingsScreen(
                     SettingsOption.AI -> AISection(
                         settingsSource = sources.settingsSource,
                         ollamaUrlSource = sources.ollamaUrlSource,
-                        ollamaModelSource = sources.ollamaModelSource,
+                        modelSource = sources.modelSource,
                         onMessage = {
                             infoManager.showMessage(
                                 infoManagerData = it,

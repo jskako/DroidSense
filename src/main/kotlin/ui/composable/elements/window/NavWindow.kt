@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.window.Window
 import com.jskako.DSDatabase
 import data.createDriver
-import data.repository.ai.ollama.model.OllamaModelSource
+import data.repository.ai.model.ModelSource
 import data.repository.ai.ollama.url.OllamaUrlSource
 import data.repository.device.DeviceSource
 import data.repository.log.LogHistorySource
@@ -50,7 +50,7 @@ fun NavWindow(
                 logHistorySource = LogHistorySource(dsDatabase.logHistoryQueries),
                 deviceSource = DeviceSource(dsDatabase.deviceInfoQueries),
                 nameSource = NameSource(dsDatabase.customNameQueries),
-                ollamaModelSource = OllamaModelSource(dsDatabase.ollamaModelsQueries),
+                modelSource = ModelSource(dsDatabase.modelsQueries),
                 ollamaUrlSource = OllamaUrlSource(dsDatabase.ollamaUrlQueries)
             )
         )
