@@ -1,15 +1,15 @@
-package data.repository.name
+package data.repository.name.log
 
-import data.model.items.NameItem
+import data.model.items.LogNameItem
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 import kotlin.coroutines.CoroutineContext
 
-interface NameRepository {
+interface LogNameRepository {
 
-    suspend fun add(nameItem: NameItem)
-    fun by(context: CoroutineContext): Flow<List<NameItem>>
-    fun by(sessionUuid: UUID): NameItem?
+    suspend fun add(logNameItem: LogNameItem)
+    fun by(context: CoroutineContext): Flow<List<LogNameItem>>
+    fun by(sessionUuid: UUID): LogNameItem?
     fun uuids(serialNumber: String): List<UUID>
     fun update(sessionUuid: UUID, name: String)
     suspend fun deleteBy(sessionUuid: UUID)

@@ -25,9 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import data.model.items.DeviceItem
-import data.model.items.NameItem.Companion.emptyNameItem
 import data.repository.log.LogHistorySource
-import data.repository.name.NameSource
+import data.repository.name.log.LogNameSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.application.WindowExtra
@@ -37,7 +36,6 @@ import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.history.NameCard
 import ui.composable.elements.iconButtons.TooltipIconButton
-import ui.composable.elements.window.TextDialog
 import ui.composable.screens.LogHistoryDetailsScreen
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
@@ -45,7 +43,7 @@ import utils.getStringResource
 
 @Composable
 fun LogHistorySection(
-    nameSource: NameSource,
+    logNameSource: LogNameSource,
     windowStateManager: WindowStateManager,
     logHistorySource: LogHistorySource,
     onMessage: (InfoManagerData) -> Unit,
@@ -54,10 +52,8 @@ fun LogHistorySection(
 ) {
 
     val scope = rememberCoroutineScope()
-    val nameItems by nameSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
-    var selectedNameItem by remember { mutableStateOf(emptyNameItem) }
+    val nameItems by logNameSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
-    var showDialog by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
 
     val filteredNames = nameItems.filter { nameItem ->
@@ -69,28 +65,6 @@ fun LogHistorySection(
                 nameItem.deviceSerialNumber.contains(deviceItem.serialNumber, ignoreCase = true)
 
         matchesSearchText && matchesSerialNumber
-    }
-
-    if (showDialog) {
-        TextDialog(
-            title = getStringResource("info.delete.log.title"),
-            description = buildString {
-                appendLine(getStringResource("info.delete.log.description"))
-                appendLine(selectedNameItem.sessionUuid)
-            },
-            onConfirmRequest = {
-                showDialog = false
-                scope.launch {
-                    logHistorySource.deleteBy(selectedNameItem.sessionUuid)
-                    nameSource.deleteBy(selectedNameItem.sessionUuid)
-                    deleteInProgress = false
-                }
-            },
-            onDismissRequest = {
-                deleteInProgress = false
-                showDialog = false
-            }
-        )
     }
 
     Column(
@@ -144,8 +118,9 @@ fun LogHistorySection(
             content = {
                 items(filteredNames.reversed()) { nameItem ->
                     NameCard(
-                        nameSource = nameSource,
-                        nameItem = nameItem,
+                        name = nameItem.name,
+                        uuid = nameItem.sessionUuid,
+                        dateTime = nameItem.dateTime,
                         onClick = {
                             windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                                 newWindow(
@@ -170,16 +145,30 @@ fun LogHistorySection(
                             }
                         },
                         onDelete = {
-                            selectedNameItem = nameItem
-                            showDialog = true
+                            deleteInProgress = true
+                            scope.launch {
+                                logHistorySource.deleteBy(nameItem.sessionUuid)
+                                logNameSource.deleteBy(nameItem.sessionUuid)
+                                deleteInProgress = false
+                                onMessage(
+                                    InfoManagerData(
+                                        message = getStringResource("info.delete.log.message")
+                                    )
+                                )
+                            }
                         },
-                        onMessage = {
-                            onMessage(it)
+                        onUpdate = {
+                            logNameSource.update(
+                                sessionUuid = nameItem.sessionUuid,
+                                name = it
+                            )
+                            onMessage(
+                                InfoManagerData(
+                                    message = getStringResource("info.name.update.log.message")
+                                )
+                            )
                         },
-                        deleteInProgress = deleteInProgress,
-                        onDeleteInProgress = {
-                            deleteInProgress = it
-                        }
+                        buttonsEnabled = !deleteInProgress,
                     )
                 }
             }

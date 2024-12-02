@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.model.items.DeviceItem
-import data.model.items.NameItem
+import data.model.items.LogNameItem
 import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
@@ -91,8 +91,8 @@ fun LogScreen(
     }
 
     suspend fun addName() {
-        sources.nameSource.add(
-            nameItem = NameItem(
+        sources.logNameSource.add(
+            logNameItem = LogNameItem(
                 sessionUuid = currentSessionUuid,
                 name = "${device.manufacturer?.capitalizeFirstChar()}_${device.model}_${device.serialNumber}_${
                     getTimeStamp(
@@ -157,7 +157,7 @@ fun LogScreen(
             onLastLog = { log ->
                 if (saveToDatabase) {
                     scope.launch {
-                        if (sources.nameSource.by(currentSessionUuid) == null) {
+                        if (sources.logNameSource.by(currentSessionUuid) == null) {
                             addName()
                         }
                         sources.deviceSource.let {

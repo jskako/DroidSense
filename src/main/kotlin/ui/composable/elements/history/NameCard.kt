@@ -25,43 +25,57 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import data.model.items.NameItem
-import data.repository.name.NameSource
-import notifications.InfoManagerData
 import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.EditDialog
+import ui.composable.elements.window.TextDialog
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
 import utils.capitalizeFirstChar
 import utils.getStringResource
+import java.util.UUID
 
 @Composable
 fun NameCard(
-    nameItem: NameItem,
-    nameSource: NameSource,
+    uuid: UUID,
+    name: String,
+    dateTime: String,
+    onUpdate: (String) -> Unit,
     onClick: () -> Unit,
     onDelete: () -> Unit,
-    deleteInProgress: Boolean,
-    onDeleteInProgress: (Boolean) -> Unit,
-    onMessage: (InfoManagerData) -> Unit
+    buttonsEnabled: Boolean = true
 ) {
 
-    var showDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
-    if (showDialog) {
+    if (showEditDialog) {
         EditDialog(
-            text = nameItem.name,
+            text = name,
             onConfirmRequest = {
-                showDialog = false
-                nameSource.update(
-                    sessionUuid = nameItem.sessionUuid,
-                    name = it
-                )
+                showEditDialog = false
+                onUpdate(it)
             },
             onDismissRequest = {
-                showDialog = false
+                showEditDialog = false
+            }
+        )
+    }
+
+    if (showDeleteDialog) {
+        TextDialog(
+            title = getStringResource("info.delete.log.title"),
+            description = buildString {
+                appendLine(getStringResource("info.delete.log.description"))
+                appendLine(uuid)
+            },
+            onConfirmRequest = {
+                showDeleteDialog = false
+                onDelete()
+            },
+            onDismissRequest = {
+                showDeleteDialog = false
             }
         )
     }
@@ -86,7 +100,7 @@ fun NameCard(
             ) {
 
                 BasicText(
-                    value = nameItem.name.capitalizeFirstChar(),
+                    value = name.capitalizeFirstChar(),
                     fontSize = 16.sp,
                     isBold = true,
                 )
@@ -94,25 +108,24 @@ fun NameCard(
                 Spacer(modifier = Modifier.weight(1f))
 
                 TooltipIconButton(
-                    isEnabled = !deleteInProgress,
-                    tint = if (deleteInProgress) lightGray else darkBlue,
+                    isEnabled = buttonsEnabled,
+                    tint = if (buttonsEnabled) darkBlue else lightGray,
                     icon = Icons.Default.Edit,
                     tooltip = getStringResource("info.edit.name"),
                     function = {
-                        showDialog = true
+                        showEditDialog = true
                     }
                 )
 
                 addSpaceHeight(4.dp)
 
                 TooltipIconButton(
-                    isEnabled = !deleteInProgress,
-                    tint = if (deleteInProgress) lightGray else darkBlue,
+                    isEnabled = buttonsEnabled,
+                    tint = if (buttonsEnabled) darkBlue else lightGray,
                     icon = Icons.Default.Delete,
                     tooltip = getStringResource("info.delete"),
                     function = {
-                        onDeleteInProgress(true)
-                        onDelete()
+                        showDeleteDialog = true
                     }
                 )
             }
@@ -121,13 +134,13 @@ fun NameCard(
 
             BasicTextCaption(
                 text1 = getStringResource("info.uuid.identifier"),
-                text2 = nameItem.sessionUuid.toString()
+                text2 = uuid.toString()
             )
 
             addSpaceHeight(8.dp)
 
             Text(
-                text = nameItem.dateTime,
+                text = dateTime,
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )

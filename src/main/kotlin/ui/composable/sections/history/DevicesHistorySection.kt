@@ -69,7 +69,7 @@ fun DevicesHistorySection(
                         }
                     }
 
-                    sources.nameSource.let { nameSource ->
+                    sources.logNameSource.let { nameSource ->
                         nameSource.uuids(serialNumber = serialNumber).forEach { uuid ->
                             nameSource.deleteBy(uuid)
                         }

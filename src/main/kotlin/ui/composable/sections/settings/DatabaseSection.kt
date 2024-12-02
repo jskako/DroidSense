@@ -120,7 +120,7 @@ private fun NukeDatabaseControll(
                     scope.launch {
                         sources.settingsSource.deleteAll()
                         sources.logHistorySource.deleteAll()
-                        sources.nameSource.deleteAll()
+                        sources.logNameSource.deleteAll()
                         sources.deviceSource.deleteAll()
                         sources.modelSource.deleteAll()
                         sources.ollamaUrlSource.deleteAll()
@@ -145,7 +145,7 @@ private fun NukeDatabaseControll(
                 onDialogConfirm = {
                     scope.launch {
                         sources.logHistorySource.deleteAll()
-                        sources.nameSource.deleteAll()
+                        sources.logNameSource.deleteAll()
                         sources.deviceSource.deleteAll()
                         onMessage(
                             InfoManagerData(
@@ -168,7 +168,7 @@ private fun NukeDatabaseControll(
                 onDialogConfirm = {
                     scope.launch {
                         sources.logHistorySource.deleteAll()
-                        sources.nameSource.deleteAll()
+                        sources.logNameSource.deleteAll()
                         onMessage(
                             InfoManagerData(
                                 message = getStringResource("info.remove.logs.success"),

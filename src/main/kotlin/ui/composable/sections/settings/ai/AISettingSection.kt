@@ -21,7 +21,7 @@ import ui.composable.elements.SelectableRow
 import utils.getStringResource
 
 @Composable
-fun AISection(
+fun AISettingSection(
     settingsSource: SettingsSource,
     modelSource: ModelSource,
     ollamaUrlSource: OllamaUrlSource,

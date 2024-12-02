@@ -26,7 +26,6 @@ import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.settings.DeleteEditRowCard
 import utils.OLLAMA_DEFAULT_API
 import utils.getStringResource
-import java.util.UUID
 
 @Composable
 fun Ollama(

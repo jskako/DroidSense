@@ -38,7 +38,7 @@ class AIHistorySource(
         }
     }
 
-    override suspend fun deleteBy(deviceSerialNumber: String) {
+    override suspend fun deleteBySerialNumber(deviceSerialNumber: String) {
         aiDao.deleteBy(deviceSerialNumber)
     }
 

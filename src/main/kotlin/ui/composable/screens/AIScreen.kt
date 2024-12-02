@@ -12,6 +12,8 @@ fun AIScreen(
 ) {
 
     AISection(
-        windowStateManager = windowStateManager
+        windowStateManager = windowStateManager,
+        aiNameSource = sources.aiNameSource,
+        aiHistorySource = sources.aiHistorySource,
     )
 }

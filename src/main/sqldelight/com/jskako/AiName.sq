@@ -1,0 +1,38 @@
+CREATE TABLE AiName (
+    sessionUuid TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    dateTime TEXT NOT NULL,
+    deviceSerialNumber TEXT,
+    FOREIGN KEY (deviceSerialNumber) REFERENCES DeviceInfo(serialNumber)
+);
+
+getNameBy:
+SELECT * FROM AiName
+WHERE sessionUuid = :sessionUuid;
+
+names:
+SELECT * FROM AiName;
+
+insert:
+INSERT OR REPLACE INTO AiName(sessionUuid, name, dateTime, deviceSerialNumber)
+VALUES(?,?, ?, ?);
+
+getNamesBySerialNumber:
+SELECT * FROM AiName
+WHERE deviceSerialNumber = :deviceSerialNumber;
+
+updateName:
+UPDATE AiName
+SET name = :name
+WHERE sessionUuid = :sessionUuid;
+
+deleteBy:
+DELETE FROM AiName
+WHERE sessionUuid = :sessionUuid;
+
+deleteBySerialNumber:
+DELETE FROM AiName
+WHERE deviceSerialNumber = :deviceSerialNumber;
+
+nukeTable:
+DELETE FROM AiName;

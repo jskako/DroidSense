@@ -1,4 +1,4 @@
-CREATE TABLE CustomName (
+CREATE TABLE LogName (
     sessionUuid TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     dateTime TEXT NOT NULL,
@@ -7,28 +7,28 @@ CREATE TABLE CustomName (
 );
 
 getNameBy:
-SELECT * FROM CustomName
+SELECT * FROM LogName
 WHERE sessionUuid = :sessionUuid;
 
 names:
-SELECT * FROM CustomName;
+SELECT * FROM LogName;
 
 insert:
-INSERT OR REPLACE INTO CustomName(sessionUuid, name, dateTime, deviceSerialNumber)
+INSERT OR REPLACE INTO LogName(sessionUuid, name, dateTime, deviceSerialNumber)
 VALUES(?,?, ?, ?);
 
 getNamesBySerialNumber:
-SELECT * FROM CustomName
+SELECT * FROM LogName
 WHERE deviceSerialNumber = :deviceSerialNumber;
 
 updateName:
-UPDATE CustomName
+UPDATE LogName
 SET name = :name
 WHERE sessionUuid = :sessionUuid;
 
 deleteBy:
-DELETE FROM CustomName
+DELETE FROM LogName
 WHERE sessionUuid = :sessionUuid;
 
 nukeTable:
-DELETE FROM CustomName;
+DELETE FROM LogName;

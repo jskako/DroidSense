@@ -64,7 +64,7 @@ fun HistoryScreen(
                     HistoryOption.LOGS -> {
                         LogHistorySection(
                             windowStateManager = windowStateManager,
-                            nameSource = sources.nameSource,
+                            logNameSource = sources.logNameSource,
                             logHistorySource = sources.logHistorySource,
                             deviceItem = deviceItem,
                             onFilterClear = {

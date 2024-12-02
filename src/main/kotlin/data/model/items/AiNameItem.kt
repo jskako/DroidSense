@@ -2,14 +2,14 @@ package data.model.items
 
 import java.util.UUID
 
-data class NameItem(
+data class AiNameItem(
     val sessionUuid: UUID,
     val name: String,
     val dateTime: String,
-    val deviceSerialNumber: String
+    val deviceSerialNumber: String?
 ) {
     companion object {
-        val emptyNameItem = NameItem(
+        val emptyLogNameItem = AiNameItem(
             sessionUuid = UUID(0, 0),
             name = "",
             dateTime = "",
@@ -17,3 +17,4 @@ data class NameItem(
         )
     }
 }
+

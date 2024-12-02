@@ -1,32 +1,32 @@
-package data.repository.name
+package data.repository.name.log
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import com.jskako.CustomNameQueries
-import data.model.items.NameItem
+import com.jskako.LogNameQueries
+import data.model.items.LogNameItem
 import data.model.mappers.toNameItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 import kotlin.coroutines.CoroutineContext
 
-class NameSource(
-    private val nameDao: CustomNameQueries,
-) : NameRepository {
+class LogNameSource(
+    private val nameDao: LogNameQueries,
+) : LogNameRepository {
 
-    override suspend fun add(nameItem: NameItem) {
+    override suspend fun add(logNameItem: LogNameItem) {
         nameDao.insert(
-            sessionUuid = nameItem.sessionUuid.toString(),
-            name = nameItem.name,
-            dateTime = nameItem.dateTime,
-            deviceSerialNumber = nameItem.deviceSerialNumber,
+            sessionUuid = logNameItem.sessionUuid.toString(),
+            name = logNameItem.name,
+            dateTime = logNameItem.dateTime,
+            deviceSerialNumber = logNameItem.deviceSerialNumber,
         )
     }
 
     override fun by(sessionUuid: UUID) =
         nameDao.getNameBy(sessionUuid = sessionUuid.toString()).executeAsOneOrNull()?.toNameItem()
 
-    override fun by(context: CoroutineContext): Flow<List<NameItem>> =
+    override fun by(context: CoroutineContext): Flow<List<LogNameItem>> =
         nameDao.names().asFlow().mapToList(context).map {
             it.map { name ->
                 name.toNameItem()

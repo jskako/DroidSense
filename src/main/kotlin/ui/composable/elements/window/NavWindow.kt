@@ -17,7 +17,8 @@ import data.repository.ai.model.ModelSource
 import data.repository.ai.ollama.url.OllamaUrlSource
 import data.repository.device.DeviceSource
 import data.repository.log.LogHistorySource
-import data.repository.name.NameSource
+import data.repository.name.ai.AiNameSource
+import data.repository.name.log.LogNameSource
 import data.repository.settings.SettingsSource
 import ui.application.WindowState
 import ui.application.WindowStateManager
@@ -50,7 +51,8 @@ fun NavWindow(
                 settingsSource = SettingsSource(dsDatabase.settingsQueries),
                 logHistorySource = LogHistorySource(dsDatabase.logHistoryQueries),
                 deviceSource = DeviceSource(dsDatabase.deviceInfoQueries),
-                nameSource = NameSource(dsDatabase.customNameQueries),
+                logNameSource = LogNameSource(dsDatabase.logNameQueries),
+                aiNameSource = AiNameSource(dsDatabase.aiNameQueries),
                 modelSource = ModelSource(dsDatabase.modelsQueries),
                 ollamaUrlSource = OllamaUrlSource(dsDatabase.ollamaUrlQueries),
                 aiHistorySource = AIHistorySource(dsDatabase.aIHistoryQueries)

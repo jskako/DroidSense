@@ -23,7 +23,7 @@ import ui.composable.sections.info.InfoSection
 import ui.composable.sections.settings.DatabaseSection
 import ui.composable.sections.settings.GeneralSection
 import ui.composable.sections.settings.InfoSection
-import ui.composable.sections.settings.ai.AISection
+import ui.composable.sections.settings.ai.AISettingSection
 
 @Composable
 fun SettingsScreen(
@@ -81,7 +81,7 @@ fun SettingsScreen(
                         }
                     )
 
-                    SettingsOption.AI -> AISection(
+                    SettingsOption.AI -> AISettingSection(
                         settingsSource = sources.settingsSource,
                         ollamaUrlSource = sources.ollamaUrlSource,
                         modelSource = sources.modelSource,
