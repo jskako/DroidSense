@@ -5,16 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import notifications.InfoManager
-import ui.application.WindowStateManager
-import ui.composable.elements.window.Sources
-import ui.composable.sections.ai.AISection
+import ui.composable.sections.ai.ChatSection
 import ui.composable.sections.info.InfoSection
 
 @Composable
-fun AIScreen(
-    windowStateManager: WindowStateManager,
-    sources: Sources
-) {
+fun ChatScreen() {
 
     val infoManager = remember { InfoManager() }
     val scope = rememberCoroutineScope()
@@ -27,10 +22,7 @@ fun AIScreen(
             color = infoManager.infoManagerData.value.color
         )
 
-        AISection(
-            windowStateManager = windowStateManager,
-            aiNameSource = sources.aiNameSource,
-            aiHistorySource = sources.aiHistorySource,
+        ChatSection(
             onMessage = {
                 infoManager.showMessage(
                     infoManagerData = it,

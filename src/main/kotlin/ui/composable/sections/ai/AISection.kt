@@ -2,7 +2,6 @@ package ui.composable.sections.ai
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,13 +30,15 @@ import androidx.compose.ui.unit.dp
 import data.repository.ai.AIHistorySource
 import data.repository.name.ai.AiNameSource
 import kotlinx.coroutines.launch
-import notifications.InfoManager
+import notifications.InfoManagerData
+import ui.application.WindowExtra
 import ui.application.WindowStateManager
+import ui.application.navigation.WindowData
 import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
+import ui.composable.elements.history.NameCard
 import ui.composable.elements.iconButtons.TooltipIconButton
-import ui.composable.elements.window.TextDialog
-import ui.composable.sections.info.InfoSection
+import ui.composable.screens.ChatScreen
 import utils.Colors.darkBlue
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
@@ -47,14 +49,14 @@ fun AISection(
     windowStateManager: WindowStateManager,
     deviceSerialNumber: String? = null,
     aiHistorySource: AIHistorySource,
-    aiNameSource: AiNameSource
+    aiNameSource: AiNameSource,
+    onMessage: (InfoManagerData) -> Unit,
 ) {
 
     val scope = rememberCoroutineScope()
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
     val nameItems by aiNameSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
-    var showDialog by remember { mutableStateOf(false) }
 
     val filteredNames = nameItems.filter { nameItem ->
         val matchesSearchText = searchText.isEmpty() ||
@@ -66,27 +68,6 @@ fun AISection(
         } ?: true
 
         matchesSearchText && matchesSerialNumber
-    }
-
-    if (showDialog) {
-        TextDialog(
-            title = getStringResource("info.delete.ai.log.title"),
-            description = buildString {
-                appendLine(getStringResource("info.delete.ai.description"))
-            },
-            onConfirmRequest = {
-                showDialog = false
-                scope.launch {
-                    /*logHistorySource.deleteBy(selectedNameItem.sessionUuid)
-                    nameSource.deleteBy(selectedNameItem.sessionUuid)*/
-                    deleteInProgress = false
-                }
-            },
-            onDismissRequest = {
-                deleteInProgress = false
-                showDialog = false
-            }
-        )
     }
 
     /*LaunchedEffect(Unit) {
@@ -117,13 +98,24 @@ fun AISection(
         )
     }*/
 
-    val infoManager = remember { InfoManager() }
-
     Scaffold(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
-
+                    windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                        newWindow(
+                            WindowData(
+                                title = "",
+                                icon = Icons.Default.Info,
+                                windowExtra = WindowExtra(
+                                    screen = {
+                                        ChatScreen()
+                                    },
+                                    onClose = {}
+                                )
+                            )
+                        )
+                    }
                 },
                 containerColor = darkBlue,
                 contentColor = Color.White,
@@ -133,13 +125,6 @@ fun AISection(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-
-            InfoSection(
-                onCloseClicked = { infoManager.clearInfoMessage() },
-                message = infoManager.infoManagerData.value.message,
-                color = infoManager.infoManagerData.value.color
-            )
-
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
@@ -180,15 +165,68 @@ fun AISection(
 
             ListWithScrollbar(
                 lazyModifier = Modifier.padding(top = 8.dp),
-                contentPadding = PaddingValues(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 8.dp,
-                    bottom = 80.dp
-                ),
                 content = {
-                    items(filteredNames) { aiNameItem ->
+                    items(filteredNames.reversed()) { nameItem ->
+                        NameCard(
+                            name = nameItem.name,
+                            uuid = nameItem.sessionUuid,
+                            dateTime = nameItem.dateTime,
+                            onClick = {
+                                windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                                    newWindow(
+                                        WindowData(
+                                            title = buildString {
+                                                "${nameItem.name} (${nameItem.deviceSerialNumber})"
+                                                append(nameItem.name)
+                                                nameItem.deviceSerialNumber?.let {
+                                                    append(" $it")
+                                                }
+                                            },
+                                            icon = Icons.Default.Info,
+                                            windowExtra = WindowExtra(
+                                                screen = {
+                                                    /*
+                                                    val logs by logHistorySource.by(
+                                                        context = scope.coroutineContext,
+                                                        sessionUuid = nameItem.sessionUuid
+                                                    ).collectAsState(initial = emptyList())
 
+                                                    LogHistoryDetailsScreen(
+                                                        logs = logs
+                                                    )*/
+                                                },
+                                                onClose = {}
+                                            )
+                                        )
+                                    )
+                                }
+                            },
+                            onDelete = {
+                                deleteInProgress = true
+                                scope.launch {
+                                    aiHistorySource.deleteBy(nameItem.sessionUuid)
+                                    aiNameSource.deleteBy(nameItem.sessionUuid)
+                                    deleteInProgress = false
+                                    onMessage(
+                                        InfoManagerData(
+                                            message = getStringResource("info.delete.log.message")
+                                        )
+                                    )
+                                }
+                            },
+                            onUpdate = {
+                                aiNameSource.update(
+                                    sessionUuid = nameItem.sessionUuid,
+                                    name = it
+                                )
+                                onMessage(
+                                    InfoManagerData(
+                                        message = getStringResource("info.name.update.log.message")
+                                    )
+                                )
+                            },
+                            buttonsEnabled = !deleteInProgress,
+                        )
                     }
                 }
             )
