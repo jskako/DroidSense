@@ -17,13 +17,14 @@ import utils.Colors.darkBlue
 
 @Composable
 fun CircularProgressBar(
-    text: String,
+    modifier: Modifier = Modifier.fillMaxSize(),
+    text: String? = null,
     circularColor: Color = darkBlue,
-    isVisible: Boolean
+    isVisible: Boolean = true
 ) {
     if (isVisible) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -31,11 +32,13 @@ fun CircularProgressBar(
                 modifier = Modifier.wrapContentSize(),
                 color = circularColor,
             )
-            Text(
-                text = text,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 16.dp)
-            )
+            text?.let {
+                Text(
+                    text = it,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+            }
         }
     }
 }

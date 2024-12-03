@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -41,12 +42,17 @@ import androidx.compose.ui.unit.dp
 import data.model.ai.AIItem
 import data.model.ai.AIType
 import data.model.ai.ollama.AiRole
+import data.model.ai.ollama.OllamaMessage
+import data.network.NetworkModule
+import data.repository.ai.ollama.OllamaNetworkRepositoryImpl
+import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.ai.ChatCard
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
+import utils.Colors.lightGray
 import utils.Colors.transparentTextFieldDefault
 import utils.DATABASE_DATETIME
 import utils.EMPTY_STRING
@@ -60,15 +66,17 @@ fun ChatSection(
     onMessage: (InfoManagerData) -> Unit,
 ) {
 
+    val httpClient = NetworkModule.provideHttpClient()
+    val aiRepository = OllamaNetworkRepositoryImpl(httpClient)
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val listState = rememberLazyListState()
-    var searchText by remember { mutableStateOf(EMPTY_STRING) }
+    var message by remember { mutableStateOf(EMPTY_STRING) }
+    var inProgress by remember { mutableStateOf(false) }
     //val nameItems by aiNameSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
-    var deleteInProgress by remember { mutableStateOf(false) }
     var textFieldHeight by remember { mutableStateOf(0) }
 
-    LaunchedEffect(searchText) {
+    LaunchedEffect(message) {
         scrollState.animateScrollTo(scrollState.maxValue)
     }
 
@@ -95,7 +103,7 @@ fun ChatSection(
         val getResponseUseCase = OllamaResponseUseCase(chatGPTRepository)
         println(
             "OpenAI answer: ${
-                getResponseUseCase.invoke(
+                chatGPTRepository.invoke(
                     "gemma2",
                     arrayOf(
                         OllamaMessage(
@@ -165,9 +173,10 @@ fun ChatSection(
                         }
                         .verticalScroll(scrollState)
                         .background(color = Color.White),
-                    value = searchText,
-                    onValueChange = { searchText = it },
-                    placeholder = { Text(getStringResource("info.search")) },
+                    enabled = !inProgress,
+                    value = message,
+                    onValueChange = { message = it },
+                    placeholder = { Text(getStringResource("info.message.info")) },
                     singleLine = false,
                     colors = transparentTextFieldDefault
                 )
@@ -188,15 +197,38 @@ fun ChatSection(
                 )
             }
 
-            TooltipIconButton(
-                modifier = Modifier.padding(end = 8.dp, bottom = 16.dp),
-                tint = Color.White,
-                icon = Icons.AutoMirrored.Filled.Send,
-                tooltip = getStringResource("info.edit.name"),
-                function = {
-                    // Action here
-                }
-            )
+            if (inProgress) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(end = 8.dp, bottom = 16.dp),
+                    color = Color.White,
+                )
+            } else {
+                TooltipIconButton(
+                    modifier = Modifier.padding(end = 8.dp, bottom = 16.dp),
+                    isEnabled = message.isNotBlank(),
+                    tint = if (message.isBlank()) lightGray else Color.White,
+                    icon = Icons.AutoMirrored.Filled.Send,
+                    tooltip = getStringResource("info.send.message"),
+                    function = {
+                        inProgress = true
+                        scope.launch {
+                            val response = aiRepository.getChatResponse(
+                                model = "gemma2",
+                                messages = arrayOf(
+                                    OllamaMessage(
+                                        role = AiRole.USER,
+                                        content = message
+                                    ),
+                                )
+                            )
+                            message = ""
+                            println(response)
+                            inProgress = false
+                        }
+                    }
+                )
+            }
         }
     }
 }

@@ -43,6 +43,7 @@ fun ChatCard(
 
     if (showEditDialog) {
         EditDialog(
+            title = getStringResource("info.edit.message"),
             text = aiItem.message,
             singleLine = false,
             onConfirmRequest = {
@@ -76,12 +77,12 @@ fun ChatCard(
                     fontSize = 16.sp
                 )
 
-                if(aiItem.role == AiRole.USER) {
+                if (aiItem.role == AiRole.USER) {
                     TooltipIconButton(
                         isEnabled = buttonsEnabled,
                         tint = if (buttonsEnabled) darkBlue else lightGray,
                         icon = Icons.Default.Edit,
-                        tooltip = getStringResource("info.edit.name"),
+                        tooltip = getStringResource("info.edit.message"),
                         function = {
                             showEditDialog = true
                         }
