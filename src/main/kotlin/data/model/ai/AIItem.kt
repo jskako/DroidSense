@@ -9,5 +9,6 @@ data class AIItem(
     val url: String,
     val model: String,
     val role: String,
-    val message: String
+    val message: String,
+    val dateTime: String
 )

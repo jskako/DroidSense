@@ -7,14 +7,4 @@ data class AiNameItem(
     val name: String,
     val dateTime: String,
     val deviceSerialNumber: String?
-) {
-    companion object {
-        val emptyLogNameItem = AiNameItem(
-            sessionUuid = UUID(0, 0),
-            name = "",
-            dateTime = "",
-            deviceSerialNumber = ""
-        )
-    }
-}
-
+)

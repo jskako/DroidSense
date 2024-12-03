@@ -13,6 +13,7 @@ fun AIHistory.toAiItem(): AIItem {
         url = this.url,
         model = this.model,
         role = this.role,
-        message = this.message
+        message = this.message,
+        dateTime = this.dateTime,
     )
 }

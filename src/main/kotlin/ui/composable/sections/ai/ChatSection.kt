@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,14 +38,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import data.model.ai.AIItem
+import data.model.ai.AIType
 import notifications.InfoManagerData
 import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
+import ui.composable.elements.ai.ChatCard
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.transparentTextFieldDefault
+import utils.DATABASE_DATETIME
 import utils.EMPTY_STRING
 import utils.getStringResource
+import utils.getTimeStamp
+import java.util.UUID
 
 @Composable
 fun ChatSection(
@@ -54,20 +61,18 @@ fun ChatSection(
 
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
+    val listState = rememberLazyListState()
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
     //val nameItems by aiNameSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
-    val mockedList = listOf<String>(
-        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
-        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
-        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
-        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
-        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
-    )
     var textFieldHeight by remember { mutableStateOf(0) }
 
     LaunchedEffect(searchText) {
         scrollState.animateScrollTo(scrollState.maxValue)
+    }
+
+    LaunchedEffect(mockedList) {
+        listState.animateScrollToItem(mockedList.lastIndex)
     }
 
     /*val filteredNames = nameItems.filter { nameItem ->
@@ -122,11 +127,14 @@ fun ChatSection(
                 .weight(0.9f)
                 .fillMaxWidth(),
             lazyModifier = Modifier.padding(top = 8.dp),
+            listState = listState,
             content = {
-                items(mockedList) {
-                    Text(
-                        text = it,
-                        modifier = Modifier.fillMaxWidth()
+                items(mockedList) { aiItem ->
+                    ChatCard(
+                        aiItem = aiItem,
+                        onUpdate = {
+
+                        }
                     )
                 }
             }
@@ -189,5 +197,104 @@ fun ChatSection(
                 }
             )
         }
+    }
+}
+
+
+private val mockedList = buildList {
+    repeat(10) {
+        add(
+            AIItem(
+                uuid = UUID.randomUUID(),
+                deviceSerialNumber = "20234",
+                aiType = AIType.OLLAMA,
+                url = "",
+                model = "",
+                role = "user",
+                message = "ListWithScrollbar(\n" +
+                        "            modifier = Modifier\n" +
+                        "                .weight(0.9f)\n" +
+                        "                .fillMaxSize(),\n" +
+                        "            lazyModifier = Modifier.padding(top = 8.dp),\n" +
+                        "            content = {\n" +
+                        "                items(mockedList) {\n" +
+                        "                    Text(\n" +
+                        "                        text = it,\n" +
+                        "                        modifier = Modifier.fillMaxWidth()\n" +
+                        "                    )\n" +
+                        "                }\n" +
+                        "            }\n" +
+                        "        )\n" +
+                        "\n" +
+                        "        Row(\n" +
+                        "            modifier = Modifier.background(color = darkBlue),\n" +
+                        "            verticalAlignment = Alignment.Bottom\n" +
+                        "        ) {\n" +
+                        "\n" +
+                        "            Box(\n" +
+                        "                modifier = Modifier\n" +
+                        "                    .weight(1f)\n" +
+                        "            ) {\n" +
+                        "                TextField(\n" +
+                        "                    modifier = Modifier\n" +
+                        "                        .padding(horizontal = 16.dp, vertical = 8.dp)\n" +
+                        "                        .clip(RoundedCornerShape(16.dp))\n" +
+                        "                        .heightIn(max = TextFieldDefaults.MinHeight * 4)\n" +
+                        "                        .verticalScroll(scrollState)\n" +
+                        "                        .fillMaxWidth()\n" +
+                        "                        .background(color = Color.White),\n" +
+                        "                    value = searchText,\n" +
+                        "                    onValueChange = { searchText = it },\n" +
+                        "                    placeholder = { Text(getStringResource(\"info.search\")) },\n" +
+                        "                    singleLine = false,\n" +
+                        "                    colors = transparentTextFieldDefault\n" +
+                        "                )\n" +
+                        "\n" +
+                        "                VerticalScrollbar(\n" +
+                        "                    modifier = Modifier\n" +
+                        "                        .align(Alignment.CenterEnd)\n" +
+                        "                        .padding(end = 5.dp)\n" +
+                        "                        .width(15.dp),\n" +
+                        "                    adapter = rememberScrollbarAdapter(\n" +
+                        "                        scrollState = scrollState\n" +
+                        "                    )\n" +
+                        "                )\n" +
+                        "            }\n" +
+                        "\n" +
+                        "            TooltipIconButton(\n" +
+                        "                modifier = Modifier.padding(end = 8.dp, bottom = 16.dp),\n" +
+                        "                tint = Color.White,\n" +
+                        "                icon = Icons.AutoMirrored.Filled.Send,\n" +
+                        "                tooltip = getStringResource(\"info.edit.name\"),\n" +
+                        "                function = {\n" +
+                        "\n" +
+                        "                }\n" +
+                        "            )\n" +
+                        "        }\n" +
+                        "    }",
+                dateTime = getTimeStamp(DATABASE_DATETIME)
+            )
+        )
+
+        add(
+            AIItem(
+                uuid = UUID.randomUUID(),
+                deviceSerialNumber = "20234",
+                aiType = AIType.OLLAMA,
+                url = "",
+                model = "",
+                role = "assistant",
+                message = "Your code snippet doesn't explicitly reveal your name, as it primarily involves a Compose layout implementation for UI components like a ListWithScrollbar, TextField, and TooltipIconButton. If you're referring to something like a username or identity in the UI, it might be coming from the mockedList, searchText, or a resource string like getStringResource(\"info.edit.name\").\n" +
+                        "\n" +
+                        "If you meant something specific like:\n" +
+                        "\n" +
+                        "A string resource displaying your name.\n" +
+                        "The data in mockedList containing your name.\n" +
+                        "You can clarify or check those values directly.\n" +
+                        "\n" +
+                        "If you're asking in a conversational sense, I don’t have your name unless you provide it! \uD83D\uDE0A Let me know if I can help with anything else in this code.",
+                dateTime = getTimeStamp(DATABASE_DATETIME)
+            )
+        )
     }
 }

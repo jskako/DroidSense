@@ -21,7 +21,8 @@ class AIHistorySource(
         url = aiItem.url,
         model = aiItem.model,
         role = aiItem.role,
-        message = aiItem.message
+        message = aiItem.message,
+        dateTime = aiItem.dateTime,
     )
 
     override fun uuidsBy(context: CoroutineContext, deviceSerialNumber: String): Flow<List<String>> =

@@ -6,12 +6,13 @@ CREATE TABLE AIHistory (
     model TEXT NOT NULL,
     role TEXT NOT NULL,
     message TEXT NOT NULL,
+    dateTime TEXT NOT NULL,
     FOREIGN KEY (deviceSerialNumber) REFERENCES DeviceInfo(serialNumber)
 );
 
 insert:
-INSERT OR REPLACE INTO AIHistory(uuid, deviceSerialNumber, aiType, url, model, role, message)
-VALUES(?,?,?,?,?,?,?);
+INSERT OR REPLACE INTO AIHistory(uuid, deviceSerialNumber, aiType, url, model, role, message, dateTime)
+VALUES(?,?,?,?,?,?,?, ?);
 
 getUUIDsBySerialNumber:
 SELECT uuid
@@ -27,10 +28,6 @@ GROUP BY uuid;
 history:
 SELECT * FROM AIHistory
 WHERE uuid = :deviceSerialNumber;
-
-deleteBySerialNumber:
-DELETE FROM AIHistory
-WHERE deviceSerialNumber = :deviceSerialNumber;
 
 deleteBy:
 DELETE FROM AIHistory

@@ -31,7 +31,8 @@ fun EditDialog(
     title: String = getStringResource("info.edit.name"),
     text: String = "",
     onConfirmRequest: (String) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    singleLine: Boolean = true,
 ) {
 
     var editText by remember { mutableStateOf(text) }
@@ -45,25 +46,29 @@ fun EditDialog(
                 modifier = Modifier.padding(16.dp)
             ) {
 
-                Text(
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    text = title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
-                )
+                Column(
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        text = title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
 
-                TextField(
-                    value = editText,
-                    singleLine = true,
-                    onValueChange = {
-                        editText = it
-                    },
-                    placeholder = {
-                        Text(getStringResource("info.enter.name"))
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
+                    TextField(
+                        value = editText,
+                        singleLine = singleLine,
+                        onValueChange = {
+                            editText = it
+                        },
+                        placeholder = {
+                            Text(title)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                }
 
                 Row(
                     modifier = Modifier
