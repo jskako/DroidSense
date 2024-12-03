@@ -1,5 +1,6 @@
 package data.model.ai
 
+import data.model.ai.ollama.AiRole
 import java.util.UUID
 
 data class AIItem(
@@ -8,7 +9,7 @@ data class AIItem(
     val aiType: AIType,
     val url: String,
     val model: String,
-    val role: String,
+    val role: AiRole,
     val message: String,
     val dateTime: String
 )

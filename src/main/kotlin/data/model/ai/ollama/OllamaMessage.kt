@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class OllamaMessage(
-    val role: OllamaRole,
+    val role: AiRole,
     val content: String
 )

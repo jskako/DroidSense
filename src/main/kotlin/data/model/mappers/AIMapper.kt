@@ -3,6 +3,7 @@ package data.model.mappers
 import com.jskako.AIHistory
 import data.model.ai.AIItem
 import data.model.ai.AIType
+import data.model.ai.ollama.AiRole
 import java.util.UUID
 
 fun AIHistory.toAiItem(): AIItem {
@@ -12,7 +13,7 @@ fun AIHistory.toAiItem(): AIItem {
         aiType = AIType.valueOf(this.aiType),
         url = this.url,
         model = this.model,
-        role = this.role,
+        role = AiRole.fromString(this.role),
         message = this.message,
         dateTime = this.dateTime,
     )

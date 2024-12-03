@@ -20,7 +20,7 @@ class AIHistorySource(
         aiType = aiItem.aiType.name,
         url = aiItem.url,
         model = aiItem.model,
-        role = aiItem.role,
+        role = aiItem.role.databaseName(),
         message = aiItem.message,
         dateTime = aiItem.dateTime,
     )

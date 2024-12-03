@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import data.model.ai.AIItem
 import data.model.ai.AIType
+import data.model.ai.ollama.AiRole
 import notifications.InfoManagerData
 import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
@@ -210,7 +211,7 @@ private val mockedList = buildList {
                 aiType = AIType.OLLAMA,
                 url = "",
                 model = "",
-                role = "user",
+                role = AiRole.USER,
                 message = "ListWithScrollbar(\n" +
                         "            modifier = Modifier\n" +
                         "                .weight(0.9f)\n" +
@@ -283,7 +284,7 @@ private val mockedList = buildList {
                 aiType = AIType.OLLAMA,
                 url = "",
                 model = "",
-                role = "assistant",
+                role = AiRole.ASSISTANT,
                 message = "Your code snippet doesn't explicitly reveal your name, as it primarily involves a Compose layout implementation for UI components like a ListWithScrollbar, TextField, and TooltipIconButton. If you're referring to something like a username or identity in the UI, it might be coming from the mockedList, searchText, or a resource string like getStringResource(\"info.edit.name\").\n" +
                         "\n" +
                         "If you meant something specific like:\n" +

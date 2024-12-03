@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.model.ai.AIItem
+import data.model.ai.ollama.AiRole
 import ui.composable.elements.BasicText
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.EditDialog
@@ -75,15 +76,17 @@ fun ChatCard(
                     fontSize = 16.sp
                 )
 
-                TooltipIconButton(
-                    isEnabled = buttonsEnabled,
-                    tint = if (buttonsEnabled) darkBlue else lightGray,
-                    icon = Icons.Default.Edit,
-                    tooltip = getStringResource("info.edit.name"),
-                    function = {
-                        showEditDialog = true
-                    }
-                )
+                if(aiItem.role == AiRole.USER) {
+                    TooltipIconButton(
+                        isEnabled = buttonsEnabled,
+                        tint = if (buttonsEnabled) darkBlue else lightGray,
+                        icon = Icons.Default.Edit,
+                        tooltip = getStringResource("info.edit.name"),
+                        function = {
+                            showEditDialog = true
+                        }
+                    )
+                }
             }
 
             addSpaceHeight(8.dp)
