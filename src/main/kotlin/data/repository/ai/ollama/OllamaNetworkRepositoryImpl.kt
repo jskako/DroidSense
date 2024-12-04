@@ -12,6 +12,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.headers
+import io.ktor.utils.io.CancellationException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -35,8 +36,10 @@ class OllamaNetworkRepositoryImpl(
             }
 
             json.decodeFromString<OllamaResponse>(response.bodyAsText()).message
-        }.onFailure {
-            it.message
+        }.onFailure { throwable ->
+            if (throwable is CancellationException) {
+                throw throwable
+            }
         }
     }
 }

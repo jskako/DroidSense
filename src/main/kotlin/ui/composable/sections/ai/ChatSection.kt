@@ -157,23 +157,11 @@ fun ChatSection(
         }
 
         messages.lastOrNull()?.let {
-            if (it.role == AiRole.USER) {
+            if (it.role == AiRole.USER && history.last().succeed) {
                 askAI()
             }
         }
     }
-
-    /*val filteredNames = nameItems.filter { nameItem ->
-        val matchesSearchText = searchText.isEmpty() ||
-                nameItem.name.contains(searchText, ignoreCase = true) ||
-                nameItem.sessionUuid.toString().contains(searchText, ignoreCase = true)
-
-        val matchesSerialNumber = deviceSerialNumber?.let { nonNullSerial ->
-            nameItem.deviceSerialNumber?.contains(nonNullSerial, ignoreCase = true) == true
-        } ?: true
-
-        matchesSearchText && matchesSerialNumber
-    }*/
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -272,6 +260,12 @@ fun ChatSection(
                     tooltip = getStringResource("info.stop.process"),
                     function = {
                         currentJob?.cancel()
+                        scope.launch {
+                            sources.aiHistorySource.updateSucceed(
+                                messageUUID = history.last().messageUUID,
+                                succeed = false
+                            )
+                        }
                         resetProgress()
                     }
                 )
