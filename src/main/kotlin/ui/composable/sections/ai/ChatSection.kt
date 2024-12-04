@@ -21,7 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -46,6 +46,7 @@ import data.model.ai.ollama.AiRole
 import data.model.mappers.toOllamaMessage
 import data.network.NetworkModule
 import data.repository.ai.ollama.OllamaNetworkRepositoryImpl
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
@@ -79,6 +80,12 @@ fun ChatSection(
     var message by remember { mutableStateOf(EMPTY_STRING) }
     var inProgress by remember { mutableStateOf(false) }
     var textFieldHeight by remember { mutableStateOf(0) }
+    var currentJob by remember { mutableStateOf<Job?>(null) }
+
+    fun resetProgress() {
+        message = ""
+        inProgress = false
+    }
 
     val history by sources
         .aiHistorySource
@@ -112,35 +119,37 @@ fun ChatSection(
 
         messages.lastOrNull()?.let {
             if (it.role == AiRole.USER) {
-                aiRepository.getChatResponse(
-                    model = "gemma2",
-                    messages = messages
-                ).fold(
-                    onSuccess = { response ->
-                        sources.aiHistorySource.add(
-                            AIItem(
-                                uuid = uuid,
-                                deviceSerialNumber = "",
-                                aiType = AIType.OLLAMA,
-                                url = "",
-                                role = response.role,
-                                message = response.content,
-                                dateTime = getTimeStamp(DATABASE_DATETIME),
-                                model = "gemma2"
+                currentJob = scope.launch {
+                    aiRepository.getChatResponse(
+                        model = "gemma2",
+                        messages = messages
+                    ).fold(
+                        onSuccess = { response ->
+                            sources.aiHistorySource.add(
+                                AIItem(
+                                    uuid = uuid,
+                                    deviceSerialNumber = "",
+                                    aiType = AIType.OLLAMA,
+                                    url = "",
+                                    role = response.role,
+                                    message = response.content,
+                                    dateTime = getTimeStamp(DATABASE_DATETIME),
+                                    model = "gemma2"
+                                )
                             )
-                        )
-                    },
-                    onFailure = { error ->
-                        onMessage(
-                            InfoManagerData(
-                                message = "${getStringResource("info.error.ai.message")} $error",
-                                color = darkRed
+                            resetProgress()
+                        },
+                        onFailure = { error ->
+                            resetProgress()
+                            onMessage(
+                                InfoManagerData(
+                                    message = "${getStringResource("info.error.ai.message")} $error",
+                                    color = darkRed
+                                )
                             )
-                        )
-                    }
-                )
-                message = ""
-                inProgress = false
+                        }
+                    )
+                }
             }
         }
     }
@@ -231,10 +240,16 @@ fun ChatSection(
             }
 
             if (inProgress) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(end = 8.dp, bottom = 16.dp),
-                    color = Color.White,
+                TooltipIconButton(
+                    modifier = Modifier.padding(end = 8.dp, bottom = 16.dp),
+                    isEnabled = message.isNotBlank(),
+                    tint = Color.White,
+                    icon = Icons.Default.Stop,
+                    tooltip = getStringResource("info.stop.process"),
+                    function = {
+                        currentJob?.cancel()
+                        resetProgress()
+                    }
                 )
             } else {
                 TooltipIconButton(
