@@ -29,8 +29,7 @@ fun AIScreen(
 
         AISection(
             windowStateManager = windowStateManager,
-            aiNameSource = sources.aiNameSource,
-            aiHistorySource = sources.aiHistorySource,
+            sources = sources,
             onMessage = {
                 infoManager.showMessage(
                     infoManagerData = it,

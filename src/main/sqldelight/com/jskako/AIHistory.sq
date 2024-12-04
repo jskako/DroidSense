@@ -1,5 +1,6 @@
 CREATE TABLE AIHistory (
-    uuid TEXT NOT NULL PRIMARY KEY,
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    uuid TEXT NOT NULL,
     deviceSerialNumber TEXT,
     aiType TEXT NOT NULL,
     url TEXT NOT NULL,

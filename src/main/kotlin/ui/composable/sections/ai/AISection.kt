@@ -38,6 +38,7 @@ import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.history.NameCard
 import ui.composable.elements.iconButtons.TooltipIconButton
+import ui.composable.elements.window.Sources
 import ui.composable.screens.ChatScreen
 import utils.Colors.darkBlue
 import utils.Colors.transparentTextFieldDefault
@@ -48,13 +49,14 @@ import utils.getStringResource
 fun AISection(
     windowStateManager: WindowStateManager,
     deviceSerialNumber: String? = null,
-    aiHistorySource: AIHistorySource,
-    aiNameSource: AiNameSource,
+    sources: Sources,
     onMessage: (InfoManagerData) -> Unit,
 ) {
 
     val scope = rememberCoroutineScope()
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
+    val aiNameSource by remember { mutableStateOf(sources.aiNameSource) }
+    val aiHistorySource by remember { mutableStateOf(sources.aiHistorySource) }
     val nameItems by aiNameSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
 
@@ -109,7 +111,9 @@ fun AISection(
                                 icon = Icons.Default.Info,
                                 windowExtra = WindowExtra(
                                     screen = {
-                                        ChatScreen()
+                                        ChatScreen(
+                                            sources = sources
+                                        )
                                     },
                                     onClose = {}
                                 )

@@ -4,6 +4,7 @@ import com.jskako.AIHistory
 import data.model.ai.AIItem
 import data.model.ai.AIType
 import data.model.ai.ollama.AiRole
+import data.model.ai.ollama.OllamaMessage
 import java.util.UUID
 
 fun AIHistory.toAiItem(): AIItem {
@@ -16,5 +17,12 @@ fun AIHistory.toAiItem(): AIItem {
         role = AiRole.fromString(this.role),
         message = this.message,
         dateTime = this.dateTime,
+    )
+}
+
+fun AIItem.toOllamaMessage(): OllamaMessage {
+    return OllamaMessage(
+        role = this.role,
+        content = this.message
     )
 }
