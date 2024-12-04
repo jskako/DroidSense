@@ -24,7 +24,7 @@ class AIHistorySource(
         role = aiItem.role.databaseName(),
         message = aiItem.message,
         dateTime = aiItem.dateTime,
-        succeed = if(aiItem.succeed) 1L else 0L
+        succeed = if (aiItem.succeed) 1L else 0L
     )
 
     override fun uuidsBy(context: CoroutineContext, deviceSerialNumber: String): Flow<List<String>> =

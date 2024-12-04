@@ -25,9 +25,11 @@ GROUP BY uuid;
 
 deleteMessagesAbove:
 WITH TargetID AS (
-    SELECT id FROM AIHistory WHERE messageUUID = ?
+    SELECT id, uuid FROM AIHistory WHERE messageUUID = ?
 )
-DELETE FROM AIHistory WHERE id > (SELECT id FROM TargetID);
+DELETE FROM AIHistory
+WHERE id > (SELECT id FROM TargetID)
+  AND uuid = (SELECT uuid FROM TargetID);
 
 getUUIDs:
 SELECT uuid

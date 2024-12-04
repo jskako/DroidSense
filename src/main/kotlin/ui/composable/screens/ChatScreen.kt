@@ -13,6 +13,7 @@ import ui.composable.elements.window.Sources
 import ui.composable.sections.ai.ChatSection
 import ui.composable.sections.info.InfoSection
 import utils.DATABASE_DATETIME
+import utils.EXPORT_NAME_TIMESTAMP
 import utils.getTimeStamp
 import java.util.UUID
 
@@ -20,6 +21,7 @@ import java.util.UUID
 fun ChatScreen(
     sources: Sources,
     uuid: UUID? = null,
+    deviceSerialNumber: String? = null,
 ) {
 
     val infoManager = remember { InfoManager() }
@@ -27,13 +29,17 @@ fun ChatScreen(
     val sessionUuid by remember { mutableStateOf(uuid ?: UUID.randomUUID()) }
 
     LaunchedEffect(Unit) {
-        if(uuid == null) {
+        if (uuid == null) {
             sources.aiNameSource.add(
                 AiNameItem(
                     sessionUuid = sessionUuid,
-                    name = "Test12",
+                    name = "${sessionUuid}_${
+                        getTimeStamp(
+                            EXPORT_NAME_TIMESTAMP
+                        )
+                    }",
                     dateTime = getTimeStamp(DATABASE_DATETIME),
-                    deviceSerialNumber = ""
+                    deviceSerialNumber = deviceSerialNumber
                 )
             )
         }

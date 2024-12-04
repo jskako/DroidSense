@@ -27,8 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import data.repository.ai.AIHistorySource
-import data.repository.name.ai.AiNameSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.application.WindowExtra
@@ -71,34 +69,6 @@ fun AISection(
 
         matchesSearchText && matchesSerialNumber
     }
-
-    /*LaunchedEffect(Unit) {
-        // TODO - This block is just for test, delete later
-        val httpClient = NetworkModule.provideHttpClient()
-        val chatGPTRepository = OllamaNetworkRepositoryImpl(httpClient)
-        val getResponseUseCase = OllamaResponseUseCase(chatGPTRepository)
-        println(
-            "OpenAI answer: ${
-                getResponseUseCase.invoke(
-                    "gemma2",
-                    arrayOf(
-                        OllamaMessage(
-                            role = OllamaRole.USER,
-                            content = "Call me Josip."
-                        ),
-                        OllamaMessage(
-                            role = OllamaRole.ASSISTANT,
-                            content = "Sure, from now on I'll call you Josip."
-                        ),
-                        OllamaMessage(
-                            role = OllamaRole.USER,
-                            content = "What is my name? Are you able to generate image from it?"
-                        ),
-                    )
-                )
-            }"
-        )
-    }*/
 
     Scaffold(
         floatingActionButton = {
@@ -179,25 +149,15 @@ fun AISection(
                                 windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                                     newWindow(
                                         WindowData(
-                                            title = buildString {
-                                                "${nameItem.name} (${nameItem.deviceSerialNumber})"
-                                                append(nameItem.name)
-                                                nameItem.deviceSerialNumber?.let {
-                                                    append(" $it")
-                                                }
-                                            },
+                                            title = "",
                                             icon = Icons.Default.Info,
                                             windowExtra = WindowExtra(
                                                 screen = {
-                                                    /*
-                                                    val logs by logHistorySource.by(
-                                                        context = scope.coroutineContext,
-                                                        sessionUuid = nameItem.sessionUuid
-                                                    ).collectAsState(initial = emptyList())
-
-                                                    LogHistoryDetailsScreen(
-                                                        logs = logs
-                                                    )*/
+                                                    ChatScreen(
+                                                        sources = sources,
+                                                        uuid = nameItem.sessionUuid,
+                                                        deviceSerialNumber = deviceSerialNumber
+                                                    )
                                                 },
                                                 onClose = {}
                                             )
