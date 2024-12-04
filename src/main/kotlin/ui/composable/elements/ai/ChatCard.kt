@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -28,15 +29,18 @@ import ui.composable.elements.BasicText
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.EditDialog
 import utils.Colors.darkBlue
+import utils.Colors.darkRed
 import utils.Colors.lightGray
 import utils.capitalizeFirstChar
 import utils.getStringResource
 import java.awt.Color.darkGray
+import java.util.UUID
 
 @Composable
 fun ChatCard(
     aiItem: AIItem,
-    onUpdate: (String) -> Unit,
+    onUpdate: (UUID, String) -> Unit,
+    onTryAgain: (UUID) -> Unit,
     buttonsEnabled: Boolean = true
 ) {
 
@@ -49,7 +53,7 @@ fun ChatCard(
             singleLine = false,
             onConfirmRequest = {
                 showEditDialog = false
-                onUpdate(it)
+                onUpdate(aiItem.messageUUID, it)
             },
             onDismissRequest = {
                 showEditDialog = false
@@ -86,6 +90,18 @@ fun ChatCard(
                         tooltip = getStringResource("info.edit.message"),
                         function = {
                             showEditDialog = true
+                        }
+                    )
+                }
+
+                if (!aiItem.succeed) {
+                    TooltipIconButton(
+                        isEnabled = buttonsEnabled,
+                        tint = darkRed,
+                        icon = Icons.Default.Repeat,
+                        tooltip = getStringResource("info.try.again"),
+                        function = {
+                            onTryAgain(aiItem.messageUUID)
                         }
                     )
                 }

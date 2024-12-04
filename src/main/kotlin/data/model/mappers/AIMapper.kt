@@ -10,6 +10,7 @@ import java.util.UUID
 fun AIHistory.toAiItem(): AIItem {
     return AIItem(
         uuid = UUID.fromString(this.uuid),
+        messageUUID = UUID.fromString(this.messageUUID),
         deviceSerialNumber = this.deviceSerialNumber,
         aiType = AIType.valueOf(this.aiType),
         url = this.url,
@@ -17,6 +18,7 @@ fun AIHistory.toAiItem(): AIItem {
         role = AiRole.fromString(this.role),
         message = this.message,
         dateTime = this.dateTime,
+        succeed = this.succeed != 0L
     )
 }
 

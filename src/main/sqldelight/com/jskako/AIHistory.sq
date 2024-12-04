@@ -1,25 +1,33 @@
 CREATE TABLE AIHistory (
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    uuid TEXT NOT NULL,
-    deviceSerialNumber TEXT,
-    aiType TEXT NOT NULL,
-    url TEXT NOT NULL,
-    model TEXT NOT NULL,
-    role TEXT NOT NULL,
-    message TEXT NOT NULL,
-    dateTime TEXT NOT NULL,
-    FOREIGN KEY (deviceSerialNumber) REFERENCES DeviceInfo(serialNumber)
-);
+      id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+      uuid TEXT NOT NULL,
+      messageUUID TEXT NOT NULL,
+      deviceSerialNumber TEXT,
+      aiType TEXT NOT NULL,
+      url TEXT NOT NULL,
+      model TEXT NOT NULL,
+      role TEXT NOT NULL,
+      message TEXT NOT NULL,
+      dateTime TEXT NOT NULL,
+      succeed INTEGER NOT NULL,
+      FOREIGN KEY (deviceSerialNumber) REFERENCES DeviceInfo(serialNumber)
+  );
 
 insert:
-INSERT OR REPLACE INTO AIHistory(uuid, deviceSerialNumber, aiType, url, model, role, message, dateTime)
-VALUES(?,?,?,?,?,?,?, ?);
+INSERT OR REPLACE INTO AIHistory(uuid, messageUUID, deviceSerialNumber, aiType, url, model, role, message, dateTime, succeed)
+VALUES(?,?,?,?,?,?,?, ?, ?, ?);
 
 getUUIDsBySerialNumber:
 SELECT uuid
 FROM AIHistory
 WHERE deviceSerialNumber = ?
 GROUP BY uuid;
+
+deleteMessagesAbove:
+WITH TargetID AS (
+    SELECT id FROM AIHistory WHERE messageUUID = ?
+)
+DELETE FROM AIHistory WHERE id > (SELECT id FROM TargetID);
 
 getUUIDs:
 SELECT uuid
@@ -33,6 +41,16 @@ WHERE uuid = :deviceSerialNumber;
 deleteBy:
 DELETE FROM AIHistory
 WHERE uuid = :uuid;
+
+updateSucceed:
+UPDATE AIHistory
+SET succeed = ?
+WHERE messageUUID = ?;
+
+updateMessage:
+UPDATE AIHistory
+SET message = ?
+WHERE messageUUID = ?;
 
 nukeTable:
 DELETE FROM AIHistory;

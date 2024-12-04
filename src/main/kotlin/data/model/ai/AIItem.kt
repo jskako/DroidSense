@@ -5,11 +5,13 @@ import java.util.UUID
 
 data class AIItem(
     val uuid: UUID,
+    val messageUUID: UUID,
     val deviceSerialNumber: String?,
     val aiType: AIType,
     val url: String,
     val model: String,
     val role: AiRole,
     val message: String,
-    val dateTime: String
+    val dateTime: String,
+    val succeed: Boolean = true
 )

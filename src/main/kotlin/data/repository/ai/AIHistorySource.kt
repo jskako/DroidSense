@@ -16,6 +16,7 @@ class AIHistorySource(
 
     override suspend fun add(aiItem: AIItem) = aiDao.insert(
         uuid = aiItem.uuid.toString(),
+        messageUUID = aiItem.messageUUID.toString(),
         deviceSerialNumber = aiItem.deviceSerialNumber,
         aiType = aiItem.aiType.name,
         url = aiItem.url,
@@ -23,6 +24,7 @@ class AIHistorySource(
         role = aiItem.role.databaseName(),
         message = aiItem.message,
         dateTime = aiItem.dateTime,
+        succeed = if(aiItem.succeed) 1L else 0L
     )
 
     override fun uuidsBy(context: CoroutineContext, deviceSerialNumber: String): Flow<List<String>> =
@@ -39,12 +41,24 @@ class AIHistorySource(
         }
     }
 
+    override suspend fun updateSucceed(messageUUID: UUID, succeed: Boolean) {
+        aiDao.updateSucceed(messageUUID = messageUUID.toString(), succeed = if (succeed) 1L else 0L)
+    }
+
+    override suspend fun updateMessage(messageUUID: UUID, message: String) {
+        aiDao.updateMessage(messageUUID = messageUUID.toString(), message = message)
+    }
+
     override suspend fun deleteBySerialNumber(deviceSerialNumber: String) {
         aiDao.deleteBy(deviceSerialNumber)
     }
 
     override suspend fun deleteBy(uuid: UUID) {
         aiDao.deleteBy(uuid.toString())
+    }
+
+    override suspend fun deleteMessagesAbove(messageUUID: UUID) {
+        aiDao.deleteMessagesAbove(messageUUID.toString())
     }
 
     override suspend fun deleteAll() = aiDao.nukeTable()

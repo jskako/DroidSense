@@ -81,12 +81,6 @@ fun ChatSection(
     var inProgress by remember { mutableStateOf(false) }
     var textFieldHeight by remember { mutableStateOf(0) }
     var currentJob by remember { mutableStateOf<Job?>(null) }
-
-    fun resetProgress() {
-        message = ""
-        inProgress = false
-    }
-
     val history by sources
         .aiHistorySource
         .history(context = scope.coroutineContext, uuid = uuid)
@@ -98,6 +92,51 @@ fun ChatSection(
                 aiItem.toOllamaMessage()
             }.toTypedArray()
         )
+    }
+
+    fun resetProgress() {
+        message = ""
+        inProgress = false
+    }
+
+    fun askAI() {
+        currentJob = scope.launch {
+            inProgress = true
+            aiRepository.getChatResponse(
+                model = "gemma2",
+                messages = messages
+            ).fold(
+                onSuccess = { response ->
+                    sources.aiHistorySource.add(
+                        AIItem(
+                            uuid = uuid,
+                            messageUUID = UUID.randomUUID(),
+                            deviceSerialNumber = "",
+                            aiType = AIType.OLLAMA,
+                            url = "",
+                            role = response.role,
+                            message = response.content,
+                            dateTime = getTimeStamp(DATABASE_DATETIME),
+                            model = "gemma2"
+                        )
+                    )
+                    resetProgress()
+                },
+                onFailure = { error ->
+                    sources.aiHistorySource.updateSucceed(
+                        messageUUID = history.last().messageUUID,
+                        succeed = false
+                    )
+                    onMessage(
+                        InfoManagerData(
+                            message = "${getStringResource("info.error.ai.message")} $error",
+                            color = darkRed
+                        )
+                    )
+                    resetProgress()
+                }
+            )
+        }
     }
 
     sources
@@ -119,37 +158,7 @@ fun ChatSection(
 
         messages.lastOrNull()?.let {
             if (it.role == AiRole.USER) {
-                currentJob = scope.launch {
-                    aiRepository.getChatResponse(
-                        model = "gemma2",
-                        messages = messages
-                    ).fold(
-                        onSuccess = { response ->
-                            sources.aiHistorySource.add(
-                                AIItem(
-                                    uuid = uuid,
-                                    deviceSerialNumber = "",
-                                    aiType = AIType.OLLAMA,
-                                    url = "",
-                                    role = response.role,
-                                    message = response.content,
-                                    dateTime = getTimeStamp(DATABASE_DATETIME),
-                                    model = "gemma2"
-                                )
-                            )
-                            resetProgress()
-                        },
-                        onFailure = { error ->
-                            resetProgress()
-                            onMessage(
-                                InfoManagerData(
-                                    message = "${getStringResource("info.error.ai.message")} $error",
-                                    color = darkRed
-                                )
-                            )
-                        }
-                    )
-                }
+                askAI()
             }
         }
     }
@@ -183,8 +192,23 @@ fun ChatSection(
                 items(history) { aiItem ->
                     ChatCard(
                         aiItem = aiItem,
-                        onUpdate = {
-
+                        onUpdate = { messageUUID, message ->
+                            sources.aiHistorySource.run {
+                                scope.launch {
+                                    deleteMessagesAbove(messageUUID)
+                                    updateMessage(
+                                        messageUUID = messageUUID, message = message
+                                    )
+                                }
+                            }
+                        },
+                        onTryAgain = { messageUUID ->
+                            scope.launch {
+                                sources.aiHistorySource.run {
+                                    deleteMessagesAbove(messageUUID)
+                                    updateSucceed(messageUUID = messageUUID, succeed = true)
+                                }
+                            }
                         }
                     )
                 }
@@ -259,11 +283,11 @@ fun ChatSection(
                     icon = Icons.AutoMirrored.Filled.Send,
                     tooltip = getStringResource("info.send.message"),
                     function = {
-                        inProgress = true
                         scope.launch {
                             sources.aiHistorySource.add(
                                 AIItem(
                                     uuid = uuid,
+                                    messageUUID = UUID.randomUUID(),
                                     deviceSerialNumber = "",
                                     aiType = AIType.OLLAMA,
                                     url = "",
