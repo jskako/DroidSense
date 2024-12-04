@@ -157,34 +157,6 @@ fun ChatSection(
         matchesSearchText && matchesSerialNumber
     }*/
 
-    /*LaunchedEffect(Unit) {
-        // TODO - This block is just for test, delete later
-        val httpClient = NetworkModule.provideHttpClient()
-        val chatGPTRepository = OllamaNetworkRepositoryImpl(httpClient)
-        val getResponseUseCase = OllamaResponseUseCase(chatGPTRepository)
-        println(
-            "OpenAI answer: ${
-                chatGPTRepository.invoke(
-                    "gemma2",
-                    arrayOf(
-                        OllamaMessage(
-                            role = OllamaRole.USER,
-                            content = "Call me Josip."
-                        ),
-                        OllamaMessage(
-                            role = OllamaRole.ASSISTANT,
-                            content = "Sure, from now on I'll call you Josip."
-                        ),
-                        OllamaMessage(
-                            role = OllamaRole.USER,
-                            content = "What is my name? Are you able to generate image from it?"
-                        ),
-                    )
-                )
-            }"
-        )
-    }*/
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,

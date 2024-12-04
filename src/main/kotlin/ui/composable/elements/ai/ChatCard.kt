@@ -31,6 +31,7 @@ import utils.Colors.darkBlue
 import utils.Colors.lightGray
 import utils.capitalizeFirstChar
 import utils.getStringResource
+import java.awt.Color.darkGray
 
 @Composable
 fun ChatCard(
@@ -61,7 +62,7 @@ fun ChatCard(
             .fillMaxWidth()
             .padding(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = if(aiItem.role == AiRole.USER) Color.White else lightGray
         ),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
