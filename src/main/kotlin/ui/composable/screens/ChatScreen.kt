@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import data.model.ai.AIType
 import data.model.items.AiNameItem
 import notifications.InfoManager
 import ui.composable.elements.window.Sources
@@ -22,6 +23,7 @@ fun ChatScreen(
     sources: Sources,
     uuid: UUID? = null,
     deviceSerialNumber: String? = null,
+    aiType: AIType
 ) {
 
     val infoManager = remember { InfoManager() }
@@ -39,7 +41,8 @@ fun ChatScreen(
                         )
                     }",
                     dateTime = getTimeStamp(DATABASE_DATETIME),
-                    deviceSerialNumber = deviceSerialNumber
+                    deviceSerialNumber = deviceSerialNumber,
+                    aiType = aiType
                 )
             )
         }

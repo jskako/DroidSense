@@ -2,6 +2,7 @@ package data.model.mappers
 
 import com.jskako.AiName
 import com.jskako.LogName
+import data.model.ai.AIType
 import data.model.items.AiNameItem
 import data.model.items.LogNameItem
 import java.util.UUID
@@ -21,5 +22,6 @@ fun AiName.toNameItem(): AiNameItem {
         name = this.name,
         dateTime = this.dateTime,
         deviceSerialNumber = this.deviceSerialNumber,
+        aiType = AIType.valueOf(this.aiType)
     )
 }

@@ -3,6 +3,7 @@ CREATE TABLE AiName (
     name TEXT NOT NULL,
     dateTime TEXT NOT NULL,
     deviceSerialNumber TEXT,
+    aiType TEXT NOT NULL,
     FOREIGN KEY (deviceSerialNumber) REFERENCES DeviceInfo(serialNumber)
 );
 
@@ -14,8 +15,8 @@ names:
 SELECT * FROM AiName;
 
 insert:
-INSERT OR REPLACE INTO AiName(sessionUuid, name, dateTime, deviceSerialNumber)
-VALUES(?,?, ?, ?);
+INSERT OR REPLACE INTO AiName(sessionUuid, name, dateTime, deviceSerialNumber, aiType)
+VALUES(?,?, ?, ?, ?);
 
 getNamesBySerialNumber:
 SELECT * FROM AiName

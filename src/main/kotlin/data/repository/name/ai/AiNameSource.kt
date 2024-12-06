@@ -20,6 +20,7 @@ class AiNameSource(
             name = aiNameItem.name,
             dateTime = aiNameItem.dateTime,
             deviceSerialNumber = aiNameItem.deviceSerialNumber,
+            aiType = aiNameItem.aiType.name
         )
     }
 

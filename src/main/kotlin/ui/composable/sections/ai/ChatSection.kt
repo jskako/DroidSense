@@ -74,6 +74,7 @@ fun ChatSection(
 
     val httpClient = NetworkModule.provideHttpClient()
     val aiRepository = OllamaNetworkRepositoryImpl(httpClient)
+
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val listState = rememberLazyListState()

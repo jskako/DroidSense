@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import data.model.ai.AIType
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import ui.application.WindowExtra
@@ -34,11 +36,13 @@ import ui.application.WindowStateManager
 import ui.application.navigation.WindowData
 import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
+import ui.composable.elements.SelectionDialog
 import ui.composable.elements.history.NameCard
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.Sources
 import ui.composable.screens.ChatScreen
 import utils.Colors.darkBlue
+import utils.Colors.darkRed
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
 import utils.getStringResource
@@ -56,7 +60,50 @@ fun AISection(
     val aiNameSource by remember { mutableStateOf(sources.aiNameSource) }
     val aiHistorySource by remember { mutableStateOf(sources.aiHistorySource) }
     val nameItems by aiNameSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
+    val aiTypes by sources.modelSource.types(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(aiTypes) {
+        if (aiTypes.isEmpty()) {
+            onMessage(
+                InfoManagerData(
+                    message = getStringResource("info.ai.error"),
+                    color = darkRed,
+                    duration = null
+                )
+            )
+        }
+    }
+
+    if (showDialog) {
+        SelectionDialog(
+            title = getStringResource("info.available.ai"),
+            options = aiTypes,
+            onOptionSelected = { aiType ->
+                windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                    newWindow(
+                        WindowData(
+                            title = "",
+                            icon = Icons.Default.Info,
+                            windowExtra = WindowExtra(
+                                screen = {
+                                    ChatScreen(
+                                        aiType = AIType.valueOf(aiType),
+                                        sources = sources
+                                    )
+                                },
+                                onClose = {}
+                            )
+                        )
+                    )
+                }
+            },
+            onDismissRequest = {
+                showDialog = false
+            }
+        )
+    }
 
     val filteredNames = nameItems.filter { nameItem ->
         val matchesSearchText = searchText.isEmpty() ||
@@ -72,30 +119,17 @@ fun AISection(
 
     Scaffold(
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = {
-                    windowStateManager.windowState?.openNewWindow?.let { newWindow ->
-                        newWindow(
-                            WindowData(
-                                title = "",
-                                icon = Icons.Default.Info,
-                                windowExtra = WindowExtra(
-                                    screen = {
-                                        ChatScreen(
-                                            sources = sources
-                                        )
-                                    },
-                                    onClose = {}
-                                )
-                            )
-                        )
-                    }
-                },
-                containerColor = darkBlue,
-                contentColor = Color.White,
-                icon = { Icon(Icons.AutoMirrored.Filled.Message, getStringResource("info.new.chat")) },
-                text = { Text(text = getStringResource("info.new.chat")) },
-            )
+            if (aiTypes.isNotEmpty()) {
+                ExtendedFloatingActionButton(
+                    onClick = {
+                        showDialog = true
+                    },
+                    containerColor = darkBlue,
+                    contentColor = Color.White,
+                    icon = { Icon(Icons.AutoMirrored.Filled.Message, getStringResource("info.new.chat")) },
+                    text = { Text(text = getStringResource("info.new.chat")) },
+                )
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
@@ -146,23 +180,26 @@ fun AISection(
                             uuid = nameItem.sessionUuid,
                             dateTime = nameItem.dateTime,
                             onClick = {
-                                windowStateManager.windowState?.openNewWindow?.let { newWindow ->
-                                    newWindow(
-                                        WindowData(
-                                            title = "",
-                                            icon = Icons.Default.Info,
-                                            windowExtra = WindowExtra(
-                                                screen = {
-                                                    ChatScreen(
-                                                        sources = sources,
-                                                        uuid = nameItem.sessionUuid,
-                                                        deviceSerialNumber = deviceSerialNumber
-                                                    )
-                                                },
-                                                onClose = {}
+                                scope.launch {
+                                    windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                                        newWindow(
+                                            WindowData(
+                                                title = "",
+                                                icon = Icons.Default.Info,
+                                                windowExtra = WindowExtra(
+                                                    screen = {
+                                                        ChatScreen(
+                                                            sources = sources,
+                                                            uuid = nameItem.sessionUuid,
+                                                            deviceSerialNumber = deviceSerialNumber,
+                                                            aiType = nameItem.aiType
+                                                        )
+                                                    },
+                                                    onClose = {}
+                                                )
                                             )
                                         )
-                                    )
+                                    }
                                 }
                             },
                             onDelete = {

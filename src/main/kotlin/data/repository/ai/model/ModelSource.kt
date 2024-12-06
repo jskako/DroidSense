@@ -31,6 +31,9 @@ class ModelSource(
     override fun by(context: CoroutineContext, url: String): Flow<List<String>> =
         modelDao.getModels(url).asFlow().mapToList(context)
 
+    override fun types(context: CoroutineContext): Flow<List<String>> =
+        modelDao.getAiTypes().asFlow().mapToList(context)
+
     override suspend fun deleteBy(url: String, model: String) {
         modelDao.delete(
             url = url,
