@@ -1,13 +1,12 @@
 package utils
 
-import androidx.compose.ui.res.loadImageBitmap
-import androidx.compose.ui.res.useResource
+import com.jskako.droidsense.generated.resources.Res
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
-import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -62,8 +61,6 @@ fun getOSArch(): Arch {
         ?: Arch.UNSUPPORTED
 }
 
-fun getImageBitmap(path: String) = useResource(path) { loadImageBitmap(it) }
-
 suspend fun shareScreen(
     scrCpyPath: String,
     identifier: String,
@@ -84,14 +81,5 @@ fun isValidIpAddressWithPort(input: String) = ipPortRegex.matches(input)
 
 fun getSpaceId(userInfo: String) = spaceIdRegex.find(userInfo)?.groups?.get(1)?.value?.toInt()
 
-fun readFile(path: String): String? {
-    return runCatching {
-        File(path).readText()
-    }.getOrNull()
-}
-
-fun readFile(inputStream: InputStream): String? {
-    return runCatching {
-        inputStream.bufferedReader().use { it.readText() }
-    }.getOrNull()
-}
+@OptIn(ExperimentalResourceApi::class)
+suspend fun readFile(path: String) = Res.readBytes(path).decodeToString()

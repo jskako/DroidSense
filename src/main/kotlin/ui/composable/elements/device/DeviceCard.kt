@@ -35,8 +35,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.phone
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.imageResource
 import ui.application.WindowExtra
 import ui.application.WindowStateManager
 import ui.application.navigation.WindowData
@@ -50,11 +53,8 @@ import ui.composable.screens.LogScreen
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import utils.Colors.lightGray
-import utils.DEFAULT_DEVICE_IMAGE
 import utils.EMPTY_STRING
-import utils.IMAGES_DIRECTORY
 import utils.capitalizeFirstChar
-import utils.getImageBitmap
 import utils.getStringResource
 import utils.isValidIpAddressWithPort
 import utils.shareScreen
@@ -88,7 +88,7 @@ fun DeviceCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                bitmap = getImageBitmap("$IMAGES_DIRECTORY/$DEFAULT_DEVICE_IMAGE"),
+                bitmap = imageResource(Res.drawable.phone),
                 contentDescription = EMPTY_STRING,
                 modifier = Modifier.size(48.dp)
             )

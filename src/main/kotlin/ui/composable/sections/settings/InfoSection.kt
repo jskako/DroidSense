@@ -8,11 +8,11 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.useResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -70,21 +70,22 @@ private fun DonationScreen() {
 
 @Composable
 private fun CopyrightScreen() {
-    useResource("$DOCUMENTS_DIRECTORY/$LICENSE_RESOURCE") { res ->
-        readFile(res)?.let {
-            BasicTextField(
-                modifier = Modifier.padding(start = 16.dp),
-                value = it,
-                readOnly = true,
-                onValueChange = { },
-                textStyle = TextStyle(
-                    color = Color.Gray,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                )
-            )
-        }
+
+    val content by produceState(initialValue = "") {
+        value = readFile(path = "$DOCUMENTS_DIRECTORY/$LICENSE_RESOURCE")
     }
+
+    BasicTextField(
+        modifier = Modifier.padding(start = 16.dp),
+        value = content,
+        readOnly = true,
+        onValueChange = { },
+        textStyle = TextStyle(
+            color = Color.Gray,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+        )
+    )
 }
 
 @Composable
@@ -94,13 +95,18 @@ private fun AboutScreen() {
 
 @Composable
 private fun LicenseScreen() {
-    LibrariesContainer(
-        aboutLibsJson = useResource(ABOUT_LIBRARIES_JSON_NAME) {
-            it.bufferedReader().readText()
-        },
-        modifier = Modifier
-            .fillMaxSize()
-    )
+
+    val aboutLibraryJson by produceState(initialValue = "") {
+        value = readFile(path = "$DOCUMENTS_DIRECTORY/$ABOUT_LIBRARIES_JSON_NAME")
+    }
+
+    if(aboutLibraryJson.isNotBlank()) {
+        LibrariesContainer(
+            aboutLibsJson = aboutLibraryJson,
+            modifier = Modifier
+                .fillMaxSize()
+        )
+    }
 }
 
 private enum class InfoType {
