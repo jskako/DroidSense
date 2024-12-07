@@ -32,7 +32,7 @@ const val DEVICE_DISPLAY_DENSITY: String = "wm density"
 const val DEVICE_IP_ADDRESS: String = "ip route | awk '{print $9}'"
 const val DEVICE_PACKAGES: String = "pm list packages"
 
-const val DOCUMENTS_DIRECTORY: String = "documents"
+const val DOCUMENTS_DIRECTORY: String = "files"
 const val IMAGES_DIRECTORY: String = "images"
 const val DEFAULT_DEVICE_IMAGE: String = "phone.png"
 
@@ -40,4 +40,4 @@ const val LOG_MANAGER_NUMBER_OF_LINES = 12389
 const val LOG_TYPE_REGEX = "DWIEV"
 const val APK_EXTENSION = "apk"
 
-const val ABOUT_LIBRARIES_JSON_NAME = "aboutlibraries.json"
+const val ABOUT_LIBRARIES_JSON_NAME = "files/aboutlibraries.json"
