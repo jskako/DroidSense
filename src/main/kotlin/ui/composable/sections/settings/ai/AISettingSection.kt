@@ -11,6 +11,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_ollama_title
+import com.jskako.droidsense.generated.resources.info_openapi_title
 import data.model.ai.AIType
 import data.repository.ai.model.ModelSource
 import data.repository.ai.ollama.url.OllamaUrlSource
@@ -18,7 +21,6 @@ import data.repository.settings.SettingsSource
 import notifications.InfoManagerData
 import ui.composable.elements.DividerColored
 import ui.composable.elements.SelectableRow
-import utils.getStringResource
 
 @Composable
 fun AISettingSection(
@@ -43,10 +45,10 @@ fun AISettingSection(
             enumValues = AIType.entries.toTypedArray(),
             selectedValue = selectedInfoType,
             onSelect = { selectedInfoType = it },
-            getTitle = { type ->
+            onTitle = { type ->
                 when (type) {
-                    AIType.OLLAMA -> getStringResource("info.ollama.title")
-                    AIType.OPEN_API -> getStringResource("info.openapi.title")
+                    AIType.OLLAMA -> Res.string.info_ollama_title
+                    AIType.OPEN_API -> Res.string.info_openapi_title
                 }
             }
         )

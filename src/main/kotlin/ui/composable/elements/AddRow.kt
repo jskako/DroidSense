@@ -17,17 +17,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_add
+import org.jetbrains.compose.resources.StringResource
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
-import utils.getStringResource
 
 @Composable
 fun AddRow(
     modifier: Modifier = Modifier,
-    hintText: String,
+    hintText: StringResource,
     icon: ImageVector = Icons.Default.Add,
-    tooltipText: String = getStringResource("info.add"),
+    tooltipText: StringResource = Res.string.info_add,
     enabled: Boolean = true,
     onClick: (String) -> Unit,
     additionalText: String? = null,

@@ -14,11 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_ask_ai
+import com.jskako.droidsense.generated.resources.info_copy_selected_logs
+import com.jskako.droidsense.generated.resources.info_export_selected_logs
 import notifications.InfoManagerData
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
-import utils.getStringResource
 
 @Composable
 fun LogSelectedButtonSection(
@@ -45,20 +48,20 @@ fun LogSelectedButtonSection(
             isEnabled = isExportEnabled,
             tint = if (isExportEnabled) darkBlue else lightGray,
             icon = Icons.Default.FileDownload,
-            tooltip = getStringResource("info.export.selected.logs"),
+            tooltip = Res.string.info_export_selected_logs,
             function = onExportLogs
         )
         TooltipIconButton(
             tint = darkBlue,
             icon = Icons.Default.ContentCopy,
-            tooltip = getStringResource("info.copy.selected.logs"),
+            tooltip = Res.string.info_copy_selected_logs,
             function = onCopyLogs
         )
         TooltipIconButton(
             isEnabled = false,
             tint = lightGray,
             icon = Icons.Default.QuestionAnswer,
-            tooltip = getStringResource("info.ask.ai"),
+            tooltip = Res.string.info_ask_ai,
             function = {}
         )
     }

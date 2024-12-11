@@ -40,6 +40,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_error_ai_message
+import com.jskako.droidsense.generated.resources.info_message_info
+import com.jskako.droidsense.generated.resources.info_send_message
+import com.jskako.droidsense.generated.resources.info_stop_process
+import data.ArgsText
 import data.model.ai.AIItem
 import data.model.ai.AIType
 import data.model.ai.ollama.AiRole
@@ -50,6 +56,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.ai.ChatCard
@@ -61,7 +68,6 @@ import utils.Colors.lightGray
 import utils.Colors.transparentTextFieldDefault
 import utils.DATABASE_DATETIME
 import utils.EMPTY_STRING
-import utils.getStringResource
 import utils.getTimeStamp
 import java.util.UUID
 
@@ -130,7 +136,10 @@ fun ChatSection(
                     )
                     onMessage(
                         InfoManagerData(
-                            message = "${getStringResource("info.error.ai.message")} $error",
+                            message = ArgsText(
+                                textResId = Res.string.info_error_ai_message,
+                                formatArgs = listOf(error.localizedMessage)
+                            ),
                             color = darkRed
                         )
                     )
@@ -231,7 +240,7 @@ fun ChatSection(
                     enabled = !inProgress,
                     value = message,
                     onValueChange = { message = it },
-                    placeholder = { Text(getStringResource("info.message.info")) },
+                    placeholder = { Text(stringResource(Res.string.info_message_info)) },
                     singleLine = false,
                     colors = transparentTextFieldDefault
                 )
@@ -258,7 +267,7 @@ fun ChatSection(
                     isEnabled = message.isNotBlank(),
                     tint = Color.White,
                     icon = Icons.Default.Stop,
-                    tooltip = getStringResource("info.stop.process"),
+                    tooltip = Res.string.info_stop_process,
                     function = {
                         currentJob?.cancel()
                         scope.launch {
@@ -276,7 +285,7 @@ fun ChatSection(
                     isEnabled = message.isNotBlank(),
                     tint = if (message.isBlank()) lightGray else Color.White,
                     icon = Icons.AutoMirrored.Filled.Send,
-                    tooltip = getStringResource("info.send.message"),
+                    tooltip = Res.string.info_send_message,
                     function = {
                         scope.launch {
                             sources.aiHistorySource.add(

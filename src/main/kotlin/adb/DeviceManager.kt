@@ -2,6 +2,15 @@ package adb
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.error_monitor_general
+import com.jskako.droidsense.generated.resources.info_add_device
+import com.jskako.droidsense.generated.resources.info_not_connected
+import com.jskako.droidsense.generated.resources.info_remove_device
+import com.jskako.droidsense.generated.resources.info_start_listening
+import com.jskako.droidsense.generated.resources.info_stop_listening
+import com.jskako.droidsense.generated.resources.info_update_device
+import data.ArgsText
 import data.model.items.DeviceItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
@@ -12,6 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.getString
 import utils.ADB_DEVICE_OFFLINE
 import utils.ADB_POLLING_INTERVAL_MS
 import utils.Colors.darkRed
@@ -25,7 +35,6 @@ import utils.DEVICE_MANUFACTURER
 import utils.DEVICE_MODEL_PROPERTY
 import utils.DEVICE_SERIAL_NUMBER
 import utils.deviceRegex
-import utils.getStringResource
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -68,7 +77,7 @@ class DeviceManager(
         }
     }
 
-    override fun manageListeningStatus(
+    override suspend fun manageListeningStatus(
         monitorStatus: MonitorStatus,
         scope: CoroutineScope,
         onMessage: (InfoManagerData) -> Unit,
@@ -80,7 +89,7 @@ class DeviceManager(
             )
             onMessage(
                 InfoManagerData(
-                    message = getStringResource("info.stop.listening")
+                    message = ArgsText(textResId = Res.string.info_stop_listening)
                 )
             )
         } else {
@@ -91,7 +100,7 @@ class DeviceManager(
             )
             onMessage(
                 InfoManagerData(
-                    message = getStringResource("info.start.listening")
+                    message = ArgsText(textResId = Res.string.info_start_listening)
                 )
             )
         }
@@ -154,7 +163,10 @@ class DeviceManager(
                     onMessage(
                         InfoManagerData(
                             color = darkRed,
-                            message = "${getStringResource("error.monitor.general")}: $exception",
+                            message = ArgsText(
+                                textResId = Res.string.error_monitor_general,
+                                formatArgs = listOf(exception.message ?: "")
+                            ),
                             duration = null
                         )
                     )
@@ -165,7 +177,7 @@ class DeviceManager(
         }
     }
 
-    private fun handleDisconnectedDevices(
+    private suspend fun handleDisconnectedDevices(
         currentDevices: Set<String>,
         onMessage: (InfoManagerData) -> Unit
     ) {
@@ -180,7 +192,7 @@ class DeviceManager(
         }
     }
 
-    private fun addDevice(
+    private suspend fun addDevice(
         identifier: String,
         onMessage: (InfoManagerData) -> Unit,
         onDeviceFound: (DeviceItem) -> Unit
@@ -197,11 +209,18 @@ class DeviceManager(
                     brand = it.brand,
                 )
             )
-            onMessage(InfoManagerData(message = "${getStringResource("info.add.device")}: $it"))
+            onMessage(
+                InfoManagerData(
+                    message = ArgsText(
+                        textResId = Res.string.info_add_device,
+                        formatArgs = listOf(it.toString())
+                    )
+                )
+            )
         }
     }
 
-    private fun updateDevice(
+    private suspend fun updateDevice(
         identifier: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
@@ -211,13 +230,20 @@ class DeviceManager(
             _devices.value.indexOfFirst { it.deviceIdentifier == deviceDetails.deviceIdentifier }.also { index ->
                 if (_devices.value[index] != deviceDetails) {
                     _devices.value = _devices.value.toMutableList().also { it[index] = deviceDetails }
-                    onMessage(InfoManagerData(message = "${getStringResource("info.update.device")}: $deviceDetails"))
+                    onMessage(
+                        InfoManagerData(
+                            message = ArgsText(
+                                textResId = Res.string.info_update_device,
+                                formatArgs = listOf(deviceDetails.toString())
+                            )
+                        )
+                    )
                 }
             }
         }
     }
 
-    private fun getDeviceInfo(
+    private suspend fun getDeviceInfo(
         identifier: String
     ) = DeviceDetails(
         deviceIdentifier = identifier,
@@ -266,7 +292,7 @@ class DeviceManager(
             property = DEVICE_IP_ADDRESS,
             adbPath = adbPath
         ).takeIf { it.isNotEmpty() }
-            ?: getStringResource("info.not.connected"),
+            ?: getString(Res.string.info_not_connected),
         state = MonitoringStatus.MONITORING,
         privateSpaceIdentifier = getPrivateSpaceId(
             adbPath = adbPath,
@@ -274,7 +300,7 @@ class DeviceManager(
         )
     )
 
-    private fun removeDevice(
+    private suspend fun removeDevice(
         identifier: String,
         onMessage: (InfoManagerData) -> Unit
     ) {
@@ -283,7 +309,10 @@ class DeviceManager(
             _devices.value = _devices.value.filter { it != device }
             onMessage(
                 InfoManagerData(
-                    message = "${getStringResource("info.remove.device")}: $device",
+                    message = ArgsText(
+                        textResId = Res.string.info_remove_device,
+                        formatArgs = listOf(device.toString())
+                    ),
                     color = darkRed
                 ),
             )

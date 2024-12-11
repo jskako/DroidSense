@@ -25,12 +25,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_adb_hint
+import com.jskako.droidsense.generated.resources.info_adb_info
+import com.jskako.droidsense.generated.resources.info_cancel
+import com.jskako.droidsense.generated.resources.info_next
+import com.jskako.droidsense.generated.resources.info_scrcpy_hint
+import com.jskako.droidsense.generated.resources.info_scrcpy_info
 import data.keys.SettingsKey
 import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.SelectableText
-import utils.getStringResource
 
 @Composable
 fun VariablesSection(
@@ -81,8 +88,8 @@ fun VariablesSection(
             SelectableText(
                 modifier = Modifier.fillMaxWidth(),
                 text = adbPath,
-                infoText = getStringResource("info.adb.info"),
-                hintText = "${getStringResource("info.adb.hint")} ***REQUIRED***",
+                infoText = Res.string.info_adb_info,
+                hintText = Res.string.info_adb_hint,
                 onValueChanged = {
                     adbPath = it
                 }
@@ -91,8 +98,8 @@ fun VariablesSection(
             SelectableText(
                 modifier = Modifier.fillMaxWidth(),
                 text = scrcpyPath,
-                hintText = getStringResource("info.scrcpy.hint"),
-                infoText = getStringResource("info.scrcpy.info"),
+                hintText = Res.string.info_scrcpy_hint,
+                infoText = Res.string.info_scrcpy_info,
                 onValueChanged = {
                     scrcpyPath = it
                 }
@@ -105,7 +112,7 @@ fun VariablesSection(
             ) {
                 if (cancelButtonEnabled) {
                     OutlinedButton(
-                        text = getStringResource("info.cancel"),
+                        text = stringResource(Res.string.info_cancel),
                         onClick = {
 
                         },
@@ -116,7 +123,7 @@ fun VariablesSection(
                 }
 
                 OutlinedButton(
-                    text = getStringResource("info.next"),
+                    text = stringResource(Res.string.info_next),
                     enabled = adbPath.isNotEmpty(),
                     onClick = {
                         scope.launch {

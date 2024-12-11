@@ -12,11 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import utils.Colors.darkBlue
 
 @Composable
 fun LinearProgressBar(
-    text: String,
+    text: StringResource,
     color: Color = darkBlue,
     isVisible: Boolean
 ) {
@@ -27,7 +29,7 @@ fun LinearProgressBar(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = text,
+                text = stringResource(text),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
             )

@@ -26,8 +26,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_ai
+import com.jskako.droidsense.generated.resources.info_device_number
+import com.jskako.droidsense.generated.resources.info_history
+import com.jskako.droidsense.generated.resources.info_search
+import com.jskako.droidsense.generated.resources.info_settings
+import com.jskako.droidsense.generated.resources.info_share_all_screens
+import com.jskako.droidsense.generated.resources.info_status_general
+import data.ArgsText
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.application.WindowExtra
 import ui.application.WindowStateManager
 import ui.application.navigation.WindowData
@@ -41,7 +51,6 @@ import ui.composable.screens.SettingsScreen
 import utils.Colors.darkGreen
 import utils.Colors.darkRed
 import utils.Colors.transparentTextFieldDefault
-import utils.getStringResource
 import utils.shareScreen
 
 @Composable
@@ -76,20 +85,22 @@ fun StatusSection(
                 IconClickableText(
                     icon = Icons.Default.RunCircle,
                     iconColor = if (deviceManager.isMonitoring()) darkGreen else darkRed,
-                    text = "${getStringResource("info.status.general")}: ${deviceManager.monitoringStatus.value.status()}",
+                    text = "${stringResource(Res.string.info_status_general)}: ${stringResource(deviceManager.monitoringStatus.value.status())}",
                     function = {
-                        deviceManager.manageListeningStatus(
-                            monitorStatus = if (deviceManager.isMonitoring()) MonitorStatus.STOP else MonitorStatus.START,
-                            scope = scope,
-                            onMessage = onMessage,
-                            onDeviceFound = { device ->
-                                scope.launch {
-                                    if (deviceSource.by(device.serialNumber) == null) {
-                                        deviceSource.add(device)
+                        scope.launch {
+                            deviceManager.manageListeningStatus(
+                                monitorStatus = if (deviceManager.isMonitoring()) MonitorStatus.STOP else MonitorStatus.START,
+                                scope = scope,
+                                onMessage = onMessage,
+                                onDeviceFound = { device ->
+                                    scope.launch {
+                                        if (deviceSource.by(device.serialNumber) == null) {
+                                            deviceSource.add(device)
+                                        }
                                     }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 )
 
@@ -99,7 +110,7 @@ fun StatusSection(
                     TooltipTextButton(
                         tooltip = devices.filter { it.toString().trim().isNotEmpty() }
                             .joinToString(separator = "\n"),
-                        text = "${getStringResource("info.device.number")}: ${devices.size}",
+                        text = "${stringResource(Res.string.info_device_number)}: ${devices.size}",
                         function = {}
                     )
 
@@ -110,7 +121,7 @@ fun StatusSection(
                         onValueChange = {
                             onSearchTextChanged(it)
                         },
-                        placeholder = { Text(getStringResource("info.search")) },
+                        placeholder = { Text(stringResource(Res.string.info_search)) },
                         modifier = Modifier
                             .fillMaxWidth()
                     )
@@ -120,7 +131,7 @@ fun StatusSection(
             if (devices.size > 1) {
                 TooltipIconButton(
                     icon = Icons.AutoMirrored.Filled.ScreenShare,
-                    tooltip = getStringResource("info.share.all.screens"),
+                    tooltip = Res.string.info_share_all_screens,
                     function = {
                         scope.launch {
                             devices.distinctBy { it.serialNumber }.forEach { device ->
@@ -137,12 +148,12 @@ fun StatusSection(
 
             TooltipIconButton(
                 icon = Icons.Default.Android,
-                tooltip = getStringResource("info.ai"),
+                tooltip = Res.string.info_ai,
                 function = {
                     windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                         newWindow(
                             WindowData(
-                                title = getStringResource("info.ai"),
+                                title = ArgsText(textResId = Res.string.info_ai),
                                 icon = Icons.Default.Android,
                                 windowExtra = WindowExtra(
                                     screen = {
@@ -161,12 +172,12 @@ fun StatusSection(
 
             TooltipIconButton(
                 icon = Icons.Default.History,
-                tooltip = getStringResource("info.history"),
+                tooltip = Res.string.info_history,
                 function = {
                     windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                         newWindow(
                             WindowData(
-                                title = getStringResource("info.history"),
+                                title = ArgsText(textResId = Res.string.info_history),
                                 icon = Icons.Default.History,
                                 windowExtra = WindowExtra(
                                     screen = {
@@ -185,12 +196,12 @@ fun StatusSection(
 
             TooltipIconButton(
                 icon = Icons.Default.Settings,
-                tooltip = getStringResource("info.settings"),
+                tooltip = Res.string.info_settings,
                 function = {
                     windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                         newWindow(
                             WindowData(
-                                title = getStringResource("info.settings"),
+                                title = ArgsText(textResId = Res.string.info_settings),
                                 icon = Icons.Default.Settings,
                                 windowExtra = WindowExtra(
                                     screen = {

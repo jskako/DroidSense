@@ -20,16 +20,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import data.ArgsText
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun InfoSection(
-    message: String,
+    message: ArgsText,
     color: Color,
     buttonVisible: Boolean = false,
     onExtraClicked: FunctionIconData? = null,
     onCloseClicked: () -> Unit
 ) {
-    if (message.isNotEmpty()) {
+    if (message.textResId != null) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -51,7 +53,14 @@ fun InfoSection(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 BasicTextField(
-                    value = message,
+                    value = if (message.formatArgs.isNullOrEmpty()) {
+                        stringResource(message.textResId)
+                    } else {
+                        stringResource(
+                            message.textResId,
+                            *message.formatArgs.toTypedArray()
+                        )
+                    },
                     onValueChange = { /*  */ },
                     textStyle = TextStyle(
                         color = Color.White,

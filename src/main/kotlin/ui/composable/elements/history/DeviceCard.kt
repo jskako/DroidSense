@@ -18,14 +18,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_delete
+import com.jskako.droidsense.generated.resources.info_device_brand
+import com.jskako.droidsense.generated.resources.info_serial_number
 import data.model.items.DeviceItem
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
-import utils.getStringResource
 
 @Composable
 fun DeviceCard(
@@ -68,7 +72,7 @@ fun DeviceCard(
                     isEnabled = !deleteInProgress,
                     tint = if (deleteInProgress) lightGray else darkBlue,
                     icon = Icons.Default.Delete,
-                    tooltip = getStringResource("info.delete"),
+                    tooltip = Res.string.info_delete,
                     function = {
                         onDeleteInProgress(true)
                         onDelete()
@@ -79,7 +83,7 @@ fun DeviceCard(
             addSpaceHeight(8.dp)
 
             BasicTextCaption(
-                text1 = getStringResource("info.serial.number"),
+                text1 = stringResource(Res.string.info_serial_number),
                 text2 = deviceItem.serialNumber
             )
 
@@ -87,7 +91,7 @@ fun DeviceCard(
                 addSpaceHeight(8.dp)
 
                 BasicTextCaption(
-                    text1 = getStringResource("info.device.brand"),
+                    text1 = stringResource(Res.string.info_device_brand),
                     text2 = it
                 )
             }

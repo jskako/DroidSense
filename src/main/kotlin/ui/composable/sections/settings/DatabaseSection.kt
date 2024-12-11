@@ -16,9 +16,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_database_location
+import com.jskako.droidsense.generated.resources.info_remove_devices_description
+import com.jskako.droidsense.generated.resources.info_remove_devices_success
+import com.jskako.droidsense.generated.resources.info_remove_devices_title
+import com.jskako.droidsense.generated.resources.info_remove_logs_description
+import com.jskako.droidsense.generated.resources.info_remove_logs_success
+import com.jskako.droidsense.generated.resources.info_remove_logs_title
+import com.jskako.droidsense.generated.resources.info_remove_settings_description
+import com.jskako.droidsense.generated.resources.info_remove_settings_success
+import com.jskako.droidsense.generated.resources.info_remove_settings_title
+import com.jskako.droidsense.generated.resources.info_show_folder
+import data.ArgsText
 import data.DATABASE_NAME
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.OutlinedText
 import ui.composable.elements.iconButtons.TooltipIconButton
@@ -26,7 +40,6 @@ import ui.composable.elements.window.Sources
 import ui.composable.elements.window.TextDialog
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
-import utils.getStringResource
 import utils.openFolderAtPath
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
@@ -37,6 +50,7 @@ fun DatabaseSection(
     onMessage: (InfoManagerData) -> Unit
 ) {
 
+    val scope = rememberCoroutineScope()
     val databasePath by remember {
         mutableStateOf(
             Path(System.getProperty("user.home"), "DroidSense").resolve(DATABASE_NAME).absolutePathString()
@@ -54,7 +68,7 @@ fun DatabaseSection(
         OutlinedText(
             modifier = Modifier.fillMaxWidth(),
             text = databasePath,
-            hintText = getStringResource("info.database.location"),
+            hintText = Res.string.info_database_location,
             onValueChanged = {},
             readOnly = true,
             trailingIcon = {
@@ -62,9 +76,11 @@ fun DatabaseSection(
                     modifier = Modifier.padding(end = 16.dp),
                     tint = darkBlue,
                     icon = Icons.Default.FolderOpen,
-                    tooltip = getStringResource("info.show.folder"),
+                    tooltip = Res.string.info_show_folder,
                     function = {
-                        openFolderAtPath(databasePath.substringBeforeLast("/"))
+                        scope.launch {
+                            openFolderAtPath(databasePath.substringBeforeLast("/"))
+                        }
                     }
                 )
             }
@@ -83,9 +99,9 @@ private fun NukeDatabaseControll(
     onMessage: (InfoManagerData) -> Unit
 ) {
 
-    var dialogTitle by remember { mutableStateOf("") }
+    var dialogTitle by remember { mutableStateOf(ArgsText()) }
     var showDialog by remember { mutableStateOf(false) }
-    var dialogDescription by remember { mutableStateOf("") }
+    var dialogDescription by remember { mutableStateOf(ArgsText()) }
     var onDialogConfirm by remember { mutableStateOf({}) }
 
     if (showDialog) {
@@ -111,11 +127,11 @@ private fun NukeDatabaseControll(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         OutlinedButton(
-            text = getStringResource("info.remove.settings.title"),
+            text = stringResource(Res.string.info_remove_settings_title),
             contentColor = darkRed,
             onClick = {
-                dialogTitle = getStringResource("info.remove.settings.title")
-                dialogDescription = getStringResource("info.remove.settings.description")
+                dialogTitle = ArgsText(textResId = Res.string.info_remove_settings_title)
+                dialogDescription = ArgsText(textResId = Res.string.info_remove_settings_description)
                 onDialogConfirm = {
                     scope.launch {
                         sources.settingsSource.deleteAll()
@@ -126,7 +142,7 @@ private fun NukeDatabaseControll(
                         sources.ollamaUrlSource.deleteAll()
                         onMessage(
                             InfoManagerData(
-                                message = getStringResource("info.remove.settings.success"),
+                                message = ArgsText(textResId = Res.string.info_remove_settings_success),
                             )
                         )
                     }
@@ -137,11 +153,11 @@ private fun NukeDatabaseControll(
         )
 
         OutlinedButton(
-            text = getStringResource("info.remove.devices.title"),
+            text = stringResource(Res.string.info_remove_devices_title),
             contentColor = darkRed,
             onClick = {
-                dialogTitle = getStringResource("info.remove.devices.title")
-                dialogDescription = getStringResource("info.remove.devices.description")
+                dialogTitle = ArgsText(textResId = Res.string.info_remove_devices_title)
+                dialogDescription = ArgsText(textResId = Res.string.info_remove_devices_description)
                 onDialogConfirm = {
                     scope.launch {
                         sources.logHistorySource.deleteAll()
@@ -149,7 +165,7 @@ private fun NukeDatabaseControll(
                         sources.deviceSource.deleteAll()
                         onMessage(
                             InfoManagerData(
-                                message = getStringResource("info.remove.devices.success"),
+                                message = ArgsText(textResId = Res.string.info_remove_devices_success),
                             )
                         )
                     }
@@ -160,18 +176,18 @@ private fun NukeDatabaseControll(
         )
 
         OutlinedButton(
-            text = getStringResource("info.remove.logs.title"),
+            text = stringResource(Res.string.info_remove_logs_title),
             contentColor = darkRed,
             onClick = {
-                dialogTitle = getStringResource("info.remove.logs.title")
-                dialogDescription = getStringResource("info.remove.logs.description")
+                dialogTitle = ArgsText(Res.string.info_remove_logs_title)
+                dialogDescription = ArgsText(Res.string.info_remove_logs_description)
                 onDialogConfirm = {
                     scope.launch {
                         sources.logHistorySource.deleteAll()
                         sources.logNameSource.deleteAll()
                         onMessage(
                             InfoManagerData(
-                                message = getStringResource("info.remove.logs.success"),
+                                message = ArgsText(textResId = Res.string.info_remove_logs_success)
                             )
                         )
                     }

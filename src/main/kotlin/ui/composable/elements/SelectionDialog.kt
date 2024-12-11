@@ -20,13 +20,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_cancel
+import com.jskako.droidsense.generated.resources.info_select_option
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
-import utils.getStringResource
 
 @Composable
 fun SelectionDialog(
-    title: String = getStringResource("info.select.option"),
+    title: StringResource = Res.string.info_select_option,
     options: List<String>,
     onDismissRequest: () -> Unit,
     onOptionSelected: (String) -> Unit
@@ -39,7 +43,7 @@ fun SelectionDialog(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(text = stringResource(title), fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 Spacer(modifier = Modifier.height(8.dp))
 
                 options.forEachIndexed { index, option ->
@@ -68,7 +72,7 @@ fun SelectionDialog(
                     ),
                     modifier = Modifier.align(Alignment.End)
                 ) {
-                    Text(getStringResource("info.cancel"))
+                    Text(stringResource(Res.string.info_cancel))
                 }
             }
         }

@@ -23,11 +23,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_logs_cleared
+import com.jskako.droidsense.generated.resources.info_waiting_application_logs
+import com.jskako.droidsense.generated.resources.string_placeholder
+import data.ArgsText
 import data.model.items.DeviceItem
 import data.model.items.LogNameItem
 import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.getString
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
 import ui.composable.elements.log.LogView
@@ -43,7 +49,6 @@ import utils.EMPTY_STRING
 import utils.EXPORT_NAME_TIMESTAMP
 import utils.LOG_MANAGER_NUMBER_OF_LINES
 import utils.capitalizeFirstChar
-import utils.getStringResource
 import utils.getTimeStamp
 import utils.openFolderAtPath
 import java.util.UUID
@@ -77,7 +82,10 @@ fun LogScreen(
     fun showMessage(message: String) {
         infoManager.showMessage(
             infoManagerData = InfoManagerData(
-                message = message
+                message = ArgsText(
+                    textResId = Res.string.string_placeholder,
+                    formatArgs = listOf(message)
+                )
             ),
             scope = scope
         )
@@ -116,7 +124,9 @@ fun LogScreen(
             onExtraClicked = exportPath?.let {
                 FunctionIconData(
                     function = {
-                        showMessage(infoManagerData = openFolderAtPath(path = it))
+                        scope.launch {
+                            showMessage(infoManagerData = openFolderAtPath(path = it))
+                        }
                     },
                     icon = Icons.Default.FolderOpen
                 )
@@ -193,7 +203,7 @@ fun LogScreen(
                     onClearLogs = {
                         scope.launch {
                             logManager.clear(identifier = device.deviceIdentifier)
-                            showMessage(getStringResource("info.logs.cleared"))
+                            showMessage(getString(Res.string.info_logs_cleared))
                         }
                     },
                     scrollToEnd = scrollToEnd,
@@ -284,10 +294,10 @@ fun LogScreen(
             ) {
                 if (logs.isEmpty() && isRunning) {
                     CircularProgressBar(
-                        text = buildString {
-                            appendLine(getStringResource("info.waiting.application.logs"))
-                            appendLine(selectedPackage)
-                        },
+                        text = ArgsText(
+                            textResId = Res.string.info_waiting_application_logs,
+                            formatArgs = listOf(selectedPackage)
+                        ),
                         isVisible = true
                     )
                 } else {

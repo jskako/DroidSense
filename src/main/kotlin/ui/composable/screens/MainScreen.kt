@@ -12,6 +12,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_usb_debugging_enabled
+import com.jskako.droidsense.generated.resources.info_waiting_device
+import data.ArgsText
 import data.keys.SettingsKey
 import kotlinx.coroutines.launch
 import notifications.InfoManager
@@ -25,7 +29,6 @@ import ui.composable.sections.StatusSection
 import ui.composable.sections.info.InfoSection
 import utils.EMPTY_STRING
 import utils.capitalizeFirstChar
-import utils.getStringResource
 
 @Composable
 fun MainScreen(
@@ -81,7 +84,9 @@ fun MainScreen(
 
             infoManager.showMessage(
                 InfoManagerData(
-                    message = getStringResource("info.usb.debugging.enabled"),
+                    message = ArgsText(
+                        textResId = Res.string.info_usb_debugging_enabled,
+                    ),
                     duration = null
                 ),
                 scope = scope
@@ -116,7 +121,7 @@ fun MainScreen(
         DividerColored()
 
         CircularProgressBar(
-            text = getStringResource("info.waiting.device"),
+            text = ArgsText(textResId = Res.string.info_waiting_device),
             isVisible = filteredDevices.isEmpty()
                     && deviceManager.monitoringStatus.value == MonitoringStatus.MONITORING
         )

@@ -1,13 +1,18 @@
 package adb.application
 
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.error_file_install
+import com.jskako.droidsense.generated.resources.string_placeholder
+import com.jskako.droidsense.generated.resources.success_file_install
+import data.ArgsText
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.getString
 import utils.APK_EXTENSION
-import utils.getStringResource
 import utils.pickFile
 
 class ApplicationManager(
@@ -112,18 +117,21 @@ class ApplicationManager(
             val exitCode = process.waitFor()
 
             val resultMessage = if (exitCode == 0) {
-                getStringResource("success.file.install")
+                getString(Res.string.success_file_install)
             } else {
-                throw Exception(getStringResource("error.file.install"))
+                throw Exception(getString(Res.string.error_file_install))
             }
 
             Result.success(
                 InfoManagerData(
-                    message = "$resultMessage: ${file.canonicalPath}"
+                    message = ArgsText(
+                        textResId = Res.string.string_placeholder,
+                        formatArgs = listOf("$resultMessage: ${file.canonicalPath}")
+                    )
                 )
             )
         }.getOrElse {
-            Result.failure(Exception(getStringResource("error.file.install")))
+            Result.failure(Exception(getString(Res.string.error_file_install)))
         }
     }
 

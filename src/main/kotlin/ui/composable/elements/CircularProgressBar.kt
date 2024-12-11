@@ -13,12 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import data.ArgsText
+import org.jetbrains.compose.resources.stringResource
 import utils.Colors.darkBlue
 
 @Composable
 fun CircularProgressBar(
     modifier: Modifier = Modifier.fillMaxSize(),
-    text: String? = null,
+    text: ArgsText? = null,
     circularColor: Color = darkBlue,
     isVisible: Boolean = true
 ) {
@@ -33,8 +35,16 @@ fun CircularProgressBar(
                 color = circularColor,
             )
             text?.let {
+                if (it.textResId == null) return@let
                 Text(
-                    text = it,
+                    text = if (it.formatArgs.isNullOrEmpty()) {
+                        stringResource(it.textResId)
+                    } else {
+                        stringResource(
+                            it.textResId,
+                            *it.formatArgs.toTypedArray()
+                        )
+                    },
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 16.dp)
                 )

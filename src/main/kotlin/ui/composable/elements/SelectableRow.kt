@@ -11,13 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun <T : Enum<T>> SelectableRow(
     enumValues: Array<T>,
     selectedValue: T,
     onSelect: (T) -> Unit,
-    getTitle: (T) -> String
+    onTitle: (T) -> StringResource
 ) {
     Row(
         modifier = Modifier.wrapContentWidth(),
@@ -25,7 +27,7 @@ fun <T : Enum<T>> SelectableRow(
     ) {
         enumValues.forEach { value ->
             Text(
-                text = getTitle(value),
+                text = stringResource(onTitle(value)),
                 textAlign = TextAlign.Start,
                 fontWeight = if (value == selectedValue) FontWeight.Bold else FontWeight.Normal,
                 modifier = Modifier

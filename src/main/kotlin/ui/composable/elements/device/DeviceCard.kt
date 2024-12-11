@@ -36,10 +36,34 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_adb_identifier
+import com.jskako.droidsense.generated.resources.info_android_version
+import com.jskako.droidsense.generated.resources.info_application_manager
+import com.jskako.droidsense.generated.resources.info_build_sdk
+import com.jskako.droidsense.generated.resources.info_device_connect_general_error
+import com.jskako.droidsense.generated.resources.info_device_connection_switch
+import com.jskako.droidsense.generated.resources.info_device_connection_type
+import com.jskako.droidsense.generated.resources.info_device_ip_incorrect
+import com.jskako.droidsense.generated.resources.info_device_ip_success
+import com.jskako.droidsense.generated.resources.info_disconnect
+import com.jskako.droidsense.generated.resources.info_disconnecting_device
+import com.jskako.droidsense.generated.resources.info_display_resolution
+import com.jskako.droidsense.generated.resources.info_ip_address
+import com.jskako.droidsense.generated.resources.info_log_closing
+import com.jskako.droidsense.generated.resources.info_log_manager
+import com.jskako.droidsense.generated.resources.info_private_space_info
+import com.jskako.droidsense.generated.resources.info_serial_number
+import com.jskako.droidsense.generated.resources.info_share_screen
+import com.jskako.droidsense.generated.resources.info_share_screen_fail
+import com.jskako.droidsense.generated.resources.info_share_screen_info
+import com.jskako.droidsense.generated.resources.info_window_no
 import com.jskako.droidsense.generated.resources.phone
+import com.jskako.droidsense.generated.resources.string_placeholder
+import data.ArgsText
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import org.jetbrains.compose.resources.imageResource
+import org.jetbrains.compose.resources.stringResource
 import ui.application.WindowExtra
 import ui.application.WindowStateManager
 import ui.application.navigation.WindowData
@@ -55,7 +79,6 @@ import utils.Colors.darkRed
 import utils.Colors.lightGray
 import utils.EMPTY_STRING
 import utils.capitalizeFirstChar
-import utils.getStringResource
 import utils.isValidIpAddressWithPort
 import utils.shareScreen
 
@@ -103,12 +126,15 @@ fun DeviceCard(
                         isEnabled = !disconnectInProgress,
                         tint = if (disconnectInProgress) lightGray else darkBlue,
                         icon = Icons.Default.Eject,
-                        tooltip = getStringResource("info.disconnect"),
+                        tooltip = Res.string.info_disconnect,
                         function = {
                             disconnectInProgress = true
                             onMessage(
                                 InfoManagerData(
-                                    message = "${getStringResource("info.disconnecting.device")}: $device"
+                                    message = ArgsText(
+                                        textResId = Res.string.info_disconnecting_device,
+                                        formatArgs = listOf(device.toString())
+                                    )
                                 )
                             )
                             scope.launch {
@@ -130,28 +156,28 @@ fun DeviceCard(
                 addSpaceHeight(16.dp)
 
                 BasicTextCaption(
-                    text1 = getStringResource("info.adb.identifier"),
+                    text1 = stringResource(Res.string.info_adb_identifier),
                     text2 = device.deviceIdentifier
                 )
 
                 addSpaceHeight()
 
                 BasicTextCaption(
-                    text1 = getStringResource("info.serial.number"),
+                    text1 = stringResource(Res.string.info_serial_number),
                     text2 = device.serialNumber
                 )
 
                 addSpaceHeight()
 
                 BasicTextCaption(
-                    text1 = getStringResource("info.android.version"),
-                    text2 = "${device.androidVersion} (${getStringResource("info.build.sdk")} ${device.buildSDK})"
+                    text1 = stringResource(Res.string.info_android_version),
+                    text2 = "${device.androidVersion} (${stringResource(Res.string.info_build_sdk)} ${device.buildSDK})"
                 )
 
                 addSpaceHeight()
 
                 BasicTextCaption(
-                    text1 = getStringResource("info.display.resolution"),
+                    text1 = stringResource(Res.string.info_display_resolution),
                     text2 = "${
                         (device.displayResolution?.split(": ")?.getOrNull(1) ?: EMPTY_STRING)
                     } (${(device.displayDensity?.split(": ")?.getOrNull(1) ?: EMPTY_STRING)} ppi)"
@@ -160,15 +186,15 @@ fun DeviceCard(
                 addSpaceHeight()
 
                 BasicTextCaption(
-                    text1 = getStringResource("info.ip.address"),
+                    text1 = stringResource(Res.string.info_ip_address),
                     text2 = device.ipAddress ?: EMPTY_STRING
                 )
 
                 addSpaceHeight()
 
                 BasicTextCaption(
-                    text1 = getStringResource("info.private.space.info"),
-                    text2 = device.privateSpaceIdentifier ?: getStringResource("info.window.no").uppercase()
+                    text1 = stringResource(Res.string.info_private_space_info),
+                    text2 = device.privateSpaceIdentifier ?: stringResource(Res.string.info_window_no).uppercase()
                 )
 
                 addSpaceHeight(16.dp)
@@ -183,14 +209,14 @@ fun DeviceCard(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "${getStringResource("info.device.connection.type")}: ${connectionType.name}",
+                        text = "${stringResource(Res.string.info_device_connection_type)}: ${connectionType.name}",
                         color = Color.Gray
                     )
 
                     if (connectionType == ConnectionType.CABLE && !hasMatchingIp) {
                         TooltipIconButton(
                             icon = Icons.Default.SwitchAccessShortcut,
-                            tooltip = getStringResource("info.device.connection.switch"),
+                            tooltip = Res.string.info_device_connection_switch,
                             function = {
                                 scope.launch {
                                     device.ipAddress?.let {
@@ -202,21 +228,28 @@ fun DeviceCard(
                                             onSuccess = {
                                                 onMessage(
                                                     InfoManagerData(
-                                                        message = getStringResource("info.device.ip.success")
+                                                        message = ArgsText(
+                                                            textResId = Res.string.info_device_ip_success
+                                                        )
                                                     )
                                                 )
                                             },
                                             onFailure = {
                                                 onMessage(
                                                     InfoManagerData(
-                                                        message = "${getStringResource("info.device.connect.general.error")} $it"
+                                                        message = ArgsText(
+                                                            textResId = Res.string.info_device_connect_general_error,
+                                                            formatArgs = listOf(it.message ?: "")
+                                                        )
                                                     )
                                                 )
                                             }
                                         )
                                     } ?: onMessage(
                                         InfoManagerData(
-                                            message = getStringResource("info.device.ip.incorrect")
+                                            message = ArgsText(
+                                                textResId = Res.string.info_device_ip_incorrect
+                                            )
                                         )
                                     )
                                 }
@@ -230,7 +263,7 @@ fun DeviceCard(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp)
             ) {
                 OutlinedButton(
-                    text = getStringResource("info.share.screen"),
+                    text = stringResource(Res.string.info_share_screen),
                     onClick = {
                         scope.launch {
                             shareScreen(
@@ -241,14 +274,20 @@ fun DeviceCard(
                                 onSuccess = {
                                     onMessage(
                                         InfoManagerData(
-                                            message = "${getStringResource("info.share.screen.info")} ${device.deviceIdentifier}"
+                                            message = ArgsText(
+                                                textResId = Res.string.info_share_screen_info,
+                                                formatArgs = listOf(device.deviceIdentifier)
+                                            )
                                         )
                                     )
                                 },
                                 onFailure = {
                                     onMessage(
                                         InfoManagerData(
-                                            message = "${getStringResource("info.share.screen.fail")} ${device.deviceIdentifier}. ${it.message}",
+                                            message = ArgsText(
+                                                textResId = Res.string.info_share_screen_fail,
+                                                formatArgs = listOf("${device.deviceIdentifier}. ${it.message}")
+                                            ),
                                             color = darkRed
                                         )
                                     )
@@ -267,13 +306,16 @@ fun DeviceCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
-                    text = getStringResource("info.log.manager"),
+                    text = stringResource(Res.string.info_log_manager),
                     onClick = {
                         val logManager = LogManager(adbPath = adbPath)
                         windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                             newWindow(
                                 WindowData(
-                                    title = "${device.model} (${device.serialNumber})",
+                                    title = ArgsText(
+                                        textResId = Res.string.string_placeholder,
+                                        formatArgs = listOf("${device.model} (${device.serialNumber})")
+                                    ),
                                     icon = Icons.Default.Info,
                                     windowExtra = WindowExtra(
                                         screen = {
@@ -290,7 +332,10 @@ fun DeviceCard(
                                                     logManager.stopMonitoring()
                                                     onMessage(
                                                         InfoManagerData(
-                                                            message = "${getStringResource("info.log.closing")} $device"
+                                                            message = ArgsText(
+                                                                textResId = Res.string.info_log_closing,
+                                                                formatArgs = listOf(device.toString())
+                                                            )
                                                         )
                                                     )
                                                 }
@@ -309,12 +354,15 @@ fun DeviceCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
-                    text = getStringResource("info.application.manager"),
+                    text = stringResource(Res.string.info_application_manager),
                     onClick = {
                         windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                             newWindow(
                                 WindowData(
-                                    title = "${device.model} (${device.serialNumber})",
+                                    title = ArgsText(
+                                        textResId = Res.string.string_placeholder,
+                                        formatArgs = listOf("${device.model} (${device.serialNumber})")
+                                    ),
                                     icon = Icons.Default.Apps,
                                     windowExtra = WindowExtra(
                                         screen = {

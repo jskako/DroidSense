@@ -28,9 +28,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.empty_string
+import com.jskako.droidsense.generated.resources.info_ai_error
+import com.jskako.droidsense.generated.resources.info_available_ai
+import com.jskako.droidsense.generated.resources.info_clear_filter
+import com.jskako.droidsense.generated.resources.info_delete_log_message
+import com.jskako.droidsense.generated.resources.info_name_update_log_message
+import com.jskako.droidsense.generated.resources.info_new_chat
+import com.jskako.droidsense.generated.resources.info_search
+import data.ArgsText
 import data.model.ai.AIType
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.application.WindowExtra
 import ui.application.WindowStateManager
 import ui.application.navigation.WindowData
@@ -45,7 +56,6 @@ import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
-import utils.getStringResource
 
 @Composable
 fun AISection(
@@ -68,7 +78,9 @@ fun AISection(
         if (aiTypes.isEmpty()) {
             onMessage(
                 InfoManagerData(
-                    message = getStringResource("info.ai.error"),
+                    message = ArgsText(
+                        textResId = Res.string.info_ai_error,
+                    ),
                     color = darkRed,
                     duration = null
                 )
@@ -78,13 +90,13 @@ fun AISection(
 
     if (showDialog) {
         SelectionDialog(
-            title = getStringResource("info.available.ai"),
+            title = Res.string.info_available_ai,
             options = aiTypes,
             onOptionSelected = { aiType ->
                 windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                     newWindow(
                         WindowData(
-                            title = "",
+                            title = ArgsText(textResId = Res.string.empty_string),
                             icon = Icons.Default.Info,
                             windowExtra = WindowExtra(
                                 screen = {
@@ -126,8 +138,8 @@ fun AISection(
                     },
                     containerColor = darkBlue,
                     contentColor = Color.White,
-                    icon = { Icon(Icons.AutoMirrored.Filled.Message, getStringResource("info.new.chat")) },
-                    text = { Text(text = getStringResource("info.new.chat")) },
+                    icon = { Icon(Icons.AutoMirrored.Filled.Message, stringResource(Res.string.info_new_chat)) },
+                    text = { Text(text = stringResource(Res.string.info_new_chat)) },
                 )
             }
         }
@@ -148,7 +160,7 @@ fun AISection(
 
                         TooltipIconButton(
                             icon = Icons.Default.Close,
-                            tooltip = getStringResource("info.clear.filter"),
+                            tooltip = Res.string.info_clear_filter,
                             function = {
                                 //onFilterClear
                             }
@@ -163,7 +175,7 @@ fun AISection(
                     onValueChange = {
                         searchText = it
                     },
-                    placeholder = { Text(getStringResource("info.search")) },
+                    placeholder = { Text(stringResource(Res.string.info_search)) },
                     modifier = Modifier
                         .fillMaxWidth()
                 )
@@ -184,7 +196,7 @@ fun AISection(
                                     windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                                         newWindow(
                                             WindowData(
-                                                title = "",
+                                                title = ArgsText(textResId = Res.string.empty_string),
                                                 icon = Icons.Default.Info,
                                                 windowExtra = WindowExtra(
                                                     screen = {
@@ -210,7 +222,9 @@ fun AISection(
                                     deleteInProgress = false
                                     onMessage(
                                         InfoManagerData(
-                                            message = getStringResource("info.delete.log.message")
+                                            message = ArgsText(
+                                                textResId = Res.string.info_delete_log_message,
+                                            )
                                         )
                                     )
                                 }
@@ -222,7 +236,9 @@ fun AISection(
                                 )
                                 onMessage(
                                     InfoManagerData(
-                                        message = getStringResource("info.name.update.log.message")
+                                        message = ArgsText(
+                                            textResId = Res.string.info_name_update_log_message,
+                                        )
                                     )
                                 )
                             },

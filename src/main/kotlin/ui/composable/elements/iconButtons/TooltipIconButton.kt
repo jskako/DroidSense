@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import utils.Colors.darkBlue
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -34,7 +36,7 @@ fun TooltipIconButton(
     modifier: Modifier = Modifier,
     iconSize: Dp = 36.dp,
     icon: ImageVector,
-    tooltip: String,
+    tooltip: StringResource,
     tint: Color = darkBlue,
     function: () -> Unit,
     isEnabled: Boolean = true
@@ -52,7 +54,7 @@ fun TooltipIconButton(
                 shape = MaterialTheme.shapes.small
             ) {
                 Text(
-                    text = tooltip,
+                    text = stringResource(tooltip),
                     modifier = Modifier
                         .padding(8.dp),
                     color = Color.White
@@ -74,7 +76,7 @@ fun TooltipIconButton(
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = tooltip,
+                contentDescription = stringResource(tooltip),
                 tint = tint
             )
         }

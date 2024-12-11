@@ -13,6 +13,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_getting_application
+import com.jskako.droidsense.generated.resources.info_updating_application
+import data.ArgsText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -21,7 +25,6 @@ import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.LinearProgressBar
 import ui.composable.elements.apps.AppsView
-import utils.getStringResource
 
 @Composable
 fun ApplicationScreen(
@@ -68,7 +71,7 @@ fun ApplicationScreen(
     }
 
     CircularProgressBar(
-        text = getStringResource("info.getting.application"),
+        text = ArgsText(textResId = Res.string.info_getting_application),
         isVisible = userApps.isEmpty() && systemApps.isEmpty()
     )
 
@@ -77,7 +80,7 @@ fun ApplicationScreen(
             modifier = Modifier.fillMaxSize(),
         ) {
             LinearProgressBar(
-                text = getStringResource("info.updating.application"),
+                text = Res.string.info_updating_application,
                 isVisible = updateRequired == ApplicationUpdateStatus.IN_PROGRESS
             )
             DeviceGroup(

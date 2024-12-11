@@ -23,6 +23,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_edit_message
+import com.jskako.droidsense.generated.resources.info_try_again
 import data.model.ai.AIItem
 import data.model.ai.ollama.AiRole
 import ui.composable.elements.BasicText
@@ -32,7 +35,6 @@ import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import utils.Colors.lightGray
 import utils.capitalizeFirstChar
-import utils.getStringResource
 import java.util.UUID
 
 @Composable
@@ -47,7 +49,7 @@ fun ChatCard(
 
     if (showEditDialog) {
         EditDialog(
-            title = getStringResource("info.edit.message"),
+            title = Res.string.info_edit_message,
             text = aiItem.message,
             singleLine = false,
             onConfirmRequest = {
@@ -86,7 +88,7 @@ fun ChatCard(
                         isEnabled = buttonsEnabled,
                         tint = if (buttonsEnabled) darkBlue else lightGray,
                         icon = Icons.Default.Edit,
-                        tooltip = getStringResource("info.edit.message"),
+                        tooltip = Res.string.info_edit_message,
                         function = {
                             showEditDialog = true
                         }
@@ -98,7 +100,7 @@ fun ChatCard(
                         isEnabled = buttonsEnabled,
                         tint = darkRed,
                         icon = Icons.Default.Repeat,
-                        tooltip = getStringResource("info.try.again"),
+                        tooltip = Res.string.info_try_again,
                         function = {
                             onTryAgain(aiItem.messageUUID)
                         }

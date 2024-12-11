@@ -2,16 +2,16 @@ package notifications
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import data.ArgsText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import notifications.interfaces.InfoManagerInterface
-import utils.EMPTY_STRING
 
 class InfoManager : InfoManagerInterface {
 
-    private var _infoManagerData = mutableStateOf(InfoManagerData(message = EMPTY_STRING))
+    private var _infoManagerData = mutableStateOf(InfoManagerData(message = ArgsText()))
     private var job: Job? = null
 
     val infoManagerData: State<InfoManagerData>
@@ -41,11 +41,11 @@ class InfoManager : InfoManagerInterface {
         job?.cancel()
         job = scope.launch {
             delay(duration)
-            _infoManagerData.value = InfoManagerData(message = EMPTY_STRING)
+            _infoManagerData.value = InfoManagerData(message = ArgsText())
         }
     }
 
     override fun clearInfoMessage() {
-        _infoManagerData.value = InfoManagerData(message = EMPTY_STRING)
+        _infoManagerData.value = InfoManagerData(message = ArgsText())
     }
 }

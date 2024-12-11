@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import notifications.InfoManagerData
 
 interface DeviceManagerInterface {
-    fun manageListeningStatus(
+    suspend fun manageListeningStatus(
         monitorStatus: MonitorStatus,
         scope: CoroutineScope,
         onMessage: (InfoManagerData) -> Unit,

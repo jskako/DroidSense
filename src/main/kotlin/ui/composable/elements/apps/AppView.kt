@@ -27,9 +27,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_app_system
+import com.jskako.droidsense.generated.resources.info_app_user
+import com.jskako.droidsense.generated.resources.info_install_app
+import com.jskako.droidsense.generated.resources.info_install_application
+import com.jskako.droidsense.generated.resources.info_search
+import com.jskako.droidsense.generated.resources.info_search_application_empty
+import com.jskako.droidsense.generated.resources.info_select_space
+import com.jskako.droidsense.generated.resources.string_placeholder
+import data.ArgsText
 import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.application.WindowStateManager
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
@@ -42,7 +53,6 @@ import utils.Colors.darkRed
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
 import utils.getSpaceId
-import utils.getStringResource
 
 
 @Composable
@@ -74,7 +84,7 @@ fun AppsView(
 
     if (showDialog) {
         SelectionDialog(
-            title = getStringResource("info.select.space"),
+            title = Res.string.info_select_space,
             options = getAvailableSpaces(adbPath, identifier).mapIndexed { index, item ->
                 item.takeIf { index != 0 } ?: "$item (Default)"
             },
@@ -82,7 +92,9 @@ fun AppsView(
                 buttonsEnabled = false
                 showMessage(
                     infoManagerData = InfoManagerData(
-                        message = getStringResource("info.install.application"),
+                        message = ArgsText(
+                            textResId = Res.string.info_install_application
+                        ),
                         duration = null
                     )
                 )
@@ -99,7 +111,10 @@ fun AppsView(
                             onFailure = { error ->
                                 showMessage(
                                     infoManagerData = InfoManagerData(
-                                        message = error.message ?: EMPTY_STRING,
+                                        message = ArgsText(
+                                            textResId = Res.string.string_placeholder,
+                                            formatArgs = listOf(error.message ?: EMPTY_STRING)
+                                        ),
                                         color = darkRed
                                     )
                                 )
@@ -130,8 +145,8 @@ fun AppsView(
                     },
                     containerColor = darkBlue,
                     contentColor = Color.White,
-                    icon = { Icon(Icons.Filled.Add, getStringResource("info.install.app")) },
-                    text = { Text(text = getStringResource("info.install.app")) },
+                    icon = { Icon(Icons.Filled.Add, stringResource(Res.string.info_install_app)) },
+                    text = { Text(text = stringResource(Res.string.info_install_app)) },
                 )
             }
         }
@@ -155,10 +170,10 @@ fun AppsView(
                     enumValues = ApplicationType.entries.toTypedArray(),
                     selectedValue = selectedApplicationType,
                     onSelect = { selectedApplicationType = it },
-                    getTitle = { type ->
+                    onTitle = { type ->
                         when (type) {
-                            ApplicationType.USER -> getStringResource("info.app.user")
-                            ApplicationType.SYSTEM -> getStringResource("info.app.system")
+                            ApplicationType.USER -> Res.string.info_app_user
+                            ApplicationType.SYSTEM -> Res.string.info_app_system
                         }
                     }
                 )
@@ -170,7 +185,7 @@ fun AppsView(
                     onValueChange = {
                         searchText = it
                     },
-                    placeholder = { Text(getStringResource("info.search")) },
+                    placeholder = { Text(stringResource(Res.string.info_search)) },
                     modifier = Modifier
                         .fillMaxWidth()
                 )
@@ -179,7 +194,7 @@ fun AppsView(
             DividerColored()
 
             CircularProgressBar(
-                text = getStringResource("info.search.application.empty"),
+                text = ArgsText(textResId = Res.string.info_search_application_empty),
                 isVisible = filteredApps.isEmpty()
             )
 

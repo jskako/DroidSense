@@ -22,13 +22,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_cancel
+import com.jskako.droidsense.generated.resources.info_edit_name
+import com.jskako.droidsense.generated.resources.info_save
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
-import utils.getStringResource
 
 @Composable
 fun EditDialog(
-    title: String = getStringResource("info.edit.name"),
+    title: StringResource = Res.string.info_edit_name,
     text: String = "",
     onConfirmRequest: (String) -> Unit,
     onDismissRequest: () -> Unit,
@@ -51,7 +56,7 @@ fun EditDialog(
                 ) {
                     Text(
                         modifier = Modifier.padding(bottom = 8.dp),
-                        text = title,
+                        text = stringResource(title),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray
                     )
@@ -63,7 +68,7 @@ fun EditDialog(
                             editText = it
                         },
                         placeholder = {
-                            Text(title)
+                            Text(stringResource(title))
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -84,7 +89,7 @@ fun EditDialog(
                             disabledContainerColor = lightGray
                         )
                     ) {
-                        Text(getStringResource("info.cancel"))
+                        Text(stringResource(Res.string.info_cancel))
                     }
 
                     Button(
@@ -95,7 +100,7 @@ fun EditDialog(
                             disabledContainerColor = lightGray
                         )
                     ) {
-                        Text(getStringResource("info.save"))
+                        Text(stringResource(Res.string.info_save))
                     }
                 }
             }

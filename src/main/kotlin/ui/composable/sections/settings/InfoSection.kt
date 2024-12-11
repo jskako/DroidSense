@@ -17,13 +17,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_about
+import com.jskako.droidsense.generated.resources.info_copyright
+import com.jskako.droidsense.generated.resources.info_donation
+import com.jskako.droidsense.generated.resources.info_licenses
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import ui.composable.elements.DividerColored
 import ui.composable.elements.SelectableRow
 import utils.ABOUT_LIBRARIES_JSON_NAME
 import utils.DOCUMENTS_DIRECTORY
 import utils.LICENSE_RESOURCE
-import utils.getStringResource
 import utils.readFile
 
 @Composable
@@ -40,12 +44,12 @@ fun InfoSection() {
             enumValues = InfoType.entries.toTypedArray(),
             selectedValue = selectedInfoType,
             onSelect = { selectedInfoType = it },
-            getTitle = { type ->
+            onTitle = { type ->
                 when (type) {
-                    InfoType.COPYRIGHT -> getStringResource("info.copyright")
-                    InfoType.LICENSES -> getStringResource("info.licenses")
-                    InfoType.ABOUT -> getStringResource("info.about")
-                    InfoType.DONATION -> getStringResource("info.donation")
+                    InfoType.COPYRIGHT -> Res.string.info_copyright
+                    InfoType.LICENSES -> Res.string.info_licenses
+                    InfoType.ABOUT -> Res.string.info_about
+                    InfoType.DONATION -> Res.string.info_donation
                 }
             }
         )
@@ -100,7 +104,7 @@ private fun LicenseScreen() {
         value = readFile(path = "$DOCUMENTS_DIRECTORY/$ABOUT_LIBRARIES_JSON_NAME")
     }
 
-    if(aboutLibraryJson.isNotBlank()) {
+    if (aboutLibraryJson.isNotBlank()) {
         LibrariesContainer(
             aboutLibsJson = aboutLibraryJson,
             modifier = Modifier

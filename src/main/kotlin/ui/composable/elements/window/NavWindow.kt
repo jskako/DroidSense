@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.window.Window
 import com.jskako.DSDatabase
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.app_name
 import data.createDriver
 import data.repository.ai.AIHistorySource
 import data.repository.ai.model.ModelSource
@@ -20,6 +22,7 @@ import data.repository.log.LogHistorySource
 import data.repository.name.ai.AiNameSource
 import data.repository.name.log.LogNameSource
 import data.repository.settings.SettingsSource
+import org.jetbrains.compose.resources.stringResource
 import ui.application.WindowState
 import ui.application.WindowStateManager
 import ui.application.navigation.NavRoute
@@ -39,7 +42,13 @@ fun NavWindow(
 ) = Window(
     onCloseRequest = state::close,
     icon = state.icon?.let { rememberVectorPainter(it) },
-    title = state.title
+    title = state.title.run {
+        if (formatArgs.isNullOrEmpty()) {
+            stringResource(textResId ?: Res.string.app_name)
+        } else {
+            stringResource(textResId ?: Res.string.app_name, *formatArgs.toTypedArray())
+        }
+    }
 ) {
 
     val navigationManager = remember { NavigationManager() }

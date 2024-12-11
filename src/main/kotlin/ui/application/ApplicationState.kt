@@ -1,8 +1,10 @@
 package ui.application
 
 import androidx.compose.runtime.mutableStateListOf
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.app_name
+import data.ArgsText
 import ui.application.navigation.WindowData
-import utils.getStringResource
 
 class ApplicationState {
 
@@ -11,7 +13,9 @@ class ApplicationState {
     init {
         windows += createWindowState(
             WindowData(
-                title = getStringResource("app.name"),
+                title = ArgsText(
+                    textResId = Res.string.app_name,
+                ),
                 icon = null,
                 windowExtra = WindowExtra()
             )

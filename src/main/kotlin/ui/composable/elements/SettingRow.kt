@@ -18,9 +18,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import data.ArgsText
 import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.StringResource
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
@@ -30,12 +32,12 @@ import utils.Colors.lightGray
 fun <T> SettingRow(
     key: T,
     settingsSource: SettingsSource,
-    hintText: String,
-    saveTooltip: String,
-    enableTooltip: String,
-    removeTooltip: String,
-    editMessage: String,
-    removeMessage: String,
+    hintText: StringResource,
+    saveTooltip: StringResource,
+    enableTooltip: StringResource,
+    removeTooltip: StringResource,
+    editMessage: StringResource,
+    removeMessage: StringResource,
     onMessage: (InfoManagerData) -> Unit,
     onKeyFound: (String) -> Unit
 ) {
@@ -72,7 +74,11 @@ fun <T> SettingRow(
                         scope.launch {
                             settingsSource.add(identifier = key.toString(), value = keyInput)
                         }
-                        onMessage(InfoManagerData(message = editMessage))
+                        onMessage(
+                            InfoManagerData(
+                                message = ArgsText(textResId = editMessage)
+                            )
+                        )
                     }
                 )
 
@@ -85,7 +91,12 @@ fun <T> SettingRow(
                         function = {
                             scope.launch {
                                 settingsSource.delete(key.toString())
-                                onMessage(InfoManagerData(message = removeMessage, color = darkRed))
+                                onMessage(
+                                    InfoManagerData(
+                                        message = ArgsText(textResId = removeMessage),
+                                        color = darkRed
+                                    )
+                                )
                             }
                         }
                     )

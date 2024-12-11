@@ -21,8 +21,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_export_logs
+import com.jskako.droidsense.generated.resources.info_search
 import data.model.items.LogItem
+import kotlinx.coroutines.launch
 import notifications.InfoManager
+import org.jetbrains.compose.resources.stringResource
 import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.iconButtons.TooltipIconButton
@@ -32,7 +37,6 @@ import ui.composable.sections.info.InfoSection
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
 import utils.exportToFile
-import utils.getStringResource
 import utils.openFolderAtPath
 
 @Composable
@@ -64,10 +68,12 @@ fun LogHistoryDetailsScreen(
             onExtraClicked = exportPath?.let {
                 FunctionIconData(
                     function = {
-                        infoManager.showMessage(
-                            infoManagerData = openFolderAtPath(path = it),
-                            scope = scope
-                        )
+                        scope.launch {
+                            infoManager.showMessage(
+                                infoManagerData = openFolderAtPath(path = it),
+                                scope = scope
+                            )
+                        }
                     },
                     icon = Icons.Default.FolderOpen
                 )
@@ -87,25 +93,27 @@ fun LogHistoryDetailsScreen(
                 onValueChange = {
                     searchText = it
                 },
-                placeholder = { Text(getStringResource("info.search")) },
+                placeholder = { Text(stringResource(Res.string.info_search)) },
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
             TooltipIconButton(
                 icon = Icons.Default.FileDownload,
-                tooltip = getStringResource("info.export.logs"),
+                tooltip = Res.string.info_export_logs,
                 function = {
-                    buildString {
-                        logs.forEach { log ->
-                            appendLine(log.toString())
+                    scope.launch {
+                        buildString {
+                            logs.forEach { log ->
+                                appendLine(log.toString())
+                            }
+                        }.exportToFile().also {
+                            exportPath = it.path
+                            infoManager.showMessage(
+                                infoManagerData = it.infoManagerData,
+                                scope = scope
+                            )
                         }
-                    }.exportToFile().also {
-                        exportPath = it.path
-                        infoManager.showMessage(
-                            infoManagerData = it.infoManagerData,
-                            scope = scope
-                        )
                     }
                 }
             )

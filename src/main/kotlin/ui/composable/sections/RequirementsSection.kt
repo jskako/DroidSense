@@ -16,8 +16,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.app_name
+import org.jetbrains.compose.resources.stringResource
 import requirements.RequirementsManager
-import utils.getStringResource
 
 @Composable
 fun RequirementsSection(
@@ -32,7 +34,7 @@ fun RequirementsSection(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                getStringResource("app.name"),
+                stringResource(Res.string.app_name),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )

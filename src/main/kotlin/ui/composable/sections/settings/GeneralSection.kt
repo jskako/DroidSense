@@ -20,10 +20,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_adb_hint
+import com.jskako.droidsense.generated.resources.info_adb_info
+import com.jskako.droidsense.generated.resources.info_reset
+import com.jskako.droidsense.generated.resources.info_reset_general_description
+import com.jskako.droidsense.generated.resources.info_reset_success
+import com.jskako.droidsense.generated.resources.info_save
+import com.jskako.droidsense.generated.resources.info_save_success
+import com.jskako.droidsense.generated.resources.info_scrcpy_hint
+import com.jskako.droidsense.generated.resources.info_scrcpy_info
+import data.ArgsText
 import data.keys.SettingsKey
 import data.repository.settings.SettingsSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.SelectableText
 import ui.composable.elements.window.TextDialog
@@ -31,7 +43,6 @@ import utils.ADB_PACKAGE
 import utils.Colors.darkRed
 import utils.SCRCPY_PACKAGE
 import utils.findPath
-import utils.getStringResource
 
 @Composable
 fun GeneralSection(
@@ -52,8 +63,8 @@ fun GeneralSection(
 
     if (showDialog) {
         TextDialog(
-            title = getStringResource("info.reset"),
-            description = getStringResource("info.reset.general.description"),
+            title = ArgsText(textResId = Res.string.info_reset),
+            description = ArgsText(textResId = Res.string.info_reset_general_description),
             onConfirmRequest = {
                 showDialog = false
                 scope.launch {
@@ -69,7 +80,7 @@ fun GeneralSection(
 
                     onMessage(
                         InfoManagerData(
-                            message = getStringResource("info.reset.success")
+                            message = ArgsText(textResId = Res.string.info_reset_success)
                         )
                     )
                 }
@@ -96,8 +107,8 @@ fun GeneralSection(
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
             text = adbPath,
-            infoText = getStringResource("info.adb.info"),
-            hintText = getStringResource("info.adb.hint"),
+            infoText = Res.string.info_adb_info,
+            hintText = Res.string.info_adb_hint,
             onValueChanged = { changedPath ->
                 adbPath = changedPath
                 changedPath.trim().also {
@@ -125,8 +136,8 @@ fun GeneralSection(
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
             text = scrcpyPath,
-            hintText = getStringResource("info.scrcpy.hint"),
-            infoText = getStringResource("info.scrcpy.info"),
+            hintText = Res.string.info_scrcpy_hint,
+            infoText = Res.string.info_scrcpy_info,
             onValueChanged = { changedPath ->
                 scrcpyPath = changedPath
                 changedPath.trim().also {
@@ -159,7 +170,7 @@ fun GeneralSection(
         ) {
 
             OutlinedButton(
-                text = getStringResource("info.reset"),
+                text = stringResource(Res.string.info_reset),
                 contentColor = darkRed,
                 onClick = {
                     showDialog = true
@@ -167,7 +178,7 @@ fun GeneralSection(
             )
 
             OutlinedButton(
-                text = getStringResource("info.save"),
+                text = stringResource(Res.string.info_save),
                 enabled = settingsToSave.isNotEmpty(),
                 onClick = {
                     settingsToSave.forEach { (_, u) ->
@@ -175,7 +186,7 @@ fun GeneralSection(
                     }
                     onMessage(
                         InfoManagerData(
-                            message = getStringResource("info.save.success")
+                            message = ArgsText(textResId = Res.string.info_save_success)
                         )
                     )
                 }

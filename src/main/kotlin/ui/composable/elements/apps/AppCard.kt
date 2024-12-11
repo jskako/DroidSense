@@ -24,8 +24,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_app_clear_data
+import com.jskako.droidsense.generated.resources.info_app_clear_data_failed
+import com.jskako.droidsense.generated.resources.info_app_clear_data_started
+import com.jskako.droidsense.generated.resources.info_app_clear_data_success
+import com.jskako.droidsense.generated.resources.info_app_details
+import com.jskako.droidsense.generated.resources.info_app_packageId
+import com.jskako.droidsense.generated.resources.info_app_package_delete
+import com.jskako.droidsense.generated.resources.info_app_package_force_delete
+import com.jskako.droidsense.generated.resources.info_app_package_path
+import com.jskako.droidsense.generated.resources.info_app_package_size
+import com.jskako.droidsense.generated.resources.info_app_uninstall_failed
+import com.jskako.droidsense.generated.resources.info_app_uninstall_started
+import com.jskako.droidsense.generated.resources.info_app_uninstall_success
+import com.jskako.droidsense.generated.resources.info_clear_cache_description
+import com.jskako.droidsense.generated.resources.info_clear_cache_title
+import com.jskako.droidsense.generated.resources.info_delete_app_description
+import com.jskako.droidsense.generated.resources.info_delete_app_title
+import com.jskako.droidsense.generated.resources.info_force_delete_app_description
+import com.jskako.droidsense.generated.resources.string_placeholder
+import data.ArgsText
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.application.WindowExtra
 import ui.application.WindowStateManager
 import ui.application.navigation.WindowData
@@ -34,7 +56,6 @@ import ui.composable.elements.OutlinedButton
 import ui.composable.elements.window.TextDialog
 import ui.composable.screens.ApplicationDetailsScreen
 import utils.Colors.darkRed
-import utils.getStringResource
 
 @Composable
 fun AppCard(
@@ -51,8 +72,8 @@ fun AppCard(
 
     val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
-    var dialogTitle by remember { mutableStateOf("") }
-    var dialogDescription by remember { mutableStateOf("") }
+    var dialogTitle by remember { mutableStateOf(ArgsText()) }
+    var dialogDescription by remember { mutableStateOf(ArgsText()) }
     var onDialogConfirm by remember { mutableStateOf({}) }
 
     if (showDialog) {
@@ -87,21 +108,21 @@ fun AppCard(
         ) {
             Column {
                 BasicTextCaption(
-                    text1 = getStringResource("info.app.packageId"),
+                    text1 = stringResource(Res.string.info_app_packageId),
                     text2 = app.packageId
                 )
 
                 Spacer(modifier = Modifier.height(5.dp))
 
                 BasicTextCaption(
-                    text1 = getStringResource("info.app.package.path"),
+                    text1 = stringResource(Res.string.info_app_package_path),
                     text2 = app.appPath ?: ""
                 )
 
                 Spacer(modifier = Modifier.height(5.dp))
 
                 BasicTextCaption(
-                    text1 = getStringResource("info.app.package.size"),
+                    text1 = stringResource(Res.string.info_app_package_size),
                     text2 = app.appSize ?: ""
                 )
 
@@ -116,13 +137,16 @@ fun AppCard(
                     )
                 ) {
                     OutlinedButton(
-                        text = getStringResource("info.app.details"),
+                        text = stringResource(Res.string.info_app_details),
                         enabled = buttonsEnabled,
                         onClick = {
                             windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                                 newWindow(
                                     WindowData(
-                                        title = "$deviceModel ($serialNumber) - ${app.packageId}",
+                                        title = ArgsText(
+                                            textResId = Res.string.string_placeholder,
+                                            formatArgs = listOf("$deviceModel ($serialNumber) - ${app.packageId}")
+                                        ),
                                         icon = Icons.Default.Info,
                                         windowExtra = WindowExtra(
                                             screen = {
@@ -139,16 +163,24 @@ fun AppCard(
                         }
                     )
                     OutlinedButton(
-                        text = getStringResource("info.app.clear.data"),
+                        text = stringResource(Res.string.info_app_clear_data),
                         enabled = buttonsEnabled,
                         onClick = {
                             onButtonEnabled(false)
-                            dialogTitle = "${getStringResource("info.clear.cache.title")}: ${app.packageId}"
-                            dialogDescription = getStringResource("info.clear.cache.description")
+                            dialogTitle = ArgsText(
+                                textResId = Res.string.info_clear_cache_title,
+                                formatArgs = listOf(app.packageId)
+                            )
+                            dialogDescription = ArgsText(
+                                textResId = Res.string.info_clear_cache_description
+                            )
                             onDialogConfirm = {
                                 onMessage(
                                     InfoManagerData(
-                                        message = "${getStringResource("info.app.clear.data.started")} ${app.packageId}"
+                                        message = ArgsText(
+                                            textResId = Res.string.info_app_clear_data_started,
+                                            formatArgs = listOf(app.packageId)
+                                        )
                                     )
                                 )
                                 scope.launch {
@@ -158,14 +190,20 @@ fun AppCard(
                                         onSuccess = {
                                             onMessage(
                                                 InfoManagerData(
-                                                    message = "${getStringResource("info.app.clear.data.success")} ${app.packageId}"
+                                                    message = ArgsText(
+                                                        textResId = Res.string.info_app_clear_data_success,
+                                                        formatArgs = listOf(app.packageId)
+                                                    )
                                                 )
                                             )
                                         },
                                         onFailure = {
                                             onMessage(
                                                 InfoManagerData(
-                                                    message = "${getStringResource("info.app.clear.data.failed")} ${app.packageId}",
+                                                    message = ArgsText(
+                                                        textResId = Res.string.info_app_clear_data_failed,
+                                                        formatArgs = listOf(app.packageId)
+                                                    ),
                                                     color = darkRed
                                                 )
                                             )
@@ -179,27 +217,32 @@ fun AppCard(
                     )
 
                     OutlinedButton(
-                        text = getStringResource(
+                        text = stringResource(
                             when (app.applicationType) {
-                                ApplicationType.SYSTEM -> "info.app.package.force.delete"
-                                ApplicationType.USER -> "info.app.package.delete"
+                                ApplicationType.SYSTEM -> Res.string.info_app_package_force_delete
+                                ApplicationType.USER -> Res.string.info_app_package_delete
                             }
                         ),
                         enabled = buttonsEnabled,
                         contentColor = darkRed,
                         onClick = {
                             onButtonEnabled(false)
-                            dialogTitle = "${getStringResource("info.delete.app.title")}: ${app.packageId}"
-                            dialogDescription = getStringResource(
-                                when (app.applicationType) {
-                                    ApplicationType.SYSTEM -> "info.force.delete.app.description"
-                                    ApplicationType.USER -> "info.delete.app.description"
-                                }
+                            dialogTitle = ArgsText(
+                                textResId = Res.string.info_delete_app_title,
+                                formatArgs = listOf(app.packageId)
                             )
+                            dialogDescription = when (app.applicationType) {
+                                ApplicationType.SYSTEM -> ArgsText(Res.string.info_force_delete_app_description)
+                                ApplicationType.USER -> ArgsText(Res.string.info_delete_app_description)
+                            }
+
                             onDialogConfirm = {
                                 onMessage(
                                     InfoManagerData(
-                                        message = "${getStringResource("info.app.uninstall.started")} ${app.packageId}"
+                                        message = ArgsText(
+                                            textResId = Res.string.info_app_uninstall_started,
+                                            formatArgs = listOf(app.packageId)
+                                        )
                                     )
                                 )
                                 scope.launch {
@@ -210,14 +253,20 @@ fun AppCard(
                                             onAppDeleted(app)
                                             onMessage(
                                                 InfoManagerData(
-                                                    message = "${getStringResource("info.app.uninstall.success")} ${app.packageId}"
+                                                    message = ArgsText(
+                                                        textResId = Res.string.info_app_uninstall_success,
+                                                        formatArgs = listOf(app.packageId)
+                                                    )
                                                 )
                                             )
                                         },
                                         onFailure = {
                                             onMessage(
                                                 InfoManagerData(
-                                                    message = "${getStringResource("info.app.uninstall.failed")} ${app.packageId}",
+                                                    message = ArgsText(
+                                                        textResId = Res.string.info_app_uninstall_failed,
+                                                        formatArgs = listOf(app.packageId)
+                                                    ),
                                                     color = darkRed
                                                 )
                                             )

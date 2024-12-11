@@ -19,12 +19,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_search_application_empty
+import data.ArgsText
 import kotlinx.coroutines.async
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.SelectableRow
-import utils.getStringResource
 
 @Composable
 fun ApplicationDetailsScreen(
@@ -68,7 +70,7 @@ private fun ApplicationDetailsContent(
             enumValues = AppDetailType.entries.toTypedArray(),
             selectedValue = selectedApplicationType,
             onSelect = { selectedApplicationType = it },
-            getTitle = { type ->
+            onTitle = { type ->
                 when (type) {
                     AppDetailType.PACKAGE_INFO -> AppDetailType.PACKAGE_INFO.title
                     AppDetailType.MEMORY_INFO -> AppDetailType.MEMORY_INFO.title
@@ -81,7 +83,7 @@ private fun ApplicationDetailsContent(
         DividerColored()
 
         CircularProgressBar(
-            text = getStringResource("info.search.application.empty"),
+            text = ArgsText(textResId = Res.string.info_search_application_empty),
             isVisible = filteredAppDetails.isEmpty()
         )
 

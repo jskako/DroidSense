@@ -24,11 +24,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_clear_filter
+import com.jskako.droidsense.generated.resources.info_delete_log_message
+import com.jskako.droidsense.generated.resources.info_name_update_log_message
+import com.jskako.droidsense.generated.resources.info_search
+import com.jskako.droidsense.generated.resources.string_placeholder
+import data.ArgsText
 import data.model.items.DeviceItem
 import data.repository.log.LogHistorySource
 import data.repository.name.log.LogNameSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.application.WindowExtra
 import ui.application.WindowStateManager
 import ui.application.navigation.WindowData
@@ -39,7 +47,6 @@ import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.screens.LogHistoryDetailsScreen
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
-import utils.getStringResource
 
 @Composable
 fun LogHistorySection(
@@ -92,7 +99,7 @@ fun LogHistorySection(
 
                     TooltipIconButton(
                         icon = Icons.Default.Close,
-                        tooltip = getStringResource("info.clear.filter"),
+                        tooltip = Res.string.info_clear_filter,
                         function = onFilterClear
                     )
                 }
@@ -105,7 +112,7 @@ fun LogHistorySection(
                 onValueChange = {
                     searchText = it
                 },
-                placeholder = { Text(getStringResource("info.search")) },
+                placeholder = { Text(stringResource(Res.string.info_search)) },
                 modifier = Modifier
                     .fillMaxWidth()
             )
@@ -125,7 +132,10 @@ fun LogHistorySection(
                             windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                                 newWindow(
                                     WindowData(
-                                        title = "${nameItem.name} (${nameItem.deviceSerialNumber})",
+                                        title = ArgsText(
+                                            textResId = Res.string.string_placeholder,
+                                            formatArgs = listOf("${nameItem.name} (${nameItem.deviceSerialNumber})")
+                                        ),
                                         icon = Icons.Default.Info,
                                         windowExtra = WindowExtra(
                                             screen = {
@@ -152,7 +162,9 @@ fun LogHistorySection(
                                 deleteInProgress = false
                                 onMessage(
                                     InfoManagerData(
-                                        message = getStringResource("info.delete.log.message")
+                                        message = ArgsText(
+                                            textResId = Res.string.info_delete_log_message
+                                        )
                                     )
                                 )
                             }
@@ -164,7 +176,9 @@ fun LogHistorySection(
                             )
                             onMessage(
                                 InfoManagerData(
-                                    message = getStringResource("info.name.update.log.message")
+                                    message = ArgsText(
+                                        textResId = Res.string.info_name_update_log_message
+                                    )
                                 )
                             )
                         },

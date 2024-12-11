@@ -20,14 +20,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_cancel
+import com.jskako.droidsense.generated.resources.info_confirm
+import data.ArgsText
+import org.jetbrains.compose.resources.stringResource
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
-import utils.getStringResource
 
 @Composable
 fun TextDialog(
-    title: String? = null,
-    description: String,
+    title: ArgsText,
+    description: ArgsText,
     onConfirmRequest: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
@@ -39,17 +43,37 @@ fun TextDialog(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                title?.let {
-                    Text(text = it, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                title.textResId?.let {
+                    Text(
+                        text = if (title.formatArgs.isNullOrEmpty()) {
+                            stringResource(it)
+                        } else {
+                            stringResource(
+                                it,
+                                *title.formatArgs.toTypedArray()
+                            )
+                        },
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
-                Text(
-                    text = description,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    fontSize = 16.sp
-                )
+                description.textResId?.let {
+                    Text(
+                        text = if (description.formatArgs.isNullOrEmpty()) {
+                            stringResource(it)
+                        } else {
+                            stringResource(
+                                it,
+                                *description.formatArgs.toTypedArray()
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        fontSize = 16.sp
+                    )
+                }
 
                 Row(
                     modifier = Modifier
@@ -65,7 +89,7 @@ fun TextDialog(
                             disabledContainerColor = lightGray
                         )
                     ) {
-                        Text(getStringResource("info.cancel"))
+                        Text(stringResource(Res.string.info_cancel))
                     }
 
                     Button(
@@ -75,7 +99,7 @@ fun TextDialog(
                             disabledContainerColor = lightGray
                         )
                     ) {
-                        Text(getStringResource("info.confirm"))
+                        Text(stringResource(Res.string.info_confirm))
                     }
                 }
             }

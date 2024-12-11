@@ -11,11 +11,15 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.pickFile
@@ -24,16 +28,19 @@ import utils.pickFile
 internal fun SelectableText(
     modifier: Modifier = Modifier,
     text: String,
-    infoText: String,
-    hintText: String,
+    infoText: StringResource,
+    hintText: StringResource,
     onValueChanged: (String) -> Unit
 ) {
+
+    val scope = rememberCoroutineScope()
+
     OutlinedTextField(
         value = text,
         onValueChange = {
             onValueChanged(it)
         },
-        label = { HintText(hintText) },
+        label = { HintText(stringResource(hintText)) },
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
@@ -46,9 +53,11 @@ internal fun SelectableText(
             ) {
                 Icon(
                     modifier = Modifier.clickable {
-                        runCatching {
-                            onValueChanged(pickFile()?.absolutePath ?: "")
-                        }.getOrDefault(text)
+                        scope.launch {
+                            runCatching {
+                                onValueChanged(pickFile()?.absolutePath ?: "")
+                            }.getOrDefault(text)
+                        }
 
                     },
                     imageVector = Icons.Default.FindInPage,

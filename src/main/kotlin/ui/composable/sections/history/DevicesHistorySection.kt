@@ -17,10 +17,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_delete_device_description
+import com.jskako.droidsense.generated.resources.info_delete_device_title
+import com.jskako.droidsense.generated.resources.info_search
+import data.ArgsText
 import data.model.items.DeviceItem
 import data.model.items.DeviceItem.Companion.emptyDeviceItem
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.history.DeviceCard
@@ -28,7 +34,6 @@ import ui.composable.elements.window.Sources
 import ui.composable.elements.window.TextDialog
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
-import utils.getStringResource
 
 @Composable
 fun DevicesHistorySection(
@@ -54,11 +59,13 @@ fun DevicesHistorySection(
 
     if (showDialog) {
         TextDialog(
-            title = getStringResource("info.delete.device.title"),
-            description = buildString {
-                appendLine(getStringResource("info.delete.device.description"))
-                appendLine("$selectedDeviceItem ${selectedDeviceItem.serialNumber}")
-            },
+            title = ArgsText(
+                textResId = Res.string.info_delete_device_title,
+            ),
+            description = ArgsText(
+                textResId = Res.string.info_delete_device_description,
+                formatArgs = listOf("$selectedDeviceItem ${selectedDeviceItem.serialNumber}")
+            ),
             onConfirmRequest = {
                 showDialog = false
                 val serialNumber = selectedDeviceItem.serialNumber
@@ -103,7 +110,7 @@ fun DevicesHistorySection(
             onValueChange = {
                 searchText = it
             },
-            placeholder = { Text(getStringResource("info.search")) },
+            placeholder = { Text(stringResource(Res.string.info_search)) },
             modifier = Modifier
                 .fillMaxWidth()
         )

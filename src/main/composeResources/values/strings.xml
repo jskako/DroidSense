@@ -1,0 +1,207 @@
+<resources>
+    <string name="app_name">DroidSense</string>
+    <!-- Extensions -->
+    <string name="error_clipboard_message_empty_data">Empty data, copy to clipboard aborted.</string>
+    <string name="error_clipboard_message_failed">Failed to copy data to clipboard.</string>
+    <string name="error_export_empty_data">No data to export, process aborted.</string>
+    <string name="error_export_empty_path">Error occurred: path not selected.</string>
+    <string name="error_export_general">An error occurred while exporting to file</string>
+    <string name="success_export_general">File created successfully. \nFilename: %1$s</string>
+    <string name="success_open_success">Folder opened successfully: %1$s</string>
+    <string name="error_folder_not_found">Folder does not exist or desktop is not supported</string>
+    <string name="success_clipboard_message">Data copied to clipboard successfully</string>
+    <!-- Utils -->
+    <string name="info_directory_general">Select Directory</string>
+    <string name="error_file_install">Installation of application canceled</string>
+    <string name="success_file_install">File installed successfully</string>
+    <string name="info_open_file_default">Choose File</string>
+    <!-- AdbManager -->
+    <string name="info_add_device">Device added: %1$s</string>
+    <string name="info_update_device">Device updated: %1$s</string>
+    <string name="info_remove_device">Device removed: %1$s</string>
+    <string name="info_disconnecting_device">Disconnecting device: %1$s</string>
+    <string name="error_monitor_general">Error occurred: %1$s</string>
+    <string name="info_stop_listening">Listening server has been stopped</string>
+    <string name="info_start_listening">Listening server has been started</string>
+    <string name="info_not_connected">Not connected</string>
+    <!-- LogScreen -->
+    <string name="info_logs_cleared">The logs have been cleared</string>
+    <!-- AppDetailType -->
+    <string name="title_package_info">Package Info</string>
+    <string name="title_memory_info">Memory Info</string>
+    <string name="title_battery_info">Battery Usage</string>
+    <string name="title_network_stats">Network Stats</string>
+    <!-- Database settings -->
+    <string name="info_remove_settings_title">Remove all</string>
+    <string name="info_remove_settings_description">This will remove all settings including Logs, Devices, API keys and AI data. Are you sure you want to continue?</string>
+    <string name="info_remove_devices_title">Remove devices</string>
+    <string name="info_remove_devices_description">This will remove all devices and logs connected to it, are you sure you want to continue?</string>
+    <string name="info_remove_logs_title">Remove logs</string>
+    <string name="info_remove_logs_description">This will remove all logs, are you sure you want to continue?</string>
+    <string name="info_remove_settings_success">Data has been removed</string>
+    <string name="info_remove_logs_success">Logs removed successfully</string>
+    <string name="info_remove_devices_success">Devices removed successfully</string>
+    <!-- LogManager -->
+    <string name="info_log_closing">Log monitoring closed for device: %1$s</string>
+    <string name="info_log_error">Error occurred while monitoring the logs for device: %1$s</string>
+    <!-- Window -->
+    <string name="info_window_menu">Options</string>
+    <string name="info_window_exit">Exit</string>
+    <string name="info_window_no">No</string>
+    <!-- Requirements -->
+    <string name="info_requirements_general">Checking Requirements...</string>
+    <string name="info_requirements_error">Error occurred while checking requirements!</string>
+    <string name="info_requirements_adb_error">The requirements are not met, correct it in the next step</string>
+    <string name="info_requirements_os_error">OS not supported.</string>
+    <string name="info_requirements_succeed">All done, enjoy.</string>
+    <string name="info_requirements_welcome">Welcome</string>
+    <!-- MainScreen -->
+    <string name="info_usb_debugging_enabled">To see your phone on the list of connected devices, it's essential to enable USB debugging in your developer settings.</string>
+    <string name="info_waiting_device">Waiting for devices to be connected</string>
+    <string name="info_getting_application">Getting application list</string>
+    <string name="info_updating_application">Updating application list</string>
+    <string name="info_search_application_empty">The search returned no results. Please try using different keywords.</string>
+    <string name="info_clear_logs">Clear all logs</string>
+    <!-- StatusSection -->
+    <string name="info_status_general">Status</string>
+    <string name="info_device_number">Connected devices</string>
+    <string name="info_share_all_screens">Share all screens</string>
+    <!-- ListeningStatus -->
+    <string name="info_status_monitoring">Monitoring</string>
+    <string name="info_status_not_monitoring">Not monitoring</string>
+    <!-- Dialogs -->
+    <string name="info_select_option">Select an Option</string>
+    <string name="info_clear_cache_title">Clear data: %1$s</string>
+    <string name="info_clear_cache_description">All of this application's data will be deleted permanently. This includes all files, settings, accounts, databases etc.</string>
+    <string name="info_delete_app_title">Delete application: %1$s</string>
+    <string name="info_delete_app_description">Do you want to uninstall this app?</string>
+    <string name="info_delete_log_title">Delete log</string>
+    <string name="info_delete_log_description">Do you want to delete all logs associated with this uuid? \n%1$s</string>
+    <string name="info_delete_url_description">Do you want to delete url and all models associated with this it?
+    </string>
+    <string name="info_delete_model_description">Do you want to delete selected model?</string>
+    <string name="info_delete_device_title">Delete device</string>
+    <string name="info_delete_device_description">Do you want to delete device and all logs associated with this device?\n%1$s
+    </string>
+    <string name="info_force_delete_app_description">Uninstalling system apps have the potential to break the system, so only uninstall the apps that you are sure of. Apps like Gmail, Google Play Music, Google Play Movies, etc., are safe to uninstall but do not ever remove the Google Play Store or any of the files associated with it. If the phone becomes unstable after you uninstall a particular app, either reinstall back from the Google Play Store or factory reset your phone.</string>
+    <string name="info_app_uninstall_started">Uninstalling application: %1$s</string>
+    <string name="info_app_clear_data_started">Clearing application data: %1$s</string>
+    <string name="info_app_uninstall_success">Application uninstalled successfully: %1$s</string>
+    <string name="info_app_clear_data_success">Data cleared successfully: %1$s</string>
+    <string name="info_app_uninstall_failed">Something went wrong while uninstalling application: %1$s</string>
+    <string name="info_app_clear_data_failed">Something went wrong while deleting application data: %1$s</string>
+    <string name="info_select_space">Select Space ID</string>
+    <string name="info_available_ai">Select AI type</string>
+    <string name="info_install_application">Installing application</string>
+    <string name="info_ai_error">AI not available, please check if settings are correct (model must exist).</string>
+    <!-- App details -->
+    <string name="info_app_packageId">Package ID</string>
+    <string name="info_app_package_path">Path</string>
+    <string name="info_app_package_size">Size</string>
+    <string name="info_app_package_delete">Delete</string>
+    <string name="info_app_package_force_delete">Force delete</string>
+    <string name="info_app_clear_data">Clear data</string>
+    <string name="info_app_details">Details</string>
+    <string name="info_app_user">User applications</string>
+    <string name="info_app_system">System applications</string>
+    <string name="info_install_app">Install application</string>
+    <string name="info_new_chat">New chat</string>
+    <string name="info_copyright">Copyright</string>
+    <string name="info_about">About</string>
+    <string name="info_donation">Donation</string>
+    <string name="info_licenses">Licenses</string>
+    <!-- AI -->
+    <string name="info_ollama_title">Ollama</string>
+    <string name="info_openapi_title">OpenApi</string>
+    <!-- Device details -->
+    <string name="info_disconnect">Disconnect</string>
+    <string name="info_serial_number">Serial number</string>
+    <string name="info_device_brand">Phone brand</string>
+    <string name="info_adb_identifier">ADB identifier</string>
+    <string name="info_build_sdk">SDK</string>
+    <string name="info_android_version">Android version</string>
+    <string name="info_display_resolution">Display resolution</string>
+    <string name="info_ip_address">Phone IP Address</string>
+    <string name="info_private_space_info">Private Space ID</string>
+    <string name="info_device_connection_type">Connected over</string>
+    <string name="info_device_connection_switch">Connect wireless</string>
+    <string name="info_device_ip_incorrect">Couldn't connect. Incorrect IP address.</string>
+    <string name="info_device_ip_success">Device connected successfully</string>
+    <string name="info_device_connect_general_error">Couldn't connect. %1$s</string>
+    <string name="info_share_screen">Share screen</string>
+    <string name="info_log_manager">Log manager</string>
+    <string name="info_application_manager">Application manager</string>
+    <string name="info_share_screen_info">Sharing screen for device: %1$s</string>
+    <string name="info_share_screen_fail">Something went wrong with sharing screen for device: %1$s</string>
+    <!-- DropdownItem -->
+    <string name="info_start_log_manager">Start</string>
+    <string name="info_stop_log_manager">Stop</string>
+    <string name="info_log_starting_package">Show all logs</string>
+    <!-- LogStatusSection -->
+    <string name="info_reversed">Reversed logs</string>
+    <string name="info_settings">Settings</string>
+    <string name="info_history">History</string>
+    <string name="info_ai">Ask AI</string>
+    <string name="info_scroll_end">Scroll to end</string>
+    <string name="info_save_database">Save to History</string>
+    <string name="info_save_success">Settings saved successfully</string>
+    <string name="info_reset_success">Settings set to default</string>
+    <string name="info_font_size_increase">Increase font size</string>
+    <string name="info_font_size_decrease">Decrease font size</string>
+    <string name="info_export_logs">Export logs</string>
+    <string name="info_select_logs">Select all</string>
+    <string name="info_deselect_logs">Deselect all</string>
+    <string name="info_export_selected_logs">Export selected logs</string>
+    <string name="info_enable_chat_gpt">Add ChatGPT API key</string>
+    <string name="info_message_edit_chat_gpt">ChatGPT key edited</string>
+    <string name="info_message_remove_chat_gpt">ChatGPT key removed</string>
+    <string name="info_save_chat_gpt">Save ChatGPT API key</string>
+    <string name="info_disable_chat_gpt">Remove ChatGPT API key</string>
+    <string name="info_show_folder">Show in folder</string>
+    <string name="info_copy_selected_logs">Copy selected logs</string>
+    <string name="info_ask_ai">Ask AI - Not implemented yet</string>
+    <string name="info_error_ai_message">Something went wrong, please try again.\n%1$s</string>
+    <!-- HintText -->
+    <string name="info_search">Search</string>
+    <string name="info_message_info">Write a message...</string>
+    <!-- LogScreen -->
+    <string name="info_waiting_application_logs">Waiting for logs from\n%1$s</string>
+    <!-- VariablesSection -->
+    <string name="info_variables_title">It's heartbreaking</string>
+    <string name="info_variables_description">Before you explore DroidSense, make sure your ADB and ScrCpy paths are set right.</string>
+    <string name="info_adb_hint">ADB path</string>
+    <string name="info_chat_gpt_hint">ChatGPT API key</string>
+    <string name="info_url_add">Add new URL</string>
+    <string name="info_model_add">Add new model</string>
+    <string name="info_add">Add</string>
+    <string name="info_database_location">Database location</string>
+    <string name="info_adb_info">Select or paste proper absolute path to ADB.\n(Run "which adb" in terminal)</string>
+    <string name="info_scrcpy_info">Select or paste proper absolute path to ScrCpy.\n(Run "which scrcpy" in terminal)</string>
+    <string name="info_scrcpy_hint">ScrCpy path</string>
+    <!-- Global -->
+    <string name="info_clear_filter">Clear filter</string>
+    <string name="info_uuid_identifier">UUID</string>
+    <string name="info_next">Next</string>
+    <string name="info_delete">Delete</string>
+    <string name="info_edit_name">Edit name</string>
+    <string name="info_edit_message">Edit message</string>
+    <string name="info_try_again">Try again</string>
+    <string name="info_send_message">Send message</string>
+    <string name="info_stop_process">Stop process</string>
+    <string name="info_edit_url">Edit URL</string>
+    <string name="info_modify_url_message">URL has been modified: %1$s</string>
+    <string name="error_input">Input cannot be blank</string>
+    <string name="info_delete_log_message">Log has been deleted</string>
+    <string name="info_name_update_log_message">Log name has been updated</string>
+    <string name="info_delete_url_message">URL has been deleted: %1$s</string>
+    <string name="info_model_delete_message">Model has been deleted: %1$s</string>
+    <string name="info_modify_model_message">Model has been modified: %1$s</string>
+    <string name="info_edit_model">Edit model</string>
+    <string name="info_cancel">Cancel</string>
+    <string name="info_confirm">Confirm</string>
+    <string name="info_save">Save</string>
+    <string name="info_reset_general_description">All settings in "General" section will be reseted to default values</string>
+    <string name="info_reset">Reset</string>
+    <string name="string_placeholder">%1$s</string>
+    <string name="empty_string">""</string>
+</resources>

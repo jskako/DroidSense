@@ -19,9 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_search
+import org.jetbrains.compose.resources.stringResource
 import utils.Colors.darkBlue
 import utils.EMPTY_STRING
-import utils.getStringResource
 
 @Composable
 fun DropdownItem(
@@ -59,7 +61,7 @@ fun DropdownItem(
                     onValueChange = {
                         searchText = it
                     },
-                    placeholder = { Text(getStringResource("info.search")) },
+                    placeholder = { Text(stringResource(Res.string.info_search)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)

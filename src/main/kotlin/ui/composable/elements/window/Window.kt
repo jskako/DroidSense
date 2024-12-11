@@ -9,6 +9,7 @@ import ui.application.WindowStateManager
 
 @Composable
 fun Window(event: ApplicationEvent) {
+
     val applicationState = remember { ApplicationState() }
     val windowStateManager = remember { WindowStateManager() }
 

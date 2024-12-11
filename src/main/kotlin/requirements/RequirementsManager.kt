@@ -8,9 +8,18 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_requirements_adb_error
+import com.jskako.droidsense.generated.resources.info_requirements_error
+import com.jskako.droidsense.generated.resources.info_requirements_general
+import com.jskako.droidsense.generated.resources.info_requirements_os_error
+import com.jskako.droidsense.generated.resources.info_requirements_succeed
+import com.jskako.droidsense.generated.resources.info_requirements_welcome
 import data.keys.SettingsKey
 import data.repository.settings.SettingsSource
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 import utils.ADB_PACKAGE
 import utils.ADB_WINDOWS_32_PATH
 import utils.ADB_WINDOWS_64_PATH
@@ -22,7 +31,6 @@ import utils.SCRCPY_WINDOWS_32_PATH
 import utils.SCRCPY_WINDOWS_64_PATH
 import utils.findPath
 import utils.getOSArch
-import utils.getStringResource
 import utils.getUserOS
 import java.io.File
 import kotlin.Result.Companion.failure
@@ -32,7 +40,6 @@ class RequirementsManager(
     private val settingsSource: SettingsSource,
 ) {
 
-    private val defaultError = getStringResource("info.requirements.error")
     private val _description = mutableStateOf("")
     private val _icon = mutableStateOf(Icons.Default.Android)
 
@@ -45,11 +52,11 @@ class RequirementsManager(
     suspend fun executeRequirements(): Result<Boolean> {
         delay(DEFAULT_DELAY)
         return if (settingsSource.isValid()) {
-            setSucceed(message = getStringResource("info.requirements.welcome"))
+            setSucceed(messageRes = Res.string.info_requirements_welcome)
             success(true)
         } else {
             _icon.value = Icons.Default.Checklist
-            _description.value = getStringResource("info.requirements.general")
+            _description.value = getString(Res.string.info_requirements_general)
             delay(DEFAULT_DELAY)
             when (getUserOS()) {
                 OS.WINDOWS -> {
@@ -110,10 +117,10 @@ class RequirementsManager(
                         setSucceed()
                         success(true)
                     } else {
-                        setFailure(getStringResource("info.requirements.adb.error"))
+                        setFailure(getString(Res.string.info_requirements_adb_error))
                         failure(
                             exception = Throwable(
-                                message = getStringResource("info.requirements.adb.error")
+                                message = getString(Res.string.info_requirements_adb_error)
                             )
                         )
                     }
@@ -121,7 +128,7 @@ class RequirementsManager(
 
                 else -> {
                     // TODO - FIx failure to go on proper place
-                    getStringResource("info.requirements.os.error").let {
+                    getString(Res.string.info_requirements_os_error).let {
                         setFailure(it)
                         failure(Throwable(it))
                     }
@@ -150,15 +157,15 @@ class RequirementsManager(
         }
     }
 
-    private suspend fun setSucceed(message: String = getStringResource("info.requirements.succeed")) {
+    private suspend fun setSucceed(messageRes: StringResource = Res.string.info_requirements_succeed) {
         _icon.value = Icons.Default.Hardware
-        _description.value = message
+        _description.value = getString(messageRes)
         delay(DEFAULT_DELAY)
     }
 
     private suspend fun setFailure(error: String?) {
         _icon.value = Icons.Default.Warning
-        _description.value = error ?: defaultError
+        _description.value = error ?: getString(Res.string.info_requirements_error)
         delay(DEFAULT_DELAY)
     }
 }

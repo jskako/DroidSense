@@ -19,10 +19,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_clear_logs
+import com.jskako.droidsense.generated.resources.info_deselect_logs
+import com.jskako.droidsense.generated.resources.info_export_logs
+import com.jskako.droidsense.generated.resources.info_font_size_decrease
+import com.jskako.droidsense.generated.resources.info_font_size_increase
+import com.jskako.droidsense.generated.resources.info_reversed
+import com.jskako.droidsense.generated.resources.info_save_database
+import com.jskako.droidsense.generated.resources.info_scroll_end
+import com.jskako.droidsense.generated.resources.info_select_logs
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
-import utils.getStringResource
 
 @Composable
 fun MainButtonsSection(
@@ -49,7 +58,7 @@ fun MainButtonsSection(
     ) {
         TooltipIconButton(
             icon = Icons.Default.Delete,
-            tooltip = getStringResource("info.clear.logs"),
+            tooltip = Res.string.info_clear_logs,
             function = onClearLogs,
             tint = if (isClearLogsEnabled) darkBlue else lightGray,
             isEnabled = isClearLogsEnabled
@@ -61,7 +70,7 @@ fun MainButtonsSection(
                     shape = CircleShape
                 ),
             icon = Icons.Default.MoveDown,
-            tooltip = getStringResource("info.scroll.end"),
+            tooltip = Res.string.info_scroll_end,
             isEnabled = scrollToEndEnabled,
             tint = when {
                 !scrollToEndEnabled -> lightGray
@@ -77,18 +86,18 @@ fun MainButtonsSection(
                     shape = CircleShape
                 ),
             icon = Icons.Default.ArrowOutward,
-            tooltip = getStringResource("info.reversed"),
+            tooltip = Res.string.info_reversed,
             tint = if (reverseLogs) Color.White else darkBlue,
             function = { onReverseLogs(!reverseLogs) }
         )
         TooltipIconButton(
             icon = Icons.Default.TextIncrease,
-            tooltip = getStringResource("info.font.size.increase"),
+            tooltip = Res.string.info_font_size_increase,
             function = { onFontSize(FontSize.INCREASE) }
         )
         TooltipIconButton(
             icon = Icons.Default.TextDecrease,
-            tooltip = getStringResource("info.font.size.decrease"),
+            tooltip = Res.string.info_font_size_decrease,
             function = { onFontSize(FontSize.DECREASE) }
         )
         TooltipIconButton(
@@ -98,7 +107,7 @@ fun MainButtonsSection(
                     shape = CircleShape
                 ),
             icon = Icons.Default.Save,
-            tooltip = getStringResource("info.save.database"),
+            tooltip = Res.string.info_save_database,
             tint = when {
                 !isRunning && saveToDatabase -> darkBlue
                 else -> lightGray
@@ -113,14 +122,14 @@ fun MainButtonsSection(
             isEnabled = isExportEnabled,
             tint = if (isExportEnabled) darkBlue else lightGray,
             icon = Icons.Default.FileDownload,
-            tooltip = getStringResource("info.export.logs"),
+            tooltip = Res.string.info_export_logs,
             function = onExportLogs
         )
         TooltipIconButton(
             isEnabled = isSelectEnabled,
             tint = if (isSelectEnabled) darkBlue else lightGray,
             icon = Icons.Default.SelectAll,
-            tooltip = getStringResource("info.select.logs"),
+            tooltip = Res.string.info_select_logs,
             function = {
                 onSelect(SelectOption.SELECT)
             }
@@ -129,7 +138,7 @@ fun MainButtonsSection(
             isEnabled = isSelectEnabled,
             tint = if (isSelectEnabled) darkBlue else lightGray,
             icon = Icons.Default.Deselect,
-            tooltip = getStringResource("info.deselect.logs"),
+            tooltip = Res.string.info_deselect_logs,
             function = {
                 onSelect(SelectOption.DESELECT)
             }

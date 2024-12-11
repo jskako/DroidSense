@@ -1,9 +1,12 @@
 package utils
 
 import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_directory_general
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
@@ -11,11 +14,6 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import java.util.ResourceBundle
-
-fun getResourceBundle(baseName: String): ResourceBundle = ResourceBundle.getBundle(baseName)
-fun getStringResource(resourceName: String) =
-    getResourceBundle(STRING_RESOURCES).getString(resourceName) ?: EMPTY_STRING
 
 fun getTimeStamp(format: String = DEFAULT_TIMESTAMP): String = DateTimeFormatter
     .ofPattern(format)
@@ -23,8 +21,8 @@ fun getTimeStamp(format: String = DEFAULT_TIMESTAMP): String = DateTimeFormatter
     .format(LocalDateTime.now())
 
 
-fun pickDirectoryDialog(): String? {
-    val fileDialog = FileDialog(Frame(), getStringResource("info.directory.general"), FileDialog.LOAD).apply {
+suspend fun pickDirectoryDialog(): String? {
+    val fileDialog = FileDialog(Frame(), getString(Res.string.info_directory_general), FileDialog.LOAD).apply {
         mode = FileDialog.SAVE
         isMultipleMode = false
         isVisible = true
@@ -37,11 +35,11 @@ fun pickDirectoryDialog(): String? {
     }
 }
 
-fun pickFile(
-    title: String = getStringResource("info.open.file.default"),
+suspend fun pickFile(
+    titleRes: StringResource = Res.string.info_directory_general,
     allowedExtension: String? = null
 ): File? {
-    val fileDialog = FileDialog(null as Frame?, title, FileDialog.LOAD)
+    val fileDialog = FileDialog(null as Frame?, getString(titleRes), FileDialog.LOAD)
     fileDialog.isVisible = true
     fileDialog.isMultipleMode = false
 

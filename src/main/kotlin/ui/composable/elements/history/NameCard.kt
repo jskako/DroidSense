@@ -25,6 +25,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_delete
+import com.jskako.droidsense.generated.resources.info_delete_log_description
+import com.jskako.droidsense.generated.resources.info_delete_log_title
+import com.jskako.droidsense.generated.resources.info_edit_name
+import com.jskako.droidsense.generated.resources.info_uuid_identifier
+import data.ArgsText
+import org.jetbrains.compose.resources.stringResource
 import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.iconButtons.TooltipIconButton
@@ -33,7 +41,6 @@ import ui.composable.elements.window.TextDialog
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
 import utils.capitalizeFirstChar
-import utils.getStringResource
 import java.util.UUID
 
 @Composable
@@ -65,11 +72,13 @@ fun NameCard(
 
     if (showDeleteDialog) {
         TextDialog(
-            title = getStringResource("info.delete.log.title"),
-            description = buildString {
-                appendLine(getStringResource("info.delete.log.description"))
-                appendLine(uuid)
-            },
+            title = ArgsText(
+                textResId = Res.string.info_delete_log_title
+            ),
+            description = ArgsText(
+                textResId = Res.string.info_delete_log_description,
+                formatArgs = listOf(uuid.toString())
+            ),
             onConfirmRequest = {
                 showDeleteDialog = false
                 onDelete()
@@ -111,7 +120,7 @@ fun NameCard(
                     isEnabled = buttonsEnabled,
                     tint = if (buttonsEnabled) darkBlue else lightGray,
                     icon = Icons.Default.Edit,
-                    tooltip = getStringResource("info.edit.name"),
+                    tooltip = Res.string.info_edit_name,
                     function = {
                         showEditDialog = true
                     }
@@ -123,7 +132,7 @@ fun NameCard(
                     isEnabled = buttonsEnabled,
                     tint = if (buttonsEnabled) darkBlue else lightGray,
                     icon = Icons.Default.Delete,
-                    tooltip = getStringResource("info.delete"),
+                    tooltip = Res.string.info_delete,
                     function = {
                         showDeleteDialog = true
                     }
@@ -133,7 +142,7 @@ fun NameCard(
             addSpaceHeight(4.dp)
 
             BasicTextCaption(
-                text1 = getStringResource("info.uuid.identifier"),
+                text1 = stringResource(Res.string.info_uuid_identifier),
                 text2 = uuid.toString()
             )
 

@@ -1,5 +1,10 @@
 package adb.log
 
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_log_error
+import com.jskako.droidsense.generated.resources.info_log_starting_package
+import com.jskako.droidsense.generated.resources.string_placeholder
+import data.ArgsText
 import data.model.items.LogItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,12 +16,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import notifications.ExportData
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.getString
 import utils.Colors.darkRed
 import utils.EMPTY_STRING
 import utils.LOG_MANAGER_NUMBER_OF_LINES
 import utils.copyToClipboard
 import utils.exportToFile
-import utils.getStringResource
 import utils.runCommand
 import java.util.UUID
 
@@ -127,7 +132,7 @@ class LogManager(
         monitorJob = coroutineScope.launch {
             runCatching {
                 monitor(
-                    packageName = packageName.takeUnless { it == getStringResource("info.log.starting.package") },
+                    packageName = packageName.takeUnless { it == getString(Res.string.info_log_starting_package) },
                     identifier = identifier,
                     serialNumber = serialNumber,
                     onMessage = onMessage,
@@ -137,7 +142,10 @@ class LogManager(
             }.onFailure { e ->
                 onMessage(
                     InfoManagerData(
-                        message = e.message ?: EMPTY_STRING,
+                        message = ArgsText(
+                            textResId = Res.string.string_placeholder,
+                            formatArgs = listOf(e.message ?: EMPTY_STRING)
+                        ),
                         color = darkRed
                     )
                 )
@@ -238,7 +246,10 @@ class LogManager(
             }.onFailure { exception ->
                 onMessage(
                     InfoManagerData(
-                        message = "${getStringResource("info.log.error")} $identifier: $exception",
+                        message = ArgsText(
+                            textResId = Res.string.info_log_error,
+                            formatArgs = listOf("$identifier: $exception")
+                        ),
                         color = darkRed
                     )
                 )

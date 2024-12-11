@@ -3,7 +3,6 @@ package ui.composable.elements.settings
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,18 +24,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_delete
+import com.jskako.droidsense.generated.resources.info_delete_log_title
+import com.jskako.droidsense.generated.resources.string_placeholder
+import data.ArgsText
+import org.jetbrains.compose.resources.StringResource
 import ui.composable.elements.BasicText
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.EditDialog
 import ui.composable.elements.window.TextDialog
 import utils.Colors.darkBlue
-import utils.getStringResource
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DeleteEditRowCard(
     text: String,
-    editTitle: String,
+    editTitle: StringResource,
     deleteDialogDescription: String,
     onEdit: (String) -> Unit,
     onSelected: (() -> Unit)? = null,
@@ -63,8 +66,13 @@ fun DeleteEditRowCard(
 
     if (showDialog) {
         TextDialog(
-            title = getStringResource("info.delete.log.title"),
-            description = deleteDialogDescription,
+            title = ArgsText(
+                textResId = Res.string.info_delete_log_title
+            ),
+            description = ArgsText(
+                textResId = Res.string.string_placeholder,
+                formatArgs = listOf(deleteDialogDescription)
+            ),
             onConfirmRequest = {
                 showDialog = false
                 onDelete()
@@ -117,7 +125,7 @@ fun DeleteEditRowCard(
                     TooltipIconButton(
                         tint = darkBlue,
                         icon = Icons.Default.Delete,
-                        tooltip = getStringResource("info.delete"),
+                        tooltip = Res.string.info_delete,
                         function = {
                             showDialog = true
                         }

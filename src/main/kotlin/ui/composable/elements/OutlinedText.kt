@@ -6,12 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun OutlinedText(
     modifier: Modifier = Modifier,
     text: String,
-    hintText: String,
+    hintText: StringResource,
     readOnly: Boolean = false,
     enabled: Boolean = true,
     onValueChanged: (String) -> Unit,
@@ -26,7 +28,7 @@ internal fun OutlinedText(
             onValueChanged(it)
         },
         trailingIcon = trailingIcon,
-        label = { HintText(hintText) },
+        label = { HintText(stringResource(hintText)) },
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,

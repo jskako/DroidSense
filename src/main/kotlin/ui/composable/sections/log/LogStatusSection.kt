@@ -23,11 +23,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_log_starting_package
+import com.jskako.droidsense.generated.resources.info_search
+import com.jskako.droidsense.generated.resources.info_start_log_manager
+import com.jskako.droidsense.generated.resources.info_stop_log_manager
 import data.model.items.LogItem
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.composable.elements.DropdownItem
 import ui.composable.elements.OutlinedButton
 import ui.composable.elements.window.DropdownTextItem
@@ -35,7 +41,6 @@ import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import utils.Colors.transparentTextFieldDefault
 import utils.DEVICE_PACKAGES
-import utils.getStringResource
 import java.util.UUID
 
 @Composable
@@ -55,7 +60,8 @@ fun LogStatusSection(
     onLastLog: (LogItem) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    var selectedPackage by remember { mutableStateOf(getStringResource("info.log.starting.package")) }
+    val startingPackage = stringResource(Res.string.info_log_starting_package)
+    var selectedPackage by remember { mutableStateOf(startingPackage) }
     var selectedLogLevel by remember { mutableStateOf(LogLevel.VERBOSE) }
 
     Box(
@@ -69,10 +75,12 @@ fun LogStatusSection(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 OutlinedButton(
-                    text = when (isRunning) {
-                        false -> getStringResource("info.start.log.manager")
-                        true -> getStringResource("info.stop.log.manager")
-                    },
+                    text = stringResource(
+                        when (isRunning) {
+                            false -> Res.string.info_start_log_manager
+                            true -> Res.string.info_stop_log_manager
+                        }
+                    ),
                     contentColor = when (isRunning) {
                         false -> darkBlue
                         true -> darkRed
@@ -111,7 +119,7 @@ fun LogStatusSection(
                         adbPath = adbPath,
                         identifier = identifier,
                         property = DEVICE_PACKAGES,
-                        startingItem = getStringResource("info.log.starting.package")
+                        startingItem = startingPackage
                     ),
                     text = selectedPackage,
                     onItemSelected = { item ->
@@ -144,7 +152,7 @@ fun LogStatusSection(
                     onValueChange = {
                         onSearchTextChanged(it)
                     },
-                    placeholder = { Text(getStringResource("info.search")) },
+                    placeholder = { Text(stringResource(Res.string.info_search)) },
                     modifier = Modifier
                         .fillMaxWidth()
                 )

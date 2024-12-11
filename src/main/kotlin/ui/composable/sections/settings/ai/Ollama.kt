@@ -15,17 +15,30 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.error_input
+import com.jskako.droidsense.generated.resources.info_delete_model_description
+import com.jskako.droidsense.generated.resources.info_delete_url_description
+import com.jskako.droidsense.generated.resources.info_delete_url_message
+import com.jskako.droidsense.generated.resources.info_edit_model
+import com.jskako.droidsense.generated.resources.info_edit_url
+import com.jskako.droidsense.generated.resources.info_model_add
+import com.jskako.droidsense.generated.resources.info_model_delete_message
+import com.jskako.droidsense.generated.resources.info_modify_model_message
+import com.jskako.droidsense.generated.resources.info_modify_url_message
+import com.jskako.droidsense.generated.resources.info_url_add
+import data.ArgsText
 import data.model.ai.AIModelItem
 import data.model.ai.AIType
 import data.repository.ai.model.ModelSource
 import data.repository.ai.ollama.url.OllamaUrlSource
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
+import org.jetbrains.compose.resources.stringResource
 import ui.composable.elements.AddRow
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.settings.DeleteEditRowCard
 import utils.OLLAMA_DEFAULT_API
-import utils.getStringResource
 
 @Composable
 fun Ollama(
@@ -63,7 +76,7 @@ fun Ollama(
                 } else {
                     onMessage(
                         InfoManagerData(
-                            message = getStringResource("error.input"),
+                            message = ArgsText(textResId = Res.string.error_input),
                         )
                     )
                 }
@@ -93,7 +106,7 @@ fun Ollama(
                 } else {
                     onMessage(
                         InfoManagerData(
-                            message = getStringResource("error.input"),
+                            message = ArgsText(textResId = Res.string.error_input),
                         )
                     )
                 }
@@ -122,7 +135,7 @@ private fun UrlColumn(
     ) {
         AddRow(
             modifier = Modifier.fillMaxWidth(),
-            hintText = getStringResource("info.url.add"),
+            hintText = Res.string.info_url_add,
             onClick = onUrlAdd,
             additionalText = OLLAMA_DEFAULT_API
         )
@@ -133,8 +146,8 @@ private fun UrlColumn(
                 items(urls) { url ->
                     DeleteEditRowCard(
                         text = url,
-                        editTitle = getStringResource("info.edit.url"),
-                        deleteDialogDescription = "${getStringResource("info.delete.url.description")} $url",
+                        editTitle = Res.string.info_edit_url,
+                        deleteDialogDescription = "${stringResource(Res.string.info_delete_url_description)} $url",
                         onEdit = {
                             scope.launch {
                                 ollamaUrlSource.update(
@@ -147,7 +160,10 @@ private fun UrlColumn(
                                 )
                                 onMessage(
                                     InfoManagerData(
-                                        message = "${getStringResource("info.modify.url.message")} $url -> $it",
+                                        message = ArgsText(
+                                            textResId = Res.string.info_modify_url_message,
+                                            formatArgs = listOf("$url -> $it")
+                                        ),
                                     )
                                 )
                             }
@@ -159,7 +175,10 @@ private fun UrlColumn(
                                 onDelete()
                                 onMessage(
                                     InfoManagerData(
-                                        message = "${getStringResource("info.delete.url.message")} ($url)",
+                                        message = ArgsText(
+                                            textResId = Res.string.info_delete_url_message,
+                                            formatArgs = listOf(url)
+                                        ),
                                     )
                                 )
                             }
@@ -190,7 +209,7 @@ private fun ModelColumn(
     ) {
         AddRow(
             modifier = Modifier.fillMaxWidth(),
-            hintText = getStringResource("info.model.add"),
+            hintText = Res.string.info_model_add,
             enabled = selectedURL.isNotBlank(),
             onClick = onModelAdd
         )
@@ -201,8 +220,8 @@ private fun ModelColumn(
                 items(models) { model ->
                     DeleteEditRowCard(
                         text = model,
-                        editTitle = getStringResource("info.edit.model"),
-                        deleteDialogDescription = "${getStringResource("info.delete.model.description")} $selectedURL / $model",
+                        editTitle = Res.string.info_edit_model,
+                        deleteDialogDescription = "${stringResource(Res.string.info_delete_model_description)} $selectedURL / $model",
                         onEdit = {
                             scope.launch {
                                 modelSource.update(
@@ -212,7 +231,10 @@ private fun ModelColumn(
                                 )
                                 onMessage(
                                     InfoManagerData(
-                                        message = "${getStringResource("info.modify.model.message")} $selectedURL / $model -> $selectedURL / $it",
+                                        message = ArgsText(
+                                            textResId = Res.string.info_modify_model_message,
+                                            formatArgs = listOf("$selectedURL / $model -> $selectedURL / $it")
+                                        )
                                     )
                                 )
                             }
@@ -225,7 +247,10 @@ private fun ModelColumn(
                                 )
                                 onMessage(
                                     InfoManagerData(
-                                        message = "${getStringResource("info.model.url.message")} ($selectedURL / $model)",
+                                        message = ArgsText(
+                                            textResId = Res.string.info_model_delete_message,
+                                            formatArgs = listOf("$selectedURL / $model")
+                                        )
                                     )
                                 )
                             }
