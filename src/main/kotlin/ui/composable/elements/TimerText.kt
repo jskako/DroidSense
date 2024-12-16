@@ -32,7 +32,7 @@ fun TimerText(
     val minutes = (elapsedSeconds % 3600) / 60
     val seconds = elapsedSeconds % 60
 
-    if(inProgress) {
+    if (inProgress) {
         Text(
             text = String.format(TIME_FORMAT, hours, minutes, seconds),
             style = MaterialTheme.typography.bodyMedium,

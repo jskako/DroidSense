@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Eject
@@ -122,344 +121,348 @@ fun DeviceCard(
         ),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        Row(
+            modifier = Modifier.padding(start = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(start = 116.dp, top = 16.dp, end = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Image(
+                bitmap = imageResource(
+                    device.manufacturer?.let { getManufacturer(it).drawable() } ?: Manufacturers.GENERAL.drawable()
+                ),
+                contentDescription = EMPTY_STRING,
+                modifier = Modifier.size(100.dp)
+            )
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Row(
                     modifier = Modifier
-                        .weight(1f),
-                    horizontalArrangement = Arrangement.Start,
+                        .padding(top = 16.dp, end = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TooltipIconButton(
-                        isEnabled = !disconnectInProgress,
-                        tint = if (disconnectInProgress) lightGray else darkBlue,
-                        icon = Icons.Default.Eject,
-                        tooltip = Res.string.info_disconnect,
-                        function = {
-                            disconnectInProgress = true
-                            onMessage(
-                                ExportData(
-                                    infoManagerData = InfoManagerData(
-                                        message = ArgsText(
-                                            textResId = Res.string.info_disconnecting_device,
-                                            formatArgs = listOf(device.toString())
+                    Row(
+                        modifier = Modifier
+                            .weight(1f),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TooltipIconButton(
+                            isEnabled = !disconnectInProgress,
+                            tint = if (disconnectInProgress) lightGray else darkBlue,
+                            icon = Icons.Default.Eject,
+                            tooltip = Res.string.info_disconnect,
+                            function = {
+                                disconnectInProgress = true
+                                onMessage(
+                                    ExportData(
+                                        infoManagerData = InfoManagerData(
+                                            message = ArgsText(
+                                                textResId = Res.string.info_disconnecting_device,
+                                                formatArgs = listOf(device.toString())
+                                            )
                                         )
                                     )
                                 )
-                            )
-                            scope.launch {
-                                disconnectDevice(
-                                    adbPath = adbPath,
-                                    identifier = device.deviceIdentifier
-                                )
+                                scope.launch {
+                                    disconnectDevice(
+                                        adbPath = adbPath,
+                                        identifier = device.deviceIdentifier
+                                    )
+                                }
                             }
-                        }
-                    )
-
-                    BasicText(
-                        value = "${device.manufacturer?.capitalizeFirstChar()} ${device.model}",
-                        fontSize = 20.sp,
-                        isBold = true,
-                    )
-                }
-
-                TooltipIconButton(
-                    tint = if (recordInProgress) darkRed else darkBlue,
-                    icon = if (recordInProgress) Icons.Default.Stop else Icons.Default.Videocam,
-                    tooltip = Res.string.title_screen_record,
-                    function = {
-                        scope.launch {
-                            recordInProgress = if (recordInProgress) {
-                                screenRecorder.stopRecording()
-                                false
-                            } else {
-                                screenRecorder.startRecording("/Users/josipska/Desktop/test.mp4")
-                                true
-                            }
-                        }
-                    }
-                )
-
-                TimerText(inProgress = recordInProgress)
-
-                TooltipIconButton(
-                    isEnabled = !screenshotInProgress,
-                    icon = Icons.Default.Screenshot,
-                    tint = if (screenshotInProgress) lightGray else darkBlue,
-                    tooltip = Res.string.title_screenshot,
-                    function = {
-                        scope.launch {
-                            screenshotInProgress = true
-                            screenRecorder.takeScreenshot("/Users/josipska/Desktop/test.png")
-                            screenshotInProgress = false
-                        }
-                    }
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    bitmap = imageResource(
-                        device.manufacturer?.let { getManufacturer(it).drawable() } ?: Manufacturers.GENERAL.drawable()
-                    ),
-                    contentDescription = EMPTY_STRING,
-                    modifier = Modifier.size(100.dp)
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Column {
-                    BasicTextCaption(
-                        text1 = stringResource(Res.string.info_adb_identifier),
-                        text2 = device.deviceIdentifier
-                    )
-
-                    addSpaceHeight()
-
-                    BasicTextCaption(
-                        text1 = stringResource(Res.string.info_serial_number),
-                        text2 = device.serialNumber
-                    )
-
-                    addSpaceHeight()
-
-                    BasicTextCaption(
-                        text1 = stringResource(Res.string.info_android_version),
-                        text2 = "${device.androidVersion} (${stringResource(Res.string.info_build_sdk)} ${device.buildSDK})"
-                    )
-
-                    addSpaceHeight()
-
-                    BasicTextCaption(
-                        text1 = stringResource(Res.string.info_display_resolution),
-                        text2 = "${
-                            (device.displayResolution?.split(": ")?.getOrNull(1) ?: EMPTY_STRING)
-                        } (${(device.displayDensity?.split(": ")?.getOrNull(1) ?: EMPTY_STRING)} ppi)"
-                    )
-
-                    addSpaceHeight()
-
-                    BasicTextCaption(
-                        text1 = stringResource(Res.string.info_ip_address),
-                        text2 = device.ipAddress ?: EMPTY_STRING
-                    )
-
-                    addSpaceHeight()
-
-                    BasicTextCaption(
-                        text1 = stringResource(Res.string.info_private_space_info),
-                        text2 = device.privateSpaceIdentifier ?: stringResource(Res.string.info_window_no).uppercase()
-                    )
-
-                    addSpaceHeight(16.dp)
-
-                    val connectionType = when {
-                        isValidIpAddressWithPort(device.deviceIdentifier) -> ConnectionType.WIRELESS
-                        else -> ConnectionType.CABLE
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = "${stringResource(Res.string.info_device_connection_type)}: ${connectionType.name}",
-                            color = Color.Gray
                         )
 
-                        if (connectionType == ConnectionType.CABLE && !hasMatchingIp) {
-                            TooltipIconButton(
-                                icon = Icons.Default.SwitchAccessShortcut,
-                                tooltip = Res.string.info_device_connection_switch,
-                                function = {
-                                    scope.launch {
-                                        device.ipAddress?.let {
-                                            connectDeviceWirelessly(
-                                                adbPath = adbPath,
-                                                deviceIpAddress = device.ipAddress,
-                                                identifier = device.deviceIdentifier
-                                            ).fold(
-                                                onSuccess = {
-                                                    onMessage(
-                                                        ExportData(
-                                                            infoManagerData = InfoManagerData(
-                                                                message = ArgsText(
-                                                                    textResId = Res.string.info_device_ip_success
-                                                                )
-                                                            )
-                                                        )
-                                                    )
-                                                },
-                                                onFailure = {
-                                                    onMessage(
-                                                        ExportData(
-                                                            infoManagerData = InfoManagerData(
-                                                                message = ArgsText(
-                                                                    textResId = Res.string.info_device_connect_general_error,
-                                                                    formatArgs = listOf(it.message ?: "")
-                                                                )
-                                                            )
-                                                        )
-                                                    )
-                                                }
-                                            )
-                                        } ?: onMessage(
-                                            ExportData(
-                                                infoManagerData = InfoManagerData(
-                                                    message = ArgsText(
-                                                        textResId = Res.string.info_device_ip_incorrect
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    }
-                                }
-                            )
-                        }
+                        BasicText(
+                            value = "${device.manufacturer?.capitalizeFirstChar()} ${device.model}",
+                            fontSize = 20.sp,
+                            isBold = true,
+                        )
                     }
-                }
 
-                Column(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-                ) {
-                    OutlinedButton(
-                        text = stringResource(Res.string.info_share_screen),
-                        onClick = {
+                    TooltipIconButton(
+                        tint = if (recordInProgress) darkRed else darkBlue,
+                        icon = if (recordInProgress) Icons.Default.Stop else Icons.Default.Videocam,
+                        tooltip = Res.string.title_screen_record,
+                        function = {
                             scope.launch {
-                                shareScreen(
-                                    scrCpyPath = scrCpyPath,
-                                    identifier = device.deviceIdentifier,
-                                    adbPath = adbPath
-                                ).fold(
-                                    onSuccess = {
-                                        onMessage(
-                                            ExportData(
-                                                infoManagerData = InfoManagerData(
-                                                    message = ArgsText(
-                                                        textResId = Res.string.info_share_screen_info,
-                                                        formatArgs = listOf(device.deviceIdentifier)
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    },
-                                    onFailure = {
-                                        onMessage(
-                                            ExportData(
-                                                infoManagerData = InfoManagerData(
-                                                    message = ArgsText(
-                                                        textResId = Res.string.info_share_screen_fail,
-                                                        formatArgs = listOf("${device.deviceIdentifier}. ${it.message}")
-                                                    ),
-                                                    color = darkRed
-                                                )
-                                            )
-                                        )
-                                    }
-                                )
+                                recordInProgress = if (recordInProgress) {
+                                    screenRecorder.stopRecording()
+                                    false
+                                } else {
+                                    screenRecorder.startRecording("/Users/josipska/Desktop/test.mp4")
+                                    true
+                                }
                             }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp)
+                        }
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    TimerText(inProgress = recordInProgress)
 
-                    OutlinedButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        text = stringResource(Res.string.info_log_manager),
-                        onClick = {
-                            val logManager = LogManager(adbPath = adbPath)
-                            windowStateManager.windowState?.openNewWindow?.let { newWindow ->
-                                newWindow(
-                                    WindowData(
-                                        title = ArgsText(
-                                            textResId = Res.string.string_placeholder,
-                                            formatArgs = listOf("${device.model} (${device.serialNumber})")
-                                        ),
-                                        icon = Icons.Default.Info,
-                                        windowExtra = WindowExtra(
-                                            screen = {
-                                                LogScreen(
-                                                    sources = sources,
+                    TooltipIconButton(
+                        isEnabled = !screenshotInProgress,
+                        icon = Icons.Default.Screenshot,
+                        tint = if (screenshotInProgress) lightGray else darkBlue,
+                        tooltip = Res.string.title_screenshot,
+                        function = {
+                            scope.launch {
+                                screenshotInProgress = true
+                                screenRecorder.takeScreenshot("/Users/josipska/Desktop/test.png")
+                                screenshotInProgress = false
+                            }
+                        }
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        BasicTextCaption(
+                            text1 = stringResource(Res.string.info_adb_identifier),
+                            text2 = device.deviceIdentifier
+                        )
+
+                        addSpaceHeight()
+
+                        BasicTextCaption(
+                            text1 = stringResource(Res.string.info_serial_number),
+                            text2 = device.serialNumber
+                        )
+
+                        addSpaceHeight()
+
+                        BasicTextCaption(
+                            text1 = stringResource(Res.string.info_android_version),
+                            text2 = "${device.androidVersion} (${stringResource(Res.string.info_build_sdk)} ${device.buildSDK})"
+                        )
+
+                        addSpaceHeight()
+
+                        BasicTextCaption(
+                            text1 = stringResource(Res.string.info_display_resolution),
+                            text2 = "${
+                                (device.displayResolution?.split(": ")?.getOrNull(1) ?: EMPTY_STRING)
+                            } (${(device.displayDensity?.split(": ")?.getOrNull(1) ?: EMPTY_STRING)} ppi)"
+                        )
+
+                        addSpaceHeight()
+
+                        BasicTextCaption(
+                            text1 = stringResource(Res.string.info_ip_address),
+                            text2 = device.ipAddress ?: EMPTY_STRING
+                        )
+
+                        addSpaceHeight()
+
+                        BasicTextCaption(
+                            text1 = stringResource(Res.string.info_private_space_info),
+                            text2 = device.privateSpaceIdentifier
+                                ?: stringResource(Res.string.info_window_no).uppercase()
+                        )
+
+                        addSpaceHeight(16.dp)
+
+                        val connectionType = when {
+                            isValidIpAddressWithPort(device.deviceIdentifier) -> ConnectionType.WIRELESS
+                            else -> ConnectionType.CABLE
+                        }
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = "${stringResource(Res.string.info_device_connection_type)}: ${connectionType.name}",
+                                color = Color.Gray
+                            )
+
+                            if (connectionType == ConnectionType.CABLE && !hasMatchingIp) {
+                                TooltipIconButton(
+                                    icon = Icons.Default.SwitchAccessShortcut,
+                                    tooltip = Res.string.info_device_connection_switch,
+                                    function = {
+                                        scope.launch {
+                                            device.ipAddress?.let {
+                                                connectDeviceWirelessly(
                                                     adbPath = adbPath,
-                                                    device = device,
-                                                    logManager = logManager
-                                                )
-                                            },
-                                            onClose = {
-                                                scope.launch {
-                                                    if (logManager.isActive) {
-                                                        logManager.stopMonitoring()
+                                                    deviceIpAddress = device.ipAddress,
+                                                    identifier = device.deviceIdentifier
+                                                ).fold(
+                                                    onSuccess = {
                                                         onMessage(
                                                             ExportData(
                                                                 infoManagerData = InfoManagerData(
                                                                     message = ArgsText(
-                                                                        textResId = Res.string.info_log_closing,
-                                                                        formatArgs = listOf(device.toString())
+                                                                        textResId = Res.string.info_device_ip_success
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    },
+                                                    onFailure = {
+                                                        onMessage(
+                                                            ExportData(
+                                                                infoManagerData = InfoManagerData(
+                                                                    message = ArgsText(
+                                                                        textResId = Res.string.info_device_connect_general_error,
+                                                                        formatArgs = listOf(it.message ?: "")
                                                                     )
                                                                 )
                                                             )
                                                         )
                                                     }
-                                                }
-                                            }
-                                        )
-                                    )
-                                )
-                            }
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    OutlinedButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        text = stringResource(Res.string.info_application_manager),
-                        onClick = {
-                            windowStateManager.windowState?.openNewWindow?.let { newWindow ->
-                                newWindow(
-                                    WindowData(
-                                        title = ArgsText(
-                                            textResId = Res.string.string_placeholder,
-                                            formatArgs = listOf("${device.model} (${device.serialNumber})")
-                                        ),
-                                        icon = Icons.Default.Apps,
-                                        windowExtra = WindowExtra(
-                                            screen = {
-                                                ApplicationScreen(
-                                                    deviceModel = device.model ?: "",
-                                                    windowStateManager = windowStateManager,
-                                                    serialNumber = device.serialNumber,
-                                                    identifier = device.deviceIdentifier,
-                                                    adbPath = adbPath
                                                 )
-                                            },
-                                            onClose = {
-                                            }
-                                        )
-                                    )
+                                            } ?: onMessage(
+                                                ExportData(
+                                                    infoManagerData = InfoManagerData(
+                                                        message = ArgsText(
+                                                            textResId = Res.string.info_device_ip_incorrect
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        }
+                                    }
                                 )
                             }
                         }
-                    )
+                    }
+
+                    Column(
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                    ) {
+                        OutlinedButton(
+                            text = stringResource(Res.string.info_share_screen),
+                            onClick = {
+                                scope.launch {
+                                    shareScreen(
+                                        scrCpyPath = scrCpyPath,
+                                        identifier = device.deviceIdentifier,
+                                        adbPath = adbPath
+                                    ).fold(
+                                        onSuccess = {
+                                            onMessage(
+                                                ExportData(
+                                                    infoManagerData = InfoManagerData(
+                                                        message = ArgsText(
+                                                            textResId = Res.string.info_share_screen_info,
+                                                            formatArgs = listOf(device.deviceIdentifier)
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        },
+                                        onFailure = {
+                                            onMessage(
+                                                ExportData(
+                                                    infoManagerData = InfoManagerData(
+                                                        message = ArgsText(
+                                                            textResId = Res.string.info_share_screen_fail,
+                                                            formatArgs = listOf("${device.deviceIdentifier}. ${it.message}")
+                                                        ),
+                                                        color = darkRed
+                                                    )
+                                                )
+                                            )
+                                        }
+                                    )
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        OutlinedButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            text = stringResource(Res.string.info_log_manager),
+                            onClick = {
+                                val logManager = LogManager(adbPath = adbPath)
+                                windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                                    newWindow(
+                                        WindowData(
+                                            title = ArgsText(
+                                                textResId = Res.string.string_placeholder,
+                                                formatArgs = listOf("${device.model} (${device.serialNumber})")
+                                            ),
+                                            icon = Icons.Default.Info,
+                                            windowExtra = WindowExtra(
+                                                screen = {
+                                                    LogScreen(
+                                                        sources = sources,
+                                                        adbPath = adbPath,
+                                                        device = device,
+                                                        logManager = logManager
+                                                    )
+                                                },
+                                                onClose = {
+                                                    scope.launch {
+                                                        if (logManager.isActive) {
+                                                            logManager.stopMonitoring()
+                                                            onMessage(
+                                                                ExportData(
+                                                                    infoManagerData = InfoManagerData(
+                                                                        message = ArgsText(
+                                                                            textResId = Res.string.info_log_closing,
+                                                                            formatArgs = listOf(device.toString())
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        OutlinedButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            text = stringResource(Res.string.info_application_manager),
+                            onClick = {
+                                windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                                    newWindow(
+                                        WindowData(
+                                            title = ArgsText(
+                                                textResId = Res.string.string_placeholder,
+                                                formatArgs = listOf("${device.model} (${device.serialNumber})")
+                                            ),
+                                            icon = Icons.Default.Apps,
+                                            windowExtra = WindowExtra(
+                                                screen = {
+                                                    ApplicationScreen(
+                                                        deviceModel = device.model ?: "",
+                                                        windowStateManager = windowStateManager,
+                                                        serialNumber = device.serialNumber,
+                                                        identifier = device.deviceIdentifier,
+                                                        adbPath = adbPath
+                                                    )
+                                                },
+                                                onClose = {
+                                                }
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
