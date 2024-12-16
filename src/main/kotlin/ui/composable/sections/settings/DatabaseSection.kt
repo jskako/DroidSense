@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jskako.droidsense.generated.resources.Res
 import com.jskako.droidsense.generated.resources.info_database_location
+import com.jskako.droidsense.generated.resources.info_remove_ai_description
+import com.jskako.droidsense.generated.resources.info_remove_ai_title
 import com.jskako.droidsense.generated.resources.info_remove_devices_description
 import com.jskako.droidsense.generated.resources.info_remove_devices_success
 import com.jskako.droidsense.generated.resources.info_remove_devices_title
@@ -140,6 +142,32 @@ private fun NukeDatabaseControll(
                         sources.deviceSource.deleteAll()
                         sources.modelSource.deleteAll()
                         sources.ollamaUrlSource.deleteAll()
+                        sources.aiHistorySource.deleteAll()
+                        sources.aiNameSource.deleteAll()
+                        onMessage(
+                            InfoManagerData(
+                                message = ArgsText(textResId = Res.string.info_remove_settings_success),
+                            )
+                        )
+                    }
+                }
+                showDialog = true
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        OutlinedButton(
+            text = stringResource(Res.string.info_remove_ai_title),
+            contentColor = darkRed,
+            onClick = {
+                dialogTitle = ArgsText(textResId = Res.string.info_remove_ai_title)
+                dialogDescription = ArgsText(textResId = Res.string.info_remove_ai_description)
+                onDialogConfirm = {
+                    scope.launch {
+                        sources.modelSource.deleteAll()
+                        sources.ollamaUrlSource.deleteAll()
+                        sources.aiHistorySource.deleteAll()
+                        sources.aiNameSource.deleteAll()
                         onMessage(
                             InfoManagerData(
                                 message = ArgsText(textResId = Res.string.info_remove_settings_success),

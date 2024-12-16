@@ -81,6 +81,8 @@ fun DevicesHistorySection(
                             nameSource.deleteBy(uuid)
                         }
                     }
+                    sources.aiNameSource.deleteBy(deviceSerialNumber = serialNumber)
+                    sources.aiHistorySource.deleteBySerialNumber(deviceSerialNumber = serialNumber)
                     sources.deviceSource.deleteBy(serialNumber = serialNumber)
 
                     deleteInProgress = false

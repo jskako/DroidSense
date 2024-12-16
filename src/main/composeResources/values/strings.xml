@@ -40,7 +40,9 @@
     <string name="title_network_stats">Network Stats</string>
     <!-- Database settings -->
     <string name="info_remove_settings_title">Remove all</string>
+    <string name="info_remove_ai_title">Remove AI data</string>
     <string name="info_remove_settings_description">This will remove all settings including Logs, Devices, API keys and AI data. Are you sure you want to continue?</string>
+    <string name="info_remove_ai_description">This will remove all AI data, models, and urls. Are you sure you want to continue?</string>
     <string name="info_remove_devices_title">Remove devices</string>
     <string name="info_remove_devices_description">This will remove all devices and logs connected to it, are you sure you want to continue?</string>
     <string name="info_remove_logs_title">Remove logs</string>
@@ -89,8 +91,7 @@
     </string>
     <string name="info_delete_model_description">Do you want to delete selected model?</string>
     <string name="info_delete_device_title">Delete device</string>
-    <string name="info_delete_device_description">Do you want to delete device and all logs associated with this device?\n%1$s
-    </string>
+    <string name="info_delete_device_description">Do you want to delete device and all data associated with this device (Logs, AI history,...)?\n%1$s</string>
     <string name="info_force_delete_app_description">Uninstalling system apps have the potential to break the system, so only uninstall the apps that you are sure of. Apps like Gmail, Google Play Music, Google Play Movies, etc., are safe to uninstall but do not ever remove the Google Play Store or any of the files associated with it. If the phone becomes unstable after you uninstall a particular app, either reinstall back from the Google Play Store or factory reset your phone.</string>
     <string name="info_app_uninstall_started">Uninstalling application: %1$s</string>
     <string name="info_app_clear_data_started">Clearing application data: %1$s</string>
