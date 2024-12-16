@@ -57,7 +57,6 @@ import com.jskako.droidsense.generated.resources.info_share_screen
 import com.jskako.droidsense.generated.resources.info_share_screen_fail
 import com.jskako.droidsense.generated.resources.info_share_screen_info
 import com.jskako.droidsense.generated.resources.info_window_no
-import com.jskako.droidsense.generated.resources.phone
 import com.jskako.droidsense.generated.resources.string_placeholder
 import data.ArgsText
 import kotlinx.coroutines.launch
@@ -70,6 +69,7 @@ import ui.application.navigation.WindowData
 import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.OutlinedButton
+import ui.composable.elements.device.Manufacturers.Companion.getManufacturer
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.Sources
 import ui.composable.screens.ApplicationScreen
@@ -111,7 +111,9 @@ fun DeviceCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                bitmap = imageResource(Res.drawable.phone),
+                bitmap = imageResource(
+                    device.manufacturer?.let { getManufacturer(it).drawable() } ?: Manufacturers.GENERAL.drawable()
+                ),
                 contentDescription = EMPTY_STRING,
                 modifier = Modifier.size(48.dp)
             )

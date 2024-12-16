@@ -7,14 +7,5 @@ data class LogNameItem(
     val name: String,
     val dateTime: String,
     val deviceSerialNumber: String
-) {
-    companion object {
-        val emptyLogNameItem = LogNameItem(
-            sessionUuid = UUID(0, 0),
-            name = "",
-            dateTime = "",
-            deviceSerialNumber = ""
-        )
-    }
-}
+)
 
