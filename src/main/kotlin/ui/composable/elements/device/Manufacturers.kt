@@ -1,43 +1,64 @@
 package ui.composable.elements.device
 
 import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.acer
 import com.jskako.droidsense.generated.resources.agenew
+import com.jskako.droidsense.generated.resources.apple
 import com.jskako.droidsense.generated.resources.ascom
+import com.jskako.droidsense.generated.resources.asus
 import com.jskako.droidsense.generated.resources.atm
+import com.jskako.droidsense.generated.resources.benq
 import com.jskako.droidsense.generated.resources.bluebird
 import com.jskako.droidsense.generated.resources.casio
+import com.jskako.droidsense.generated.resources.caterpillar
 import com.jskako.droidsense.generated.resources.cilico
 import com.jskako.droidsense.generated.resources.cipher
 import com.jskako.droidsense.generated.resources.crosscall
 import com.jskako.droidsense.generated.resources.datalogic
+import com.jskako.droidsense.generated.resources.dell
 import com.jskako.droidsense.generated.resources.denso
 import com.jskako.droidsense.generated.resources.elo
+import com.jskako.droidsense.generated.resources.ericsson
 import com.jskako.droidsense.generated.resources.fairphone
 import com.jskako.droidsense.generated.resources.fcnt
+import com.jskako.droidsense.generated.resources.fujitsu
+import com.jskako.droidsense.generated.resources.garmin
 import com.jskako.droidsense.generated.resources.general
 import com.jskako.droidsense.generated.resources.getac
+import com.jskako.droidsense.generated.resources.gigabyte
 import com.jskako.droidsense.generated.resources.google
 import com.jskako.droidsense.generated.resources.hanshow
+import com.jskako.droidsense.generated.resources.hisense
 import com.jskako.droidsense.generated.resources.hmd
 import com.jskako.droidsense.generated.resources.honeywell
 import com.jskako.droidsense.generated.resources.honor
+import com.jskako.droidsense.generated.resources.hp
+import com.jskako.droidsense.generated.resources.htc
+import com.jskako.droidsense.generated.resources.huawei
 import com.jskako.droidsense.generated.resources.imin
 import com.jskako.droidsense.generated.resources.imozen
+import com.jskako.droidsense.generated.resources.infinix
 import com.jskako.droidsense.generated.resources.isafe
 import com.jskako.droidsense.generated.resources.keyence
 import com.jskako.droidsense.generated.resources.kyocera
+import com.jskako.droidsense.generated.resources.lava
 import com.jskako.droidsense.generated.resources.lenovo
+import com.jskako.droidsense.generated.resources.lg
 import com.jskako.droidsense.generated.resources.m3
 import com.jskako.droidsense.generated.resources.malata
 import com.jskako.droidsense.generated.resources.meferi
+import com.jskako.droidsense.generated.resources.microsoft
+import com.jskako.droidsense.generated.resources.mitsubishi
 import com.jskako.droidsense.generated.resources.mobiwire
 import com.jskako.droidsense.generated.resources.motorola
 import com.jskako.droidsense.generated.resources.newland
+import com.jskako.droidsense.generated.resources.nokia
 import com.jskako.droidsense.generated.resources.oneplus
 import com.jskako.droidsense.generated.resources.oppo
 import com.jskako.droidsense.generated.resources.orange
 import com.jskako.droidsense.generated.resources.panasonic
 import com.jskako.droidsense.generated.resources.pepperl
+import com.jskako.droidsense.generated.resources.philips
 import com.jskako.droidsense.generated.resources.point
 import com.jskako.droidsense.generated.resources.positivo
 import com.jskako.droidsense.generated.resources.prodvx
@@ -47,10 +68,13 @@ import com.jskako.droidsense.generated.resources.seuic
 import com.jskako.droidsense.generated.resources.sharp
 import com.jskako.droidsense.generated.resources.social
 import com.jskako.droidsense.generated.resources.sonim
+import com.jskako.droidsense.generated.resources.sony
 import com.jskako.droidsense.generated.resources.spectralink
 import com.jskako.droidsense.generated.resources.tcl
+import com.jskako.droidsense.generated.resources.toshiba
 import com.jskako.droidsense.generated.resources.transsion
 import com.jskako.droidsense.generated.resources.ubiqconn
+import com.jskako.droidsense.generated.resources.unihertz
 import com.jskako.droidsense.generated.resources.unitech
 import com.jskako.droidsense.generated.resources.urovo
 import com.jskako.droidsense.generated.resources.vivo
@@ -228,6 +252,78 @@ enum class Manufacturers {
     },
     UBIQCONN {
         override fun drawable() = Res.drawable.ubiqconn
+    },
+    HISENSE {
+        override fun drawable() = Res.drawable.hisense
+    },
+    LG {
+        override fun drawable() = Res.drawable.lg
+    },
+    SONY {
+        override fun drawable() = Res.drawable.sony
+    },
+    UNIHERTZ {
+        override fun drawable() = Res.drawable.unihertz
+    },
+    HUAWEI {
+        override fun drawable() = Res.drawable.huawei
+    },
+    NOKIA {
+        override fun drawable() = Res.drawable.nokia
+    },
+    INFINIX {
+        override fun drawable() = Res.drawable.infinix
+    },
+    LAVA {
+        override fun drawable() = Res.drawable.lava
+    },
+    FUJITSU {
+        override fun drawable() = Res.drawable.fujitsu
+    },
+    MITSUBISHI {
+        override fun drawable() = Res.drawable.mitsubishi
+    },
+    TOSHIBA {
+        override fun drawable() = Res.drawable.toshiba
+    },
+    PHILIPS {
+        override fun drawable() = Res.drawable.philips
+    },
+    CATERPILLAR {
+        override fun drawable() = Res.drawable.caterpillar
+    },
+    ACER {
+        override fun drawable() = Res.drawable.acer
+    },
+    ASUS {
+        override fun drawable() = Res.drawable.asus
+    },
+    BENQ {
+        override fun drawable() = Res.drawable.benq
+    },
+    HTC {
+        override fun drawable() = Res.drawable.htc
+    },
+    APPLE {
+        override fun drawable() = Res.drawable.apple
+    },
+    GARMIN {
+        override fun drawable() = Res.drawable.garmin
+    },
+    HP {
+        override fun drawable() = Res.drawable.hp
+    },
+    MICROSOFT {
+        override fun drawable() = Res.drawable.microsoft
+    },
+    ERICSSON {
+        override fun drawable() = Res.drawable.ericsson
+    },
+    DELL {
+        override fun drawable() = Res.drawable.dell
+    },
+    GIGABYTE {
+        override fun drawable() = Res.drawable.gigabyte
     },
     GENERAL {
         override fun drawable() = Res.drawable.general
