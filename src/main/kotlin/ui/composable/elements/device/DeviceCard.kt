@@ -265,7 +265,7 @@ fun DeviceCard(
                                 ?: stringResource(Res.string.info_window_no).uppercase()
                         )
 
-                        addSpaceHeight(16.dp)
+                        addSpaceHeight(8.dp)
 
                         val connectionType = when {
                             isValidIpAddressWithPort(device.deviceIdentifier) -> ConnectionType.WIRELESS
