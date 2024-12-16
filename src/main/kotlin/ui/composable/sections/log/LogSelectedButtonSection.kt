@@ -18,7 +18,6 @@ import com.jskako.droidsense.generated.resources.Res
 import com.jskako.droidsense.generated.resources.info_ask_ai
 import com.jskako.droidsense.generated.resources.info_copy_selected_logs
 import com.jskako.droidsense.generated.resources.info_export_selected_logs
-import notifications.InfoManagerData
 import ui.composable.elements.iconButtons.TooltipIconButton
 import utils.Colors.darkBlue
 import utils.Colors.lightGray
@@ -28,8 +27,7 @@ fun LogSelectedButtonSection(
     selectedLogsSize: Int,
     onExportLogs: () -> Unit,
     onCopyLogs: () -> Unit,
-    isExportEnabled: Boolean,
-    onInfoMessage: (InfoManagerData) -> Unit
+    isExportEnabled: Boolean
 ) {
 
     Column(

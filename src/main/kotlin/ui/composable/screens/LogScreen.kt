@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_log_copy_success
 import com.jskako.droidsense.generated.resources.info_logs_cleared
 import com.jskako.droidsense.generated.resources.info_waiting_application_logs
 import com.jskako.droidsense.generated.resources.string_placeholder
@@ -277,13 +278,11 @@ fun LogScreen(
                                 logManager.copy(
                                     exportOption = ExportOption.SELECTED
                                 )
+                                showMessage(getString(Res.string.info_log_copy_success))
                             }
                         },
                         isExportEnabled = (!exportInProgress && !isRunning),
-                        selectedLogsSize = selectedCount,
-                        onInfoMessage = {
-                            showMessage(infoManagerData = it)
-                        }
+                        selectedLogsSize = selectedCount
                     )
                 }
             }

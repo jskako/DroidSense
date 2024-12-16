@@ -48,6 +48,7 @@
     <string name="info_remove_settings_success">Data has been removed</string>
     <string name="info_remove_logs_success">Logs removed successfully</string>
     <string name="info_remove_devices_success">Devices removed successfully</string>
+    <string name="info_log_copy_success">Logs have been copied to clipboard</string>
     <!-- LogManager -->
     <string name="info_log_closing">Log monitoring closed for device: %1$s</string>
     <string name="info_log_error">Error occurred while monitoring the logs for device: %1$s</string>
