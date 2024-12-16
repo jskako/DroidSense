@@ -115,7 +115,7 @@ fun DeviceCard(
                     device.manufacturer?.let { getManufacturer(it).drawable() } ?: Manufacturers.GENERAL.drawable()
                 ),
                 contentDescription = EMPTY_STRING,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(100.dp)
             )
 
             Spacer(modifier = Modifier.width(16.dp))
