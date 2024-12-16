@@ -4,6 +4,8 @@ import adb.DeviceManager
 import adb.MonitorStatus
 import adb.MonitoringStatus
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,9 +28,11 @@ import ui.composable.elements.DividerColored
 import ui.composable.elements.device.DeviceView
 import ui.composable.elements.window.Sources
 import ui.composable.sections.StatusSection
+import ui.composable.sections.info.FunctionIconData
 import ui.composable.sections.info.InfoSection
 import utils.EMPTY_STRING
 import utils.capitalizeFirstChar
+import utils.openFolderAtPath
 
 @Composable
 fun MainScreen(
@@ -49,6 +53,7 @@ fun MainScreen(
     }
 
     val infoManager = remember { InfoManager() }
+    var exportPath by remember { mutableStateOf<String?>(null) }
     val devices by remember(deviceManager.devices.value) { mutableStateOf(deviceManager.devices.value) }
 
     val filteredDevices = devices.filter { device ->
@@ -98,7 +103,21 @@ fun MainScreen(
         InfoSection(
             onCloseClicked = { infoManager.clearInfoMessage() },
             message = infoManager.infoManagerData.value.message,
-            color = infoManager.infoManagerData.value.color
+            color = infoManager.infoManagerData.value.color,
+            onExtraClicked = exportPath?.let {
+                FunctionIconData(
+                    function = {
+                        scope.launch {
+                            infoManager.showMessage(
+                                infoManagerData = openFolderAtPath(path = it),
+                                scope = scope
+                            )
+                        }
+                    },
+                    icon = Icons.Default.FolderOpen
+                )
+            },
+            buttonVisible = infoManager.infoManagerData.value.buttonVisible
         )
         StatusSection(
             scrCpyPath = scrcpyPath,
@@ -132,8 +151,9 @@ fun MainScreen(
                 devices = filteredDevices,
                 windowStateManager = windowStateManager,
                 onMessage = {
+                    exportPath = it.path
                     infoManager.showMessage(
-                        infoManagerData = it,
+                        infoManagerData = it.infoManagerData,
                         scope = scope
                     )
                 },

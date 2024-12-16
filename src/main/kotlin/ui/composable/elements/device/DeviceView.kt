@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import notifications.InfoManagerData
+import notifications.ExportData
 import ui.application.WindowStateManager
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.window.Sources
@@ -17,7 +17,7 @@ fun DeviceView(
     adbPath: String,
     scrCpyPath: String,
     devices: List<DeviceDetails>,
-    onMessage: (InfoManagerData) -> Unit,
+    onMessage: (ExportData) -> Unit,
     windowStateManager: WindowStateManager
 ) {
 

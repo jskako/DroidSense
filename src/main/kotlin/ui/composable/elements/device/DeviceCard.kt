@@ -2,6 +2,7 @@ package ui.composable.elements.device
 
 import adb.ConnectionType
 import adb.DeviceDetails
+import adb.ScreenRecorder
 import adb.connectDeviceWirelessly
 import adb.disconnectDevice
 import adb.log.LogManager
@@ -19,7 +20,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Eject
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Screenshot
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.SwitchAccessShortcut
+import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -58,8 +62,11 @@ import com.jskako.droidsense.generated.resources.info_share_screen_fail
 import com.jskako.droidsense.generated.resources.info_share_screen_info
 import com.jskako.droidsense.generated.resources.info_window_no
 import com.jskako.droidsense.generated.resources.string_placeholder
+import com.jskako.droidsense.generated.resources.title_screen_record
+import com.jskako.droidsense.generated.resources.title_screenshot
 import data.ArgsText
 import kotlinx.coroutines.launch
+import notifications.ExportData
 import notifications.InfoManagerData
 import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.stringResource
@@ -69,6 +76,7 @@ import ui.application.navigation.WindowData
 import ui.composable.elements.BasicText
 import ui.composable.elements.BasicTextCaption
 import ui.composable.elements.OutlinedButton
+import ui.composable.elements.TimerText
 import ui.composable.elements.device.Manufacturers.Companion.getManufacturer
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.Sources
@@ -88,12 +96,22 @@ fun DeviceCard(
     adbPath: String,
     scrCpyPath: String,
     device: DeviceDetails,
-    onMessage: (InfoManagerData) -> Unit,
+    onMessage: (ExportData) -> Unit,
     windowStateManager: WindowStateManager,
     hasMatchingIp: Boolean
 ) {
     val scope = rememberCoroutineScope()
     var disconnectInProgress by remember(device) { mutableStateOf(false) }
+    var recordInProgress by remember(device) { mutableStateOf(false) }
+    var screenshotInProgress by remember(device) { mutableStateOf(false) }
+    val screenRecorder by remember {
+        mutableStateOf(
+            ScreenRecorder(
+                identifier = device.deviceIdentifier,
+                onInfoMessage = onMessage
+            )
+        )
+    }
 
     Card(
         modifier = Modifier
@@ -124,34 +142,76 @@ fun DeviceCard(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TooltipIconButton(
-                        isEnabled = !disconnectInProgress,
-                        tint = if (disconnectInProgress) lightGray else darkBlue,
-                        icon = Icons.Default.Eject,
-                        tooltip = Res.string.info_disconnect,
-                        function = {
-                            disconnectInProgress = true
-                            onMessage(
-                                InfoManagerData(
-                                    message = ArgsText(
-                                        textResId = Res.string.info_disconnecting_device,
-                                        formatArgs = listOf(device.toString())
+                    Row(
+                        modifier = Modifier
+                            .weight(1f),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TooltipIconButton(
+                            isEnabled = !disconnectInProgress,
+                            tint = if (disconnectInProgress) lightGray else darkBlue,
+                            icon = Icons.Default.Eject,
+                            tooltip = Res.string.info_disconnect,
+                            function = {
+                                disconnectInProgress = true
+                                onMessage(
+                                    ExportData(
+                                        infoManagerData = InfoManagerData(
+                                            message = ArgsText(
+                                                textResId = Res.string.info_disconnecting_device,
+                                                formatArgs = listOf(device.toString())
+                                            )
+                                        )
                                     )
                                 )
-                            )
+                                scope.launch {
+                                    disconnectDevice(
+                                        adbPath = adbPath,
+                                        identifier = device.deviceIdentifier
+                                    )
+                                }
+                            }
+                        )
+
+                        BasicText(
+                            value = "${device.manufacturer?.capitalizeFirstChar()} ${device.model}",
+                            fontSize = 20.sp,
+                            isBold = true,
+                        )
+                    }
+
+                    TooltipIconButton(
+                        tint = if (recordInProgress) darkRed else darkBlue,
+                        icon = if (recordInProgress) Icons.Default.Stop else Icons.Default.Videocam,
+                        tooltip = Res.string.title_screen_record,
+                        function = {
                             scope.launch {
-                                disconnectDevice(
-                                    adbPath = adbPath,
-                                    identifier = device.deviceIdentifier
-                                )
+                                recordInProgress = if (recordInProgress) {
+                                    screenRecorder.stopRecording()
+                                    false
+                                } else {
+                                    screenRecorder.startRecording("/Users/josipska/Desktop/test.mp4")
+                                    true
+                                }
                             }
                         }
                     )
 
-                    BasicText(
-                        value = "${device.manufacturer?.capitalizeFirstChar()} ${device.model}",
-                        fontSize = 20.sp,
-                        isBold = true,
+                    TimerText(inProgress = recordInProgress)
+
+                    TooltipIconButton(
+                        isEnabled = !screenshotInProgress,
+                        icon = Icons.Default.Screenshot,
+                        tint = if (screenshotInProgress) lightGray else darkBlue,
+                        tooltip = Res.string.title_screenshot,
+                        function = {
+                            scope.launch {
+                                screenshotInProgress = true
+                                screenRecorder.takeScreenshot("/Users/josipska/Desktop/test.png")
+                                screenshotInProgress = false
+                            }
+                        }
                     )
                 }
 
@@ -229,28 +289,34 @@ fun DeviceCard(
                                         ).fold(
                                             onSuccess = {
                                                 onMessage(
-                                                    InfoManagerData(
-                                                        message = ArgsText(
-                                                            textResId = Res.string.info_device_ip_success
+                                                    ExportData(
+                                                        infoManagerData = InfoManagerData(
+                                                            message = ArgsText(
+                                                                textResId = Res.string.info_device_ip_success
+                                                            )
                                                         )
                                                     )
                                                 )
                                             },
                                             onFailure = {
                                                 onMessage(
-                                                    InfoManagerData(
-                                                        message = ArgsText(
-                                                            textResId = Res.string.info_device_connect_general_error,
-                                                            formatArgs = listOf(it.message ?: "")
+                                                    ExportData(
+                                                        infoManagerData = InfoManagerData(
+                                                            message = ArgsText(
+                                                                textResId = Res.string.info_device_connect_general_error,
+                                                                formatArgs = listOf(it.message ?: "")
+                                                            )
                                                         )
                                                     )
                                                 )
                                             }
                                         )
                                     } ?: onMessage(
-                                        InfoManagerData(
-                                            message = ArgsText(
-                                                textResId = Res.string.info_device_ip_incorrect
+                                        ExportData(
+                                            infoManagerData = InfoManagerData(
+                                                message = ArgsText(
+                                                    textResId = Res.string.info_device_ip_incorrect
+                                                )
                                             )
                                         )
                                     )
@@ -275,22 +341,26 @@ fun DeviceCard(
                             ).fold(
                                 onSuccess = {
                                     onMessage(
-                                        InfoManagerData(
-                                            message = ArgsText(
-                                                textResId = Res.string.info_share_screen_info,
-                                                formatArgs = listOf(device.deviceIdentifier)
+                                        ExportData(
+                                            infoManagerData = InfoManagerData(
+                                                message = ArgsText(
+                                                    textResId = Res.string.info_share_screen_info,
+                                                    formatArgs = listOf(device.deviceIdentifier)
+                                                )
                                             )
                                         )
                                     )
                                 },
                                 onFailure = {
                                     onMessage(
-                                        InfoManagerData(
-                                            message = ArgsText(
-                                                textResId = Res.string.info_share_screen_fail,
-                                                formatArgs = listOf("${device.deviceIdentifier}. ${it.message}")
-                                            ),
-                                            color = darkRed
+                                        ExportData(
+                                            infoManagerData = InfoManagerData(
+                                                message = ArgsText(
+                                                    textResId = Res.string.info_share_screen_fail,
+                                                    formatArgs = listOf("${device.deviceIdentifier}. ${it.message}")
+                                                ),
+                                                color = darkRed
+                                            )
                                         )
                                     )
                                 }
@@ -333,10 +403,12 @@ fun DeviceCard(
                                                 if (logManager.isActive) {
                                                     logManager.stopMonitoring()
                                                     onMessage(
-                                                        InfoManagerData(
-                                                            message = ArgsText(
-                                                                textResId = Res.string.info_log_closing,
-                                                                formatArgs = listOf(device.toString())
+                                                        ExportData(
+                                                            infoManagerData = InfoManagerData(
+                                                                message = ArgsText(
+                                                                    textResId = Res.string.info_log_closing,
+                                                                    formatArgs = listOf(device.toString())
+                                                                )
                                                             )
                                                         )
                                                     )

@@ -24,6 +24,13 @@
     <string name="info_stop_listening">Listening server has been stopped</string>
     <string name="info_start_listening">Listening server has been started</string>
     <string name="info_not_connected">Not connected</string>
+    <string name="info_recording_started">Recording started at path: %1$s</string>
+    <string name="error_recording">Error occurred while recording screen: %1$s</string>
+    <string name="info_recording_stopped">File recorded at: %1$s</string>
+    <string name="error_recording_stopped">Couldn't stop recording, error occurred: %1$s</string>
+    <string name="error_screenshot">Couldn't take screenshot, error occurred: %1$s</string>
+    <string name="info_screenshot_saved">Screenshot saved at: %1$s</string>
+    <string name="error_screenshot_general">Failed to execute screencap command</string>
     <!-- LogScreen -->
     <string name="info_logs_cleared">The logs have been cleared</string>
     <!-- AppDetailType -->
@@ -204,4 +211,6 @@
     <string name="info_reset">Reset</string>
     <string name="string_placeholder">%1$s</string>
     <string name="empty_string">""</string>
+    <string name="title_screen_record">Record a screen</string>
+    <string name="title_screenshot">Take a screenshot</string>
 </resources>

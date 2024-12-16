@@ -149,4 +149,17 @@ fun String.runCommand(): String? = runCatching {
         .inputStream.bufferedReader().use { it.readText().trim() }
 }.getOrNull()
 
+fun String.startLongRunningProcess(): Process {
+    return ProcessBuilder(this.split("\\s".toRegex()))
+        .redirectErrorStream(true)
+        .start()
+}
+
+fun String.runBinaryCommand(): ByteArray? = runCatching {
+    ProcessBuilder(this.split("\\s".toRegex()))
+        .redirectErrorStream(true)
+        .start()
+        .inputStream.readBytes()
+}.getOrNull()
+
 fun String.findPath(): String = "which $this".runCommand()?.trim() ?: ""
