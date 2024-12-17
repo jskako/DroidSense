@@ -85,7 +85,10 @@ import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import utils.Colors.lightGray
 import utils.EMPTY_STRING
+import utils.EXPORT_NAME_TIMESTAMP
 import utils.capitalizeFirstChar
+import utils.getDesktopDirectory
+import utils.getTimeStamp
 import utils.isValidIpAddressWithPort
 import utils.shareScreen
 
@@ -190,7 +193,13 @@ fun DeviceCard(
                                     screenRecorder.stopRecording()
                                     false
                                 } else {
-                                    screenRecorder.startRecording("/Users/josipska/Desktop/test.mp4")
+                                    screenRecorder.startRecording(
+                                        "${getDesktopDirectory()}/recording_${
+                                            getTimeStamp(
+                                                EXPORT_NAME_TIMESTAMP
+                                            )
+                                        }.mp4"
+                                    )
                                     true
                                 }
                             }
@@ -207,7 +216,13 @@ fun DeviceCard(
                         function = {
                             scope.launch {
                                 screenshotInProgress = true
-                                screenRecorder.takeScreenshot("/Users/josipska/Desktop/test.png")
+                                screenRecorder.takeScreenshot(
+                                    "${getDesktopDirectory()}/screenshot_${
+                                        getTimeStamp(
+                                            EXPORT_NAME_TIMESTAMP
+                                        )
+                                    }.png"
+                                )
                                 screenshotInProgress = false
                             }
                         }

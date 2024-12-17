@@ -10,6 +10,7 @@ import org.jetbrains.compose.resources.getString
 import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
+import java.nio.file.Paths
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -51,6 +52,10 @@ fun getUserOS(): OS {
     val osName = System.getProperty(SYSTEM_OS_PROPERTY).lowercase(Locale.getDefault())
     return OS.entries.firstOrNull { osName.contains(it.osName(), ignoreCase = true) }
         ?: OS.UNSUPPORTED
+}
+
+fun getDesktopDirectory(): String {
+    return Paths.get(System.getProperty("user.home"), "Desktop").toString()
 }
 
 fun getOSArch(): Arch {
