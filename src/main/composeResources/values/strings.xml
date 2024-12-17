@@ -209,10 +209,11 @@
     <string name="info_cancel">Cancel</string>
     <string name="info_confirm">Confirm</string>
     <string name="info_save">Save</string>
-    <string name="info_reset_general_description">All settings in "General" section will be reseted to default values</string>
+    <string name="info_reset_general_description">All settings in "General" section will be reset to default values</string>
     <string name="info_reset">Reset</string>
     <string name="string_placeholder">%1$s</string>
     <string name="empty_string">""</string>
     <string name="title_screen_record">Record a screen</string>
     <string name="title_screenshot">Take a screenshot</string>
+    <string name="title_ai_chat">AI Chat: %1$s</string>
 </resources>

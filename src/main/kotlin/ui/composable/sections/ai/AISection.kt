@@ -37,6 +37,7 @@ import com.jskako.droidsense.generated.resources.info_delete_log_message
 import com.jskako.droidsense.generated.resources.info_name_update_log_message
 import com.jskako.droidsense.generated.resources.info_new_chat
 import com.jskako.droidsense.generated.resources.info_search
+import com.jskako.droidsense.generated.resources.title_ai_chat
 import data.ArgsText
 import data.model.ai.AIType
 import kotlinx.coroutines.launch
@@ -96,7 +97,10 @@ fun AISection(
                 windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                     newWindow(
                         WindowData(
-                            title = ArgsText(textResId = Res.string.empty_string),
+                            title = ArgsText(
+                                textResId = Res.string.title_ai_chat,
+                                formatArgs = listOf(aiType)
+                            ),
                             icon = Icons.Default.Info,
                             windowExtra = WindowExtra(
                                 screen = {
@@ -196,7 +200,10 @@ fun AISection(
                                     windowStateManager.windowState?.openNewWindow?.let { newWindow ->
                                         newWindow(
                                             WindowData(
-                                                title = ArgsText(textResId = Res.string.empty_string),
+                                                title = ArgsText(
+                                                    textResId = Res.string.title_ai_chat,
+                                                    formatArgs = listOf("${nameItem.aiType.name} - ${nameItem.name}")
+                                                ),
                                                 icon = Icons.Default.Info,
                                                 windowExtra = WindowExtra(
                                                     screen = {
