@@ -120,6 +120,8 @@ fun ChatScreen(
         ChatSection(
             sources = sources,
             uuid = sessionUuid,
+            selectedUrl = selectedUrl,
+            selectedModel = selectedModel,
             onMessage = {
                 infoManager.showMessage(
                     infoManagerData = it,

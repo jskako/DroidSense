@@ -18,7 +18,7 @@ import kotlinx.serialization.json.Json
 
 class OllamaNetworkRepositoryImpl(
     private val client: HttpClient,
-    private val apiUrl: String = "http://localhost:11434/api/chat"
+    private val apiUrl: String = DEFAULT_OLLAMA_URL
 ) : OllamaNetworkRepository {
 
     private val json = Json { encodeDefaults = true }
@@ -43,3 +43,5 @@ class OllamaNetworkRepositoryImpl(
         }
     }
 }
+
+private const val DEFAULT_OLLAMA_URL = "http://localhost:11434/api/chat"

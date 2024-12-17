@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -57,7 +58,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import notifications.InfoManagerData
 import org.jetbrains.compose.resources.stringResource
-import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.ai.ChatCard
 import ui.composable.elements.iconButtons.TooltipIconButton
@@ -74,12 +74,20 @@ import java.util.UUID
 @Composable
 fun ChatSection(
     sources: Sources,
+    selectedUrl: String,
+    selectedModel: String,
     uuid: UUID,
     onMessage: (InfoManagerData) -> Unit,
 ) {
 
     val httpClient = NetworkModule.provideHttpClient()
-    val aiRepository = OllamaNetworkRepositoryImpl(httpClient)
+
+    val aiRepository by produceState(initialValue = OllamaNetworkRepositoryImpl(httpClient, selectedUrl), selectedUrl) {
+        value = OllamaNetworkRepositoryImpl(
+            client = httpClient,
+            apiUrl = selectedUrl
+        )
+    }
 
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -110,7 +118,7 @@ fun ChatSection(
         currentJob = scope.launch {
             inProgress = true
             aiRepository.getChatResponse(
-                model = "gemma2",
+                model = selectedModel,
                 messages = messages
             ).fold(
                 onSuccess = { response ->
@@ -120,16 +128,16 @@ fun ChatSection(
                             messageUUID = UUID.randomUUID(),
                             deviceSerialNumber = "",
                             aiType = AIType.OLLAMA,
-                            url = "",
+                            url = selectedUrl,
                             role = response.role,
                             message = response.content,
                             dateTime = getTimeStamp(DATABASE_DATETIME),
-                            model = "gemma2"
+                            model = selectedModel
                         )
                     )
                     resetProgress()
                 },
-                onFailure = { error ->
+                onFailure = { _ ->
                     sources.aiHistorySource.updateSucceed(
                         messageUUID = history.last().messageUUID,
                         succeed = false
@@ -137,8 +145,7 @@ fun ChatSection(
                     onMessage(
                         InfoManagerData(
                             message = ArgsText(
-                                textResId = Res.string.info_error_ai_message,
-                                formatArgs = listOf(error.localizedMessage)
+                                textResId = Res.string.info_error_ai_message
                             ),
                             color = darkRed
                         )
@@ -293,11 +300,11 @@ fun ChatSection(
                                     messageUUID = UUID.randomUUID(),
                                     deviceSerialNumber = "",
                                     aiType = AIType.OLLAMA,
-                                    url = "",
+                                    url = selectedUrl,
                                     role = AiRole.USER,
                                     message = message,
                                     dateTime = getTimeStamp(DATABASE_DATETIME),
-                                    model = "gemma2"
+                                    model = selectedModel
                                 )
                             )
                         }

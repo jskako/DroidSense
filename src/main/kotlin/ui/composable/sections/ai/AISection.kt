@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.jskako.droidsense.generated.resources.Res
-import com.jskako.droidsense.generated.resources.empty_string
 import com.jskako.droidsense.generated.resources.info_ai_error
 import com.jskako.droidsense.generated.resources.info_available_ai
 import com.jskako.droidsense.generated.resources.info_clear_filter
