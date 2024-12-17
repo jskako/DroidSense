@@ -178,7 +178,6 @@ fun ChatSection(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        DividerColored()
 
         ListWithScrollbar(
             modifier = Modifier
