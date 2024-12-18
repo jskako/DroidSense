@@ -210,6 +210,7 @@ fun ChatSection(
                             scope.launch {
                                 sources.aiHistorySource.run {
                                     deleteMessagesAbove(messageUUID)
+                                    updateUrlModel(messageUUID = messageUUID, url = selectedUrl, model = selectedModel)
                                     updateSucceed(messageUUID = messageUUID, succeed = true)
                                 }
                             }

@@ -54,5 +54,10 @@ UPDATE AIHistory
 SET message = ?
 WHERE messageUUID = ?;
 
+updateUrlModel:
+UPDATE AIHistory
+SET url = ?, model = ?
+WHERE messageUUID = ?;
+
 nukeTable:
 DELETE FROM AIHistory;

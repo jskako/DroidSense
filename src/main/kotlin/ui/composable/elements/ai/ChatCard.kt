@@ -111,7 +111,7 @@ fun ChatCard(
             addSpaceHeight(8.dp)
 
             Text(
-                text = "${aiItem.dateTime} - ${aiItem.model}",
+                text = "${aiItem.dateTime} - ${aiItem.url} ${aiItem.model}",
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )

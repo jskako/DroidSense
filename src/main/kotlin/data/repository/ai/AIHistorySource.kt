@@ -49,6 +49,10 @@ class AIHistorySource(
         aiDao.updateMessage(messageUUID = messageUUID.toString(), message = message)
     }
 
+    override suspend fun updateUrlModel(messageUUID: UUID, url: String, model: String) {
+        aiDao.updateUrlModel(messageUUID = messageUUID.toString(), url = url, model = model)
+    }
+
     override suspend fun deleteBySerialNumber(deviceSerialNumber: String) {
         aiDao.deleteBy(deviceSerialNumber)
     }
