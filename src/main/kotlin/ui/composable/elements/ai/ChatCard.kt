@@ -22,19 +22,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jskako.droidsense.generated.resources.Res
 import com.jskako.droidsense.generated.resources.info_edit_message
 import com.jskako.droidsense.generated.resources.info_try_again
 import data.model.ai.AIItem
 import data.model.ai.ollama.AiRole
-import ui.composable.elements.BasicText
+import ui.composable.elements.MarkdownText
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.EditDialog
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import utils.Colors.lightGray
-import utils.capitalizeFirstChar
 import java.util.UUID
 
 @Composable
@@ -75,12 +73,11 @@ fun ChatCard(
             modifier = Modifier.padding(8.dp)
         ) {
             Row {
-                BasicText(
+                MarkdownText(
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .weight(1f),
-                    value = aiItem.message.capitalizeFirstChar(),
-                    fontSize = 16.sp
+                    text = aiItem.message,
                 )
 
                 if (aiItem.role == AiRole.USER) {
