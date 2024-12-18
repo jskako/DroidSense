@@ -194,7 +194,9 @@ fun DeviceCard(
                                     false
                                 } else {
                                     screenRecorder.startRecording(
-                                        "${getDesktopDirectory()}/recording_${
+                                        adbPath = adbPath,
+                                        scrCpyPath = scrCpyPath,
+                                        outputFilePath = "${getDesktopDirectory()}/recording_${
                                             getTimeStamp(
                                                 EXPORT_NAME_TIMESTAMP
                                             )
@@ -217,7 +219,8 @@ fun DeviceCard(
                             scope.launch {
                                 screenshotInProgress = true
                                 screenRecorder.takeScreenshot(
-                                    "${getDesktopDirectory()}/screenshot_${
+                                    adbPath = adbPath,
+                                    outputFilePath = "${getDesktopDirectory()}/screenshot_${
                                         getTimeStamp(
                                             EXPORT_NAME_TIMESTAMP
                                         )

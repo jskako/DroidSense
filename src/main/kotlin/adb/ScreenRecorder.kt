@@ -28,12 +28,18 @@ class ScreenRecorder(
     private var screenProcess: Process? = null
     private var output: String? = null
 
-    suspend fun startRecording(outputFilePath: String) {
+    suspend fun startRecording(
+        outputFilePath: String,
+        scrCpyPath: String,
+        adbPath: String
+    ) {
         withContext(Dispatchers.IO) {
             runCatching {
-                val command = "scrcpy --serial $identifier --no-playback --no-window --record $outputFilePath"
+                val command = "$scrCpyPath --serial $identifier --no-playback --no-window --record $outputFilePath"
+
+                screenProcess = command.startLongRunningProcess(adbPath)
                 output = outputFilePath
-                screenProcess = command.startLongRunningProcess()
+
                 onInfoMessage(
                     ExportData(
                         infoManagerData = InfoManagerData(
@@ -95,10 +101,13 @@ class ScreenRecorder(
         }
     }
 
-    suspend fun takeScreenshot(outputFilePath: String) {
+    suspend fun takeScreenshot(
+        adbPath: String,
+        outputFilePath: String
+    ) {
         withContext(Dispatchers.IO) {
             runCatching {
-                val command = "adb -s $identifier exec-out screencap -p"
+                val command = "$adbPath -s $identifier exec-out screencap -p"
                 val screenshotBytes =
                     command.runBinaryCommand() ?: throw Exception(getString(Res.string.error_screenshot_general))
                 Path(outputFilePath).writeBytes(screenshotBytes)

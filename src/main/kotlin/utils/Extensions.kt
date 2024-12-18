@@ -149,9 +149,12 @@ fun String.runCommand(): String? = runCatching {
         .inputStream.bufferedReader().use { it.readText().trim() }
 }.getOrNull()
 
-fun String.startLongRunningProcess(): Process {
+fun String.startLongRunningProcess(adbPath: String): Process {
     return ProcessBuilder(this.split("\\s".toRegex()))
         .redirectErrorStream(true)
+        .apply {
+            environment()["ADB"] = adbPath
+        }
         .start()
 }
 
