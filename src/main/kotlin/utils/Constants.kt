@@ -33,9 +33,13 @@ const val DEVICE_IP_ADDRESS: String = "ip route | awk '{print $9}'"
 const val DEVICE_PACKAGES: String = "pm list packages"
 
 const val DOCUMENTS_DIRECTORY: String = "files"
+const val DEFAULT_SCREENSHOT_NAME: String = "screenshot"
+const val DEFAULT_RECORDING_NAME: String = "recording"
 
 const val LOG_MANAGER_NUMBER_OF_LINES = 12389
 const val LOG_TYPE_REGEX = "DWIEV"
 const val APK_EXTENSION = "apk"
+const val PNG_EXTENSION = "png"
+const val MP4_EXTENSION = "mp4"
 
 const val ABOUT_LIBRARIES_JSON_NAME = "aboutlibraries.json"

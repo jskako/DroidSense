@@ -31,7 +31,8 @@ class ScreenRecorder(
     suspend fun startRecording(
         outputFilePath: String,
         scrCpyPath: String,
-        adbPath: String
+        adbPath: String,
+        onFailure: () -> Unit,
     ) {
         withContext(Dispatchers.IO) {
             runCatching {
@@ -52,6 +53,7 @@ class ScreenRecorder(
                     )
                 )
             }.onFailure {
+                onFailure()
                 onInfoMessage(
                     ExportData(
                         infoManagerData = InfoManagerData(

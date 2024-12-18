@@ -84,8 +84,12 @@ import ui.composable.screens.LogScreen
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
 import utils.Colors.lightGray
+import utils.DEFAULT_RECORDING_NAME
+import utils.DEFAULT_SCREENSHOT_NAME
 import utils.EMPTY_STRING
 import utils.EXPORT_NAME_TIMESTAMP
+import utils.MP4_EXTENSION
+import utils.PNG_EXTENSION
 import utils.capitalizeFirstChar
 import utils.getDesktopDirectory
 import utils.getTimeStamp
@@ -189,20 +193,23 @@ fun DeviceCard(
                         tooltip = Res.string.title_screen_record,
                         function = {
                             scope.launch {
+                                var hasFailureOccurred = false
                                 recordInProgress = if (recordInProgress) {
                                     screenRecorder.stopRecording()
                                     false
                                 } else {
+                                    val outputFilePath = "${getDesktopDirectory()}/${DEFAULT_RECORDING_NAME}_${
+                                        getTimeStamp(EXPORT_NAME_TIMESTAMP)
+                                    }.$MP4_EXTENSION"
                                     screenRecorder.startRecording(
                                         adbPath = adbPath,
                                         scrCpyPath = scrCpyPath,
-                                        outputFilePath = "${getDesktopDirectory()}/recording_${
-                                            getTimeStamp(
-                                                EXPORT_NAME_TIMESTAMP
-                                            )
-                                        }.mp4"
+                                        outputFilePath = outputFilePath,
+                                        onFailure = {
+                                            hasFailureOccurred = true
+                                        }
                                     )
-                                    true
+                                    !hasFailureOccurred
                                 }
                             }
                         }
@@ -220,11 +227,11 @@ fun DeviceCard(
                                 screenshotInProgress = true
                                 screenRecorder.takeScreenshot(
                                     adbPath = adbPath,
-                                    outputFilePath = "${getDesktopDirectory()}/screenshot_${
+                                    outputFilePath = "${getDesktopDirectory()}/${DEFAULT_SCREENSHOT_NAME}_${
                                         getTimeStamp(
                                             EXPORT_NAME_TIMESTAMP
                                         )
-                                    }.png"
+                                    }.$PNG_EXTENSION"
                                 )
                                 screenshotInProgress = false
                             }
