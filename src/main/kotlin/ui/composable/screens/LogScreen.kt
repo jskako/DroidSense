@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,19 +25,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jskako.droidsense.generated.resources.Res
+import com.jskako.droidsense.generated.resources.info_available_ai
 import com.jskako.droidsense.generated.resources.info_log_copy_success
 import com.jskako.droidsense.generated.resources.info_logs_cleared
 import com.jskako.droidsense.generated.resources.info_waiting_application_logs
 import com.jskako.droidsense.generated.resources.string_placeholder
+import com.jskako.droidsense.generated.resources.title_ai_chat
 import data.ArgsText
+import data.model.ai.AIType
 import data.model.items.DeviceItem
 import data.model.items.LogNameItem
 import kotlinx.coroutines.launch
 import notifications.InfoManager
 import notifications.InfoManagerData
 import org.jetbrains.compose.resources.getString
+import ui.application.WindowExtra
+import ui.application.WindowStateManager
+import ui.application.navigation.WindowData
 import ui.composable.elements.CircularProgressBar
 import ui.composable.elements.DividerColored
+import ui.composable.elements.SelectionDialog
 import ui.composable.elements.log.LogView
 import ui.composable.elements.window.Sources
 import ui.composable.sections.info.FunctionIconData
@@ -57,6 +65,7 @@ import java.util.UUID
 @Composable
 fun LogScreen(
     adbPath: String,
+    windowStateManager: WindowStateManager,
     logManager: LogManager,
     device: DeviceDetails,
     sources: Sources
@@ -79,6 +88,42 @@ fun LogScreen(
     val infoManager = remember { InfoManager() }
     var exportPath by remember { mutableStateOf<String?>(null) }
     var currentSessionUuid by remember { mutableStateOf(UUID(0, 0)) }
+    val aiTypes by sources.modelSource.types(context = scope.coroutineContext).collectAsState(initial = emptyList())
+    var showAiDialog by remember { mutableStateOf(false) }
+
+    if (showAiDialog) {
+        SelectionDialog(
+            title = Res.string.info_available_ai,
+            options = aiTypes,
+            onOptionSelected = { aiType ->
+                windowStateManager.windowState?.openNewWindow?.let { newWindow ->
+                    newWindow(
+                        WindowData(
+                            title = ArgsText(
+                                textResId = Res.string.title_ai_chat,
+                                formatArgs = listOf(aiType)
+                            ),
+                            icon = Icons.Default.Info,
+                            windowExtra = WindowExtra(
+                                screen = {
+                                    // TODO - Send starting message here
+                                    ChatScreen(
+                                        aiType = AIType.valueOf(aiType),
+                                        deviceSerialNumber = device.serialNumber,
+                                        sources = sources
+                                    )
+                                },
+                                onClose = {}
+                            )
+                        )
+                    )
+                }
+            },
+            onDismissRequest = {
+                showAiDialog = false
+            }
+        )
+    }
 
     fun showMessage(message: String) {
         infoManager.showMessage(
@@ -282,7 +327,10 @@ fun LogScreen(
                             }
                         },
                         isExportEnabled = (!exportInProgress && !isRunning),
-                        selectedLogsSize = selectedCount
+                        selectedLogsSize = selectedCount,
+                        onAiClick = {
+                            showAiDialog = true
+                        }
                     )
                 }
             }

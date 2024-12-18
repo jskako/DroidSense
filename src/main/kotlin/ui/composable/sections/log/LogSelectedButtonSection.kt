@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jskako.droidsense.generated.resources.Res
-import com.jskako.droidsense.generated.resources.info_ask_ai
+import com.jskako.droidsense.generated.resources.info_ai
 import com.jskako.droidsense.generated.resources.info_copy_selected_logs
 import com.jskako.droidsense.generated.resources.info_export_selected_logs
 import ui.composable.elements.iconButtons.TooltipIconButton
@@ -27,6 +27,7 @@ fun LogSelectedButtonSection(
     selectedLogsSize: Int,
     onExportLogs: () -> Unit,
     onCopyLogs: () -> Unit,
+    onAiClick: () -> Unit,
     isExportEnabled: Boolean
 ) {
 
@@ -56,11 +57,10 @@ fun LogSelectedButtonSection(
             function = onCopyLogs
         )
         TooltipIconButton(
-            isEnabled = false,
-            tint = lightGray,
+            tint = darkBlue,
             icon = Icons.Default.QuestionAnswer,
-            tooltip = Res.string.info_ask_ai,
-            function = {}
+            tooltip = Res.string.info_ai,
+            function = onAiClick
         )
     }
 }

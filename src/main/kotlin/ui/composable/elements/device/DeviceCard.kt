@@ -424,6 +424,7 @@ fun DeviceCard(
                                                 screen = {
                                                     LogScreen(
                                                         sources = sources,
+                                                        windowStateManager = windowStateManager,
                                                         adbPath = adbPath,
                                                         device = device,
                                                         logManager = logManager

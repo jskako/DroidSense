@@ -33,7 +33,6 @@ import com.jskako.droidsense.generated.resources.Res
 import com.jskako.droidsense.generated.resources.info_ai_error
 import com.jskako.droidsense.generated.resources.info_available_ai
 import com.jskako.droidsense.generated.resources.info_clear_filter
-import com.jskako.droidsense.generated.resources.info_delete
 import com.jskako.droidsense.generated.resources.info_delete_ai
 import com.jskako.droidsense.generated.resources.info_delete_ai_description
 import com.jskako.droidsense.generated.resources.info_delete_ai_title
@@ -80,7 +79,7 @@ fun AISection(
     val nameItems by aiNameSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     val aiTypes by sources.modelSource.types(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
-    var showDialog by remember { mutableStateOf(false) }
+    var showAiDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     if (showDeleteDialog) {
@@ -125,7 +124,7 @@ fun AISection(
         }
     }
 
-    if (showDialog) {
+    if (showAiDialog) {
         SelectionDialog(
             title = Res.string.info_available_ai,
             options = aiTypes,
@@ -152,7 +151,7 @@ fun AISection(
                 }
             },
             onDismissRequest = {
-                showDialog = false
+                showAiDialog = false
             }
         )
     }
@@ -174,7 +173,7 @@ fun AISection(
             if (aiTypes.isNotEmpty()) {
                 ExtendedFloatingActionButton(
                     onClick = {
-                        showDialog = true
+                        showAiDialog = true
                     },
                     containerColor = darkBlue,
                     contentColor = Color.White,

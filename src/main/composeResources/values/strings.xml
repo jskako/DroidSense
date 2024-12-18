@@ -174,7 +174,6 @@
     <string name="info_disable_chat_gpt">Remove ChatGPT API key</string>
     <string name="info_show_folder">Show in folder</string>
     <string name="info_copy_selected_logs">Copy selected logs</string>
-    <string name="info_ask_ai">Ask AI - Not implemented yet</string>
     <string name="info_error_ai_message">An error occurred. Please ensure the URL and model are set correctly.</string>
     <!-- HintText -->
     <string name="info_search">Search</string>
