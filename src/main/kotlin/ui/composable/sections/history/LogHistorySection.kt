@@ -27,9 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.jskako.droidsense.generated.resources.Res
 import com.jskako.droidsense.generated.resources.info_clear_filter
-import com.jskako.droidsense.generated.resources.info_delete_ai
-import com.jskako.droidsense.generated.resources.info_delete_ai_description
-import com.jskako.droidsense.generated.resources.info_delete_ai_title
 import com.jskako.droidsense.generated.resources.info_delete_all
 import com.jskako.droidsense.generated.resources.info_delete_log_history_desc
 import com.jskako.droidsense.generated.resources.info_delete_log_history_title
@@ -165,7 +162,7 @@ fun LogHistorySection(
 
             TooltipIconButton(
                 isEnabled = nameItems.isNotEmpty(),
-                tint = if(nameItems.isEmpty()) lightGray else darkBlue,
+                tint = if (nameItems.isEmpty()) lightGray else darkBlue,
                 icon = Icons.Default.DeleteForever,
                 tooltip = Res.string.info_delete_all,
                 function = {

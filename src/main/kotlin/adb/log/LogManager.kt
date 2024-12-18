@@ -52,19 +52,21 @@ class LogManager(
     }
 
     suspend fun export(
-        exportOption: ExportOption = ExportOption.ALL,
+        getOption: GetOption = GetOption.ALL,
         onExportDone: (exportData: ExportData) -> Unit
     ) {
         withContext(Dispatchers.IO) {
-            onExportDone(buildString(exportOption).exportToFile())
+            onExportDone(buildLogs(getOption).exportToFile())
         }
     }
 
+    fun get(getOption: GetOption = GetOption.SELECTED) = buildLogs(getOption)
+
     suspend fun copy(
-        exportOption: ExportOption = ExportOption.ALL
+        getOption: GetOption = GetOption.ALL
     ) {
         withContext(Dispatchers.Default) {
-            buildString(exportOption).copyToClipboard()
+            buildLogs(getOption).copyToClipboard()
         }
     }
 
@@ -92,11 +94,11 @@ class LogManager(
         }
     }
 
-    private fun buildString(exportOption: ExportOption): String {
+    private fun buildLogs(getOption: GetOption): String {
         return buildString {
-            val logsToExport = when (exportOption) {
-                ExportOption.ALL -> logs.value
-                ExportOption.SELECTED -> getSelected()
+            val logsToExport = when (getOption) {
+                GetOption.ALL -> logs.value
+                GetOption.SELECTED -> getSelected()
             }
 
             logsToExport.forEach { log ->

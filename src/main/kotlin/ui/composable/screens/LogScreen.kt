@@ -1,7 +1,7 @@
 package ui.composable.screens
 
 import adb.DeviceDetails
-import adb.log.ExportOption
+import adb.log.GetOption
 import adb.log.LogLevel
 import adb.log.LogManager
 import androidx.compose.foundation.layout.Arrangement
@@ -106,10 +106,10 @@ fun LogScreen(
                             icon = Icons.Default.Info,
                             windowExtra = WindowExtra(
                                 screen = {
-                                    // TODO - Send starting message here
                                     ChatScreen(
                                         aiType = AIType.valueOf(aiType),
                                         deviceSerialNumber = device.serialNumber,
+                                        startMessage = logManager.get(),
                                         sources = sources
                                     )
                                 },
@@ -309,7 +309,7 @@ fun LogScreen(
                             exportInProgress = true
                             scope.launch {
                                 logManager.export(
-                                    exportOption = ExportOption.SELECTED,
+                                    getOption = GetOption.SELECTED,
                                     onExportDone = { exportData ->
                                         exportInProgress = false
                                         exportPath = exportData.path
@@ -321,7 +321,7 @@ fun LogScreen(
                         onCopyLogs = {
                             scope.launch {
                                 logManager.copy(
-                                    exportOption = ExportOption.SELECTED
+                                    getOption = GetOption.SELECTED
                                 )
                                 showMessage(getString(Res.string.info_log_copy_success))
                             }

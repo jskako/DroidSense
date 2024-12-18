@@ -227,7 +227,7 @@ fun AISection(
 
                 TooltipIconButton(
                     isEnabled = nameItems.isNotEmpty(),
-                    tint = if(nameItems.isEmpty()) lightGray else darkBlue,
+                    tint = if (nameItems.isEmpty()) lightGray else darkBlue,
                     icon = Icons.Default.DeleteForever,
                     tooltip = Res.string.info_delete_all,
                     function = {

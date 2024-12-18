@@ -74,13 +74,16 @@ import java.util.UUID
 @Composable
 fun ChatSection(
     sources: Sources,
+    startMessage: String? = null,
     selectedUrl: String,
     selectedModel: String,
+    deviceSerialNumber: String,
     uuid: UUID,
     onMessage: (InfoManagerData) -> Unit,
 ) {
 
     val httpClient = NetworkModule.provideHttpClient()
+    var startMessageAdded by remember { mutableStateOf(false) }
 
     val aiRepository by produceState(initialValue = OllamaNetworkRepositoryImpl(httpClient, selectedUrl), selectedUrl) {
         value = OllamaNetworkRepositoryImpl(
@@ -126,7 +129,7 @@ fun ChatSection(
                         AIItem(
                             uuid = uuid,
                             messageUUID = UUID.randomUUID(),
-                            deviceSerialNumber = "",
+                            deviceSerialNumber = deviceSerialNumber,
                             aiType = AIType.OLLAMA,
                             url = selectedUrl,
                             role = response.role,
@@ -163,6 +166,27 @@ fun ChatSection(
             aiItems.map { it.toOllamaMessage() }.toTypedArray()
         }
         .collectAsState(initial = emptyArray())
+
+    LaunchedEffect(selectedModel) {
+        if (!startMessage.isNullOrBlank() && !startMessageAdded && selectedModel.isNotBlank()) {
+            startMessageAdded = true
+            scope.launch {
+                sources.aiHistorySource.add(
+                    AIItem(
+                        uuid = uuid,
+                        messageUUID = UUID.randomUUID(),
+                        deviceSerialNumber = deviceSerialNumber,
+                        aiType = AIType.OLLAMA,
+                        url = selectedUrl,
+                        role = AiRole.USER,
+                        message = startMessage,
+                        dateTime = getTimeStamp(DATABASE_DATETIME),
+                        model = selectedModel
+                    )
+                )
+            }
+        }
+    }
 
     LaunchedEffect(message) {
         scrollState.animateScrollTo(scrollState.maxValue)
@@ -299,7 +323,7 @@ fun ChatSection(
                                 AIItem(
                                     uuid = uuid,
                                     messageUUID = UUID.randomUUID(),
-                                    deviceSerialNumber = "",
+                                    deviceSerialNumber = deviceSerialNumber,
                                     aiType = AIType.OLLAMA,
                                     url = selectedUrl,
                                     role = AiRole.USER,

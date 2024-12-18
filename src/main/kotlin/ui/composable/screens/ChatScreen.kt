@@ -34,6 +34,7 @@ fun ChatScreen(
     sources: Sources,
     uuid: UUID? = null,
     deviceSerialNumber: String? = null,
+    startMessage: String? = null,
     aiType: AIType
 ) {
 
@@ -119,9 +120,11 @@ fun ChatScreen(
 
         ChatSection(
             sources = sources,
+            startMessage = startMessage,
             uuid = sessionUuid,
             selectedUrl = selectedUrl,
             selectedModel = selectedModel,
+            deviceSerialNumber = deviceSerialNumber ?: "",
             onMessage = {
                 infoManager.showMessage(
                     infoManagerData = it,

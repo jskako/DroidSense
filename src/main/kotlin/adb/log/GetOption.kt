@@ -1,5 +1,5 @@
 package adb.log
 
-enum class ExportOption {
+enum class GetOption {
     ALL, SELECTED
 }
