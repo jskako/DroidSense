@@ -86,7 +86,13 @@
     <string name="info_delete_app_title">Delete application: %1$s</string>
     <string name="info_delete_app_description">Do you want to uninstall this app?</string>
     <string name="info_delete_log_title">Delete log</string>
+    <string name="info_delete_ai_title">Delete AI history</string>
+    <string name="info_delete_log_history_title">Delete log history</string>
+    <string name="info_delete_log_history_desc">Are you sure you want do delete all logs?</string>
+    <string name="info_delete_ai">All AI logs has been deleted.</string>
     <string name="info_delete_log_description">Do you want to delete all logs associated with this uuid? \n%1$s</string>
+    <string name="info_delete_ai_description">Do you want to delete all AI history?</string>
+    <string name="info_delete_logs_success">All logs have been deleted.</string>
     <string name="info_delete_url_description">Do you want to delete url and all models associated with this it?
     </string>
     <string name="info_delete_model_description">Do you want to delete selected model?</string>
@@ -192,6 +198,7 @@
     <string name="info_uuid_identifier">UUID</string>
     <string name="info_next">Next</string>
     <string name="info_delete">Delete</string>
+    <string name="info_delete_all">Delete all</string>
     <string name="info_edit_name">Edit name</string>
     <string name="info_edit_message">Edit message</string>
     <string name="info_try_again">Try again</string>

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,7 +27,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.jskako.droidsense.generated.resources.Res
 import com.jskako.droidsense.generated.resources.info_clear_filter
+import com.jskako.droidsense.generated.resources.info_delete_ai
+import com.jskako.droidsense.generated.resources.info_delete_ai_description
+import com.jskako.droidsense.generated.resources.info_delete_ai_title
+import com.jskako.droidsense.generated.resources.info_delete_all
+import com.jskako.droidsense.generated.resources.info_delete_log_history_desc
+import com.jskako.droidsense.generated.resources.info_delete_log_history_title
 import com.jskako.droidsense.generated.resources.info_delete_log_message
+import com.jskako.droidsense.generated.resources.info_delete_logs_success
 import com.jskako.droidsense.generated.resources.info_name_update_log_message
 import com.jskako.droidsense.generated.resources.info_search
 import com.jskako.droidsense.generated.resources.string_placeholder
@@ -44,7 +52,10 @@ import ui.composable.elements.DividerColored
 import ui.composable.elements.ListWithScrollbar
 import ui.composable.elements.history.NameCard
 import ui.composable.elements.iconButtons.TooltipIconButton
+import ui.composable.elements.window.TextDialog
 import ui.composable.screens.LogHistoryDetailsScreen
+import utils.Colors.darkBlue
+import utils.Colors.lightGray
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
 
@@ -62,6 +73,35 @@ fun LogHistorySection(
     val nameItems by logNameSource.by(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf(EMPTY_STRING) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showDeleteDialog) {
+        TextDialog(
+            title = ArgsText(
+                textResId = Res.string.info_delete_log_history_title
+            ),
+            description = ArgsText(
+                textResId = Res.string.info_delete_log_history_desc
+            ),
+            onConfirmRequest = {
+                showDeleteDialog = false
+                scope.launch {
+                    logHistorySource.deleteAll()
+                    logNameSource.deleteAll()
+                    onMessage(
+                        InfoManagerData(
+                            message = ArgsText(
+                                textResId = Res.string.info_delete_logs_success
+                            )
+                        )
+                    )
+                }
+            },
+            onDismissRequest = {
+                showDeleteDialog = false
+            }
+        )
+    }
 
     val filteredNames = nameItems.filter { nameItem ->
         val matchesSearchText = searchText.isEmpty() ||
@@ -88,33 +128,51 @@ fun LogHistorySection(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            deviceItem.let {
-                if (it.serialNumber.isNotEmpty()) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
+            ) {
+                deviceItem.let {
+                    if (it.serialNumber.isNotEmpty()) {
 
-                    Text(
-                        text = "$it (${it.serialNumber})",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
-                    )
+                        Text(
+                            text = "$it (${it.serialNumber})",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
 
-                    TooltipIconButton(
-                        icon = Icons.Default.Close,
-                        tooltip = Res.string.info_clear_filter,
-                        function = onFilterClear
-                    )
+                        TooltipIconButton(
+                            icon = Icons.Default.Close,
+                            tooltip = Res.string.info_clear_filter,
+                            function = onFilterClear
+                        )
+                    }
                 }
+
+                TextField(
+                    value = searchText,
+                    colors = transparentTextFieldDefault,
+                    singleLine = true,
+                    onValueChange = {
+                        searchText = it
+                    },
+                    placeholder = { Text(stringResource(Res.string.info_search)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
             }
 
-            TextField(
-                value = searchText,
-                colors = transparentTextFieldDefault,
-                singleLine = true,
-                onValueChange = {
-                    searchText = it
+            TooltipIconButton(
+                isEnabled = nameItems.isNotEmpty(),
+                tint = if(nameItems.isEmpty()) lightGray else darkBlue,
+                icon = Icons.Default.DeleteForever,
+                tooltip = Res.string.info_delete_all,
+                function = {
+                    showDeleteDialog = true
                 },
-                placeholder = { Text(stringResource(Res.string.info_search)) },
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
             )
         }
 

@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,6 +33,11 @@ import com.jskako.droidsense.generated.resources.Res
 import com.jskako.droidsense.generated.resources.info_ai_error
 import com.jskako.droidsense.generated.resources.info_available_ai
 import com.jskako.droidsense.generated.resources.info_clear_filter
+import com.jskako.droidsense.generated.resources.info_delete
+import com.jskako.droidsense.generated.resources.info_delete_ai
+import com.jskako.droidsense.generated.resources.info_delete_ai_description
+import com.jskako.droidsense.generated.resources.info_delete_ai_title
+import com.jskako.droidsense.generated.resources.info_delete_all
 import com.jskako.droidsense.generated.resources.info_delete_log_message
 import com.jskako.droidsense.generated.resources.info_name_update_log_message
 import com.jskako.droidsense.generated.resources.info_new_chat
@@ -51,9 +57,11 @@ import ui.composable.elements.SelectionDialog
 import ui.composable.elements.history.NameCard
 import ui.composable.elements.iconButtons.TooltipIconButton
 import ui.composable.elements.window.Sources
+import ui.composable.elements.window.TextDialog
 import ui.composable.screens.ChatScreen
 import utils.Colors.darkBlue
 import utils.Colors.darkRed
+import utils.Colors.lightGray
 import utils.Colors.transparentTextFieldDefault
 import utils.EMPTY_STRING
 
@@ -73,6 +81,35 @@ fun AISection(
     val aiTypes by sources.modelSource.types(context = scope.coroutineContext).collectAsState(initial = emptyList())
     var deleteInProgress by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showDeleteDialog) {
+        TextDialog(
+            title = ArgsText(
+                textResId = Res.string.info_delete_ai_title
+            ),
+            description = ArgsText(
+                textResId = Res.string.info_delete_ai_description
+            ),
+            onConfirmRequest = {
+                showDeleteDialog = false
+                scope.launch {
+                    sources.aiHistorySource.deleteAll()
+                    sources.aiNameSource.deleteAll()
+                    onMessage(
+                        InfoManagerData(
+                            message = ArgsText(
+                                textResId = Res.string.info_delete_ai
+                            )
+                        )
+                    )
+                }
+            },
+            onDismissRequest = {
+                showDeleteDialog = false
+            }
+        )
+    }
 
     LaunchedEffect(aiTypes) {
         if (aiTypes.isEmpty()) {
@@ -153,34 +190,52 @@ fun AISection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                deviceSerialNumber?.let {
-                    if (it.isNotBlank()) {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.Gray
-                        )
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    deviceSerialNumber?.let {
+                        if (it.isNotBlank()) {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray
+                            )
 
-                        TooltipIconButton(
-                            icon = Icons.Default.Close,
-                            tooltip = Res.string.info_clear_filter,
-                            function = {
-                                //onFilterClear
-                            }
-                        )
+                            TooltipIconButton(
+                                icon = Icons.Default.Close,
+                                tooltip = Res.string.info_clear_filter,
+                                function = {
+                                    //onFilterClear
+                                }
+                            )
+                        }
                     }
+
+                    TextField(
+                        value = searchText,
+                        colors = transparentTextFieldDefault,
+                        singleLine = true,
+                        onValueChange = {
+                            searchText = it
+                        },
+                        placeholder = { Text(stringResource(Res.string.info_search)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
                 }
 
-                TextField(
-                    value = searchText,
-                    colors = transparentTextFieldDefault,
-                    singleLine = true,
-                    onValueChange = {
-                        searchText = it
+                TooltipIconButton(
+                    isEnabled = nameItems.isNotEmpty(),
+                    tint = if(nameItems.isEmpty()) lightGray else darkBlue,
+                    icon = Icons.Default.DeleteForever,
+                    tooltip = Res.string.info_delete_all,
+                    function = {
+                        showDeleteDialog = true
                     },
-                    placeholder = { Text(stringResource(Res.string.info_search)) },
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
                 )
             }
 
