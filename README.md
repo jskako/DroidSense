@@ -2,7 +2,8 @@
 
 About a year ago, I started DroidSense with a simple goal: to dive deeper into KMP and have some fun along the way. The idea was straightforward—capture logs over ADB and show them in a nice UI. But over time, it grew into something much bigger than just showing logs.
 
-I’m excited to share the next version of DroidSense! I’ve added support for AI (Ollama and OpenAPI), jumping on the AI hype train. Plus, you can now install apps on selected space ID, including the private space, record device, or take screenshot.
+Added support for AI (Ollama and OpenAPI). Install apps on selected space ID, including the private space. 
+Record device, or take screenshot.
 
 ---
 
