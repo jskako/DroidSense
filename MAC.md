@@ -2,9 +2,8 @@
 
 ### macOS ARM Version
 
-The **macOS ARM version** is currently available for download. Support for **macOS Intel** will be coming soon.
-
-- **Download Link**: [DroidSense_v_2_0_0_mac_arm](https://github.com/jskako/DroidSense/releases/download/v2.0.0/DroidSense.app.zip)
+- **Download Link**: [DroidSense_v_2_0_0_mac_arm](https://github.com/jskako/DroidSense/releases/download/v2.0.0/DroidSense_MAC_ARM.app.zip)
+- **Download Link**: [DroidSense_v_2_0_0_mac_intel](https://github.com/jskako/DroidSense/releases/download/v2.0.0/DroidSense_MAC_INTEL.app.zip)
 
 ### Installation Steps
 
