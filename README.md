@@ -5,7 +5,11 @@ About a year ago, I started DroidSense with a simple goal: to dive deeper into K
 Added support for AI (Ollama and OpenAPI). Install apps on selected space ID, including the private space. 
 Record device, or take screenshot.
 
----
+## Installation
+
+#### The **macOS ARM version** is currently available for download. Support for **macOS Intel**, **Linux**, and **Windows** will be coming soon.
+
+- **Mac OS instructions**: [MAC.MD](https://github.com/jskako/DroidSense/blob/main/MAC.md)
 
 ## Key Features on Main Screen
 
