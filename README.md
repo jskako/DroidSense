@@ -7,9 +7,10 @@ Record device, or take screenshot.
 
 ## Installation
 
-#### The **macOS ARM version** is currently available for download. Support for **Linux**, and **Windows** will be coming soon.
+#### The **macOS ARM version** and **Windows x64 version** are currently available for download. Other OS and versions will be added soon.
 
 - **Mac OS instructions**: [MAC.MD](https://github.com/jskako/DroidSense/blob/main/MAC.md)
+- **Windows OS instructions**: [WINDOWS.MD](https://github.com/jskako/DroidSense/blob/main/WINDOWS.md)
 
 ## Key Features on Main Screen
 
